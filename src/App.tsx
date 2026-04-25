@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import pfp from "./assets/pfp.png";
 import sensLogo from "./assets/logos/senslogo.jpeg";
 import ctcLogo from "./assets/logos/ctclogo.jpeg";
@@ -6,30 +7,29 @@ import bcLogo from "./assets/logos/blockchainlogo.jpeg";
 import rfaLogo from "./assets/logos/rfalogo.jpeg";
 import swLogo from "./assets/logos/swlogo.jpeg";
 import slLogo from "./assets/logos/sllogo.png";
-import dLogo from "./assets/logos/dlogo.png"
-import hLogo from "./assets/logos/hlogo.jpeg"
-import tnLogo from "./assets/logos/tnlogo.png"
-import careLogo from "./assets/logos/carelogo.png"
-import cosmosLogo from "./assets/logos/cosmoslogo.jpeg"
-import cqLogo from "./assets/logos/cqlogo.png"
+import dLogo from "./assets/logos/dlogo.png";
+import hLogo from "./assets/logos/hlogo.jpeg";
+import tnLogo from "./assets/logos/tnlogo.png";
+import careLogo from "./assets/logos/carelogo.png";
+import cosmosLogo from "./assets/logos/cosmoslogo.jpeg";
+import cqLogo from "./assets/logos/cqlogo.png";
 
-import ctcImage from "./assets/previews/ctcimage.png"
-import caretechImage from "./assets/previews/caretechimage.png"
-import blockchainImage from "./assets/previews/blockchainimage.png"
-import sensImage from "./assets/previews/sensimage.png"
-import cqImage from "./assets/previews/cqimage.png"
-import careImage from "./assets/previews/CAREIMAGE.png"
+import ctcImage from "./assets/previews/ctcimage.png";
+import caretechImage from "./assets/previews/caretechimage.png";
+import blockchainImage from "./assets/previews/blockchainimage.png";
+import sensImage from "./assets/previews/sensimage.png";
+import cqImage from "./assets/previews/cqimage.png";
+import careImage from "./assets/previews/CAREIMAGE.png";
 
-import dlImage from "./assets/previews/dlimage.png"
-import handshakeImage from "./assets/previews/handshakeImage.png"
-import cosmosImage from "./assets/previews/cosmosimage.png"
-import thinkneuroImage from "./assets/previews/thingneuroimage.png"
+import dlImage from "./assets/previews/dlimage.png";
+import handshakeImage from "./assets/previews/handshakeImage.png";
+import cosmosImage from "./assets/previews/cosmosimage.png";
+import thinkneuroImage from "./assets/previews/thingneuroimage.png";
 
-import rfaImage from "./assets/previews/rfaimage.png"
-import slImage from "./assets/previews/slimage.png"
-import swImage from "./assets/previews/shimage.png"
-import pecsImage from "./assets/previews/pecsimage.png"
-
+import rfaImage from "./assets/previews/rfaimage.png";
+import slImage from "./assets/previews/slimage.png";
+import swImage from "./assets/previews/shimage.png";
+import pecsImage from "./assets/previews/pecsimage.png";
 
 import onboardingImg from "./assets/projects/onbaoardingreal.png";
 import spamImg from "./assets/projects/sms.png";
@@ -40,238 +40,396 @@ import crimeImg from "./assets/projects/JacobHorneCrimeMap.png";
 import todoImg from "./assets/projects/todo.png";
 import encrpyImg from "./assets/projects/ncrypt.png";
 
+// ─── Terminal ────────────────────────────────────────────────────────────────
 
+type TerminalLine =
+  | { type: "input"; text: string }
+  | { type: "output"; text: string }
+  | { type: "blank" };
+
+const HELP_TEXT: TerminalLine[] = [
+  { type: "output", text: "" },
+  { type: "output", text: "Available commands:" },
+  { type: "output", text: "  help / ?        — show this menu" },
+  { type: "output", text: "  about           — scroll to about" },
+  { type: "output", text: "  experience      — scroll to experience" },
+  { type: "output", text: "  research        — scroll to research" },
+  { type: "output", text: "  projects        — scroll to projects" },
+  { type: "output", text: "  contact         — scroll to contact" },
+  { type: "output", text: "  github          — open GitHub profile" },
+  { type: "output", text: "  linkedin        — open LinkedIn profile" },
+  { type: "output", text: "  resume          — open resume PDF" },
+  { type: "output", text: "  email           — show email address" },
+  { type: "output", text: "  whoami          — info about Jacob" },
+  { type: "output", text: "  ls              — list all sections" },
+  { type: "output", text: "  clear           — clear terminal" },
+  { type: "output", text: "  exit            — close terminal" },
+  { type: "blank" },
+];
+
+function Terminal({ onClose }: { onClose: () => void }) {
+  const [input, setInput] = useState("");
+  const [lines, setLines] = useState<TerminalLine[]>([
+    { type: "output", text: "jacob-portfolio v1.0.0" },
+    { type: "output", text: 'Type "help" or "?" for a list of commands.' },
+    { type: "blank" },
+  ]);
+  const [cmdHistory, setCmdHistory] = useState<string[]>([]);
+  const [historyIdx, setHistoryIdx] = useState(-1);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [lines]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  const scrollTo = (id: string) => {
+    onClose();
+    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 100);
+  };
+
+  const processCommand = (raw: string) => {
+    const cmd = raw.trim().toLowerCase();
+    const out: TerminalLine[] = [{ type: "input", text: raw }];
+
+    switch (cmd) {
+      case "help":
+      case "?":
+        out.push(...HELP_TEXT);
+        break;
+      case "about":
+        scrollTo("info"); return;
+      case "experience":
+        scrollTo("building"); return;
+      case "research":
+        scrollTo("researching"); return;
+      case "projects":
+        scrollTo("projects"); return;
+      case "contact":
+        scrollTo("contact"); return;
+      case "github":
+        window.open("https://github.com/jacobhorne-jth", "_blank");
+        out.push({ type: "output", text: "Opening GitHub..." }, { type: "blank" });
+        break;
+      case "linkedin":
+        window.open("https://linkedin.com/in/jacobhornejth", "_blank");
+        out.push({ type: "output", text: "Opening LinkedIn..." }, { type: "blank" });
+        break;
+      case "resume":
+        window.open("/resume.pdf", "_blank");
+        out.push({ type: "output", text: "Opening resume..." }, { type: "blank" });
+        break;
+      case "email":
+        out.push({ type: "output", text: "jacobhorne.jth@gmail.com" }, { type: "blank" });
+        break;
+      case "whoami":
+        out.push(
+          { type: "output", text: "Jacob Horne" },
+          { type: "output", text: "Software Engineer · Researcher · Instructor" },
+          { type: "output", text: "UCI Computer Science" },
+          { type: "blank" },
+        );
+        break;
+      case "ls":
+        out.push(
+          { type: "output", text: "about/  experience/  research/  teaching/  projects/  hobbies/  contact/" },
+          { type: "blank" },
+        );
+        break;
+      case "clear":
+        setLines([]);
+        setCmdHistory(prev => raw ? [raw, ...prev] : prev);
+        setHistoryIdx(-1);
+        setInput("");
+        return;
+      case "exit":
+      case "quit":
+      case "close":
+        onClose();
+        return;
+      case "sudo":
+        out.push({ type: "output", text: "Permission denied. Nice try." }, { type: "blank" });
+        break;
+      case "hire me":
+        window.open("https://linkedin.com/in/jacobhornejth", "_blank");
+        out.push({ type: "output", text: "Redirecting to LinkedIn... 👀" }, { type: "blank" });
+        break;
+      case "":
+        break;
+      default:
+        out.push({ type: "output", text: `command not found: ${cmd}` }, { type: "blank" });
+    }
+
+    setLines(prev => [...prev, ...out]);
+    if (raw.trim()) setCmdHistory(prev => [raw, ...prev]);
+    setHistoryIdx(-1);
+    setInput("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      processCommand(input);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const next = Math.min(historyIdx + 1, cmdHistory.length - 1);
+      setHistoryIdx(next);
+      setInput(cmdHistory[next] ?? "");
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const next = Math.max(historyIdx - 1, -1);
+      setHistoryIdx(next);
+      setInput(next === -1 ? "" : cmdHistory[next]);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-2xl mx-4 rounded-xl overflow-hidden shadow-2xl border border-neutral-700"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center gap-2 bg-neutral-800 px-4 py-3">
+          <button
+            onClick={onClose}
+            className="h-3 w-3 rounded-full bg-red-500 hover:bg-red-400 transition"
+          />
+          <div className="h-3 w-3 rounded-full bg-yellow-500" />
+          <div className="h-3 w-3 rounded-full bg-green-500" />
+          <span className="mx-auto text-xs text-neutral-400 font-mono">
+            visitor@jacob-horne — bash
+          </span>
+        </div>
+        <div
+          className="bg-[#0d1117] h-96 overflow-y-auto p-4 font-mono text-sm cursor-text"
+          onClick={() => inputRef.current?.focus()}
+        >
+          {lines.map((line, i) => {
+            if (line.type === "blank") return <div key={i} className="h-3" />;
+            if (line.type === "input")
+              return (
+                <div key={i} className="flex gap-2 leading-5">
+                  <span className="text-green-500 select-none shrink-0">visitor@jacob-horne:~$</span>
+                  <span className="text-green-300">{line.text}</span>
+                </div>
+              );
+            return (
+              <div key={i} className="text-green-300/75 pl-2 leading-5">
+                {line.text}
+              </div>
+            );
+          })}
+          <div className="flex gap-2 items-center leading-5 mt-0.5">
+            <span className="text-green-500 select-none shrink-0">visitor@jacob-horne:~$</span>
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="bg-transparent outline-none flex-1 text-green-300 caret-green-400"
+              spellCheck={false}
+              autoComplete="off"
+              autoCapitalize="off"
+            />
+          </div>
+          <div ref={bottomRef} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── UI primitives ───────────────────────────────────────────────────────────
 
 const NavLink = ({ label, href }: { label: string; href: string }) => (
-  <a href={href} className="text-2xl text-neutral-200/80 hover:text-white transition">
+  <a
+    href={href}
+    className="relative text-sm text-neutral-400 hover:text-white transition-colors duration-200 group"
+  >
     {label}
+    <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-violet-400 group-hover:w-full transition-all duration-300" />
   </a>
 );
 
 function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="space-y-2">
-      {/* was text-5xl */}
-      <h2 className="text-4xl font-bold tracking-tight">{title}</h2>
-      {subtitle ? (
-        /* was text-lg */
-        <p className="text-neutral-200/70 text-base">{subtitle}</p>
-      ) : null}
+      <div className="flex items-center gap-3">
+        <div className="w-1 h-7 rounded-full bg-violet-500 shrink-0" />
+        <h2 className="text-3xl font-bold tracking-tight">{title}</h2>
+      </div>
+      {subtitle && (
+        <p className="text-neutral-500 text-sm pl-4">{subtitle}</p>
+      )}
     </div>
   );
 }
+
+function TagPill({ label }: { label: string }) {
+  return (
+    <span className="rounded-full border border-neutral-800 bg-neutral-900/60 px-2.5 py-0.5 text-xs text-neutral-400">
+      {label}
+    </span>
+  );
+}
+
+// ─── Types ───────────────────────────────────────────────────────────────────
 
 type Experience = {
   role: string;
   org: string;
   desc: string;
   timeline: string;
-
   logoText?: string;
   logoSrc?: string;
-
   imageSrc?: string;
   imageAlt?: string;
-
-  siteUrl?: string;       // NEW: website / project link
-  siteLabel?: string;     // NEW: button text (optional)
+  siteUrl?: string;
+  siteLabel?: string;
 };
-
-
-function ExperienceCard({ item }: { item: Experience }) {
-  return (
-    <div className="rounded-2xl border border-neutral-700 bg-neutral-950/40 p-6
-                transition-all duration-200 ease-out
-                hover:-translate-y-1 hover:shadow-xl hover:shadow-neutral-950/40
-                hover:border-neutral-500">
-      {/* was gap-10 + larger column ratio */}
-      <div className="grid items-stretch gap-8 lg:grid-cols-[1fr_1.25fr]">
-        {/* LEFT */}
-        <div className="flex flex-col">
-          {/* Logo */}
-          <div className="flex items-center gap-4">
-            {item.logoSrc ? (
-              <img
-                src={item.logoSrc}
-                alt={`${item.org} logo`}
-                className="h-12 w-12 rounded-full object-cover border border-neutral-800"
-              />
-            ) : (
-              <div className="h-12 w-12 rounded-full border border-neutral-800 bg-neutral-900/50 grid place-items-center">
-                <span className="text-sm font-semibold text-neutral-100">
-                  {item.logoText ?? "◎"}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Role + Org */}
-          <div className="mt-5 space-y-1.5">
-            {/* was text-3xl md:text-4xl */}
-            <h3 className="text-3xl font-bold leading-tight">{item.role}</h3>
-            {/* was text-lg md:text-xl */}
-            <p className="text-lg text-neutral-200/60">{item.org}</p>
-          </div>
-
-          {/* Description */}
-          {/* was text-base md:text-lg */}
-          <p className="mt-4 text-base leading-relaxed text-neutral-200/85">
-            {item.desc}
-          </p>
-
-          {/* Timeline */}
-          {/* was pt-10 text-lg */}
-          <p className="mt-auto pt-8 text-base text-neutral-200/40">
-            {item.timeline}
-          </p>
-        </div>
-
-        {/* RIGHT IMAGE */}
-        {/* RIGHT SIDE */}
-        <div className="flex items-center justify-center lg:justify-end">
-          <div className="w-full max-w-[560px] overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/30">
-            {item.imageSrc ? (
-              item.siteUrl ? (
-                <a href={item.siteUrl} target="_blank" rel="noreferrer" className="block">
-                  <img
-                    src={item.imageSrc}
-                    alt={item.imageAlt ?? `${item.org} preview`}
-                    className="aspect-[16/9] w-full object-cover"
-                  />
-                </a>
-
-              ) : (
-                <img
-                  src={item.imageSrc}
-                  alt={item.imageAlt ?? `${item.org} preview`}
-                  className="aspect-[16/9] w-full object-cover"
-                />
-              )
-            ) : item.siteUrl ? (
-              <a
-                href={item.siteUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="aspect-[16/9] grid place-items-center hover:bg-neutral-900/50 transition"
-              >
-                <div className="text-center space-y-2">
-                  <div className="text-neutral-200/80 text-lg font-semibold">
-                    {item.siteLabel ?? "Visit site"}
-                  </div>
-                  <div className="text-neutral-200/50 text-sm">{item.siteUrl}</div>
-                </div>
-              </a>
-            ) : (
-              <div className="aspect-[16/9] grid place-items-center text-neutral-200/40">
-                Add screenshot / photo
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 
 type Project = {
   name: string;
   desc: string;
   tags: string[];
-
   imageSrc?: string;
   imageAlt?: string;
-
   demoUrl?: string;
   repoUrl?: string;
-
-  badge?: string; // e.g., "Featured", "Case Study", "In Progress"
+  badge?: string;
 };
 
-function TagPill({ label }: { label: string }) {
+// ─── Cards ───────────────────────────────────────────────────────────────────
+
+function ExperienceCard({ item }: { item: Experience }) {
+  const imageEl = item.imageSrc ? (
+    <img
+      src={item.imageSrc}
+      alt={item.imageAlt ?? `${item.org} preview`}
+      className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+    />
+  ) : (
+    <div className="aspect-[16/9] grid place-items-center text-neutral-600 text-sm">
+      No preview
+    </div>
+  );
+
   return (
-    <span className="rounded-full border border-neutral-800 bg-neutral-900/40 px-3 py-1 text-sm text-neutral-200/80">
-      {label}
-    </span>
+    <div className="group rounded-2xl border border-neutral-800 bg-neutral-900/20 p-6
+                    hover:border-violet-500/25 hover:bg-neutral-900/40
+                    transition-all duration-300">
+      <div className="grid gap-8 lg:grid-cols-[1fr_1.3fr] items-start">
+        {/* LEFT */}
+        <div className="flex flex-col h-full">
+          <div className="flex items-center gap-3">
+            {item.logoSrc ? (
+              <img
+                src={item.logoSrc}
+                alt={`${item.org} logo`}
+                className="h-10 w-10 rounded-xl object-cover border border-neutral-800 shrink-0"
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-xl border border-neutral-800 bg-neutral-900 grid place-items-center shrink-0">
+                <span className="text-xs font-semibold text-neutral-300">
+                  {item.logoText ?? "◎"}
+                </span>
+              </div>
+            )}
+            <div>
+              <h3 className="font-semibold text-white leading-tight">{item.role}</h3>
+              <p className="text-sm text-neutral-500">{item.org}</p>
+            </div>
+          </div>
+
+          <p className="mt-4 text-sm leading-relaxed text-neutral-300/80 flex-1">
+            {item.desc}
+          </p>
+
+          <p className="mt-5 text-xs font-mono text-neutral-600">
+            {item.timeline}
+          </p>
+        </div>
+
+        {/* RIGHT */}
+        <div className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/40">
+          {item.siteUrl ? (
+            <a href={item.siteUrl} target="_blank" rel="noreferrer" className="block overflow-hidden">
+              {imageEl}
+            </a>
+          ) : imageEl}
+        </div>
+      </div>
+    </div>
   );
 }
 
 function ProjectCard({ item }: { item: Project }) {
   const primaryUrl = item.repoUrl ?? item.demoUrl;
-
   const isInternalHash = primaryUrl?.startsWith("#");
 
-  const CardInner = (
-    <div
-      className="rounded-2xl border border-neutral-800 bg-neutral-950/40 p-5
-                 transition-all duration-200 ease-out
-                 hover:-translate-y-1 hover:shadow-xl hover:shadow-neutral-950/40
-                 hover:border-neutral-600"
-    >
-      {/* IMAGE */}
-      <div className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/30">
+  const inner = (
+    <div className="group rounded-2xl border border-neutral-800 bg-neutral-900/20 overflow-hidden
+                    hover:border-violet-500/25 hover:bg-neutral-900/40
+                    transition-all duration-300 h-full flex flex-col">
+      <div className="relative overflow-hidden">
         {item.imageSrc ? (
           <img
             src={item.imageSrc}
             alt={item.imageAlt ?? `${item.name} preview`}
-            className="aspect-[16/10] w-full object-cover"
+            className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : (
-          <div className="aspect-[16/10] grid place-items-center text-neutral-200/40">
-            Add project screenshot
+          <div className="aspect-[16/10] grid place-items-center text-neutral-600 text-sm bg-neutral-900/50">
+            No preview
+          </div>
+        )}
+        {item.badge && (
+          <div className="absolute top-3 right-3 rounded-full border border-violet-500/40 bg-violet-950/70 px-2.5 py-1 text-xs text-violet-300 backdrop-blur-sm">
+            {item.badge}
           </div>
         )}
       </div>
 
-      {/* TITLE + BADGE */}
-      <div className="mt-4 flex items-start justify-between gap-3">
-        <h3 className="text-xl font-bold leading-tight">{item.name}</h3>
-
-        {item.badge ? (
-          <div className="shrink-0 inline-flex items-center rounded-full border border-neutral-800 bg-neutral-900/50 px-3 py-1 text-xs text-neutral-200/70">
-            {item.badge}
-          </div>
-        ) : null}
-      </div>
-
-      {/* DESC */}
-      <p className="mt-2 text-sm leading-relaxed text-neutral-200/75">
-        {item.desc}
-      </p>
-
-      {/* TAGS */}
-      <div className="mt-3 flex flex-wrap gap-2">
-        {item.tags.map((t) => (
-          <TagPill key={item.name + t} label={t} />
-        ))}
+      <div className="p-5 flex flex-col flex-1">
+        <h3 className="font-semibold text-white leading-tight">{item.name}</h3>
+        <p className="mt-1.5 text-sm leading-relaxed text-neutral-400 flex-1">
+          {item.desc}
+        </p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {item.tags.map(t => <TagPill key={item.name + t} label={t} />)}
+        </div>
       </div>
     </div>
   );
 
-  // If it has a repo or demo URL, wrap whole card with link
-  if (!primaryUrl) return CardInner;
+  if (!primaryUrl) return inner;
 
   return (
     <a
       href={primaryUrl}
-      className="block cursor-pointer rounded-2xl focus:outline-none focus:ring-2 focus:ring-neutral-500"
+      className="block focus:outline-none focus:ring-2 focus:ring-violet-500/50 rounded-2xl h-full"
       target={isInternalHash ? undefined : "_blank"}
       rel={isInternalHash ? undefined : "noreferrer"}
     >
-      {CardInner}
+      {inner}
     </a>
   );
 }
 
+// ─── Data ────────────────────────────────────────────────────────────────────
 
-// Example data (edit tags/links/images to match your actual repos)
 const projects: Project[] = [
   {
     name: "GitHub Onboarding Agent",
     desc: "AI assistant that helps new contributors understand a repository via structured Q&A, codebase retrieval, and onboarding guidance.",
     tags: ["LangChain/LangGraph", "RAG", "FastAPI", "Hugging Face", "Vector DB"],
     imageSrc: onboardingImg,
-    // demoUrl: "https://...",
     repoUrl: "https://github.com/jacobhorne-jth/github-onboarding-agent",
   },
   {
@@ -394,7 +552,7 @@ const researching: Experience[] = [
     role: "AI Research Intern",
     org: "Think Neuro",
     desc: "Analyzed AI/ML applications in brain–computer interfaces by conducting large-scale bibliometric reviews, building R-based visualizations, and uncovering trends in neuroimaging and neural-decoding research.",
-    timeline: "September 2024 — Janurary 2025",
+    timeline: "September 2024 — January 2025",
     logoSrc: tnLogo,
     siteUrl: "https://thinkneuro.org/",
     imageSrc: thinkneuroImage,
@@ -443,7 +601,7 @@ const teaching: Experience[] = [
     desc: "Led SAT bootcamps and delivered one-on-one instruction in computer science fundamentals (Python, Java, data structures & algorithms), mathematics (Algebra–Calculus), and physics, adapting lessons to individual learning styles.",
     timeline: "August 2022 — June 2023",
     logoSrc: swLogo,
-    siteUrl: "https://schoolhouse.world/?utm_source=adwords&utm_medium=cpc&utm_campaign=Schoolhouse_Google_Grants_Search_Acquisition_Brand_US&ref=Schoolhouse_Google_Grants_Search_Brand_Acquisition_US&gad_source=1&gad_campaignid=14184123074&gbraid=0AAAAABOGcl0Ocwi1qWMGlYeeqktvbUoWS&gclid=CjwKCAiAjc7KBhBvEiwAE2BDOad63uNrMt6_dYBQ3WLo8S24i5pj-MIDgDzPoMjW3RYVOa64vtQn7hoC_2IQAvD_BwE",
+    siteUrl: "https://schoolhouse.world/",
     imageSrc: swImage,
   },
   {
@@ -457,14 +615,29 @@ const teaching: Experience[] = [
   },
 ];
 
+// ─── App ─────────────────────────────────────────────────────────────────────
+
 export default function App() {
+  const [terminalOpen, setTerminalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-50">
-      {/* Top nav (sticky) */}
-      <div className="sticky top-0 z-50 bg-neutral-950/70 backdrop-blur">
-        <div className="mx-auto max-w-7xl px-10 py-6">
-          {/* was py-8 */}
-          <nav className="flex flex-wrap justify-center gap-x-10 gap-y-3">
+      {terminalOpen && <Terminal onClose={() => setTerminalOpen(false)} />}
+
+      {/* Ambient background orbs */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
+        <div className="absolute -top-60 -right-60 h-[500px] w-[500px] rounded-full bg-violet-950/40 blur-3xl" />
+        <div className="absolute top-1/2 -left-60 h-[400px] w-[400px] rounded-full bg-indigo-950/30 blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 h-[300px] w-[300px] rounded-full bg-violet-950/20 blur-3xl" />
+      </div>
+
+      {/* Nav */}
+      <header className="sticky top-0 z-40 border-b border-neutral-900 bg-neutral-950/80 backdrop-blur">
+        <div className="mx-auto max-w-7xl px-8 py-4 flex items-center justify-between">
+          <a href="#top" className="font-bold text-base tracking-tight text-white hover:text-violet-300 transition-colors">
+            JH
+          </a>
+          <nav className="flex items-center gap-7">
             <NavLink label="about" href="#info" />
             <NavLink label="experience" href="#building" />
             <NavLink label="research" href="#researching" />
@@ -472,151 +645,189 @@ export default function App() {
             <NavLink label="projects" href="#projects" />
             <NavLink label="hobbies" href="#hobbies" />
             <NavLink label="contact" href="#contact" />
-            <a href="/resume.pdf" target="_blank" rel="noreferrer" className="text-2xl text-neutral-200/80 hover:text-white transition">
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm text-neutral-400 hover:text-white transition-colors duration-200 relative group"
+            >
               resume
+              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-violet-400 group-hover:w-full transition-all duration-300" />
             </a>
+            <button
+              onClick={() => setTerminalOpen(true)}
+              className="rounded-full border border-neutral-700 bg-neutral-900/50 px-3 py-1 text-xs font-mono text-green-400 hover:border-green-500/50 hover:text-green-300 transition-all duration-200"
+            >
+              &gt;_
+            </button>
           </nav>
         </div>
-      </div>
+      </header>
 
-      {/* HERO */}
-      <main className="mx-auto max-w-7xl px-10">
-        <section id = "top" className="min-h-[calc(100vh-140px)] flex items-center justify-center">
-          <div className="w-full max-w-5xl grid items-center gap-10 md:grid-cols-2">
+      <main className="mx-auto max-w-7xl px-8">
 
-            <div className="space-y-4">
-              <p className="text-2xl text-white">Hello! I am</p>
-              <h1 className="text-7xl font-bold tracking-tight leading-none">Jacob Horne.</h1>
-              <p className="max-w-md text-sm md:text-base text-neutral-200/80 leading-relaxed">
+        {/* Hero */}
+        <section id="top" className="min-h-[calc(100vh-65px)] flex items-center">
+          <div className="w-full max-w-5xl mx-auto grid items-center gap-12 md:grid-cols-2 py-20">
+            <div className="space-y-7">
+              <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5 text-xs text-violet-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-violet-400 animate-pulse" />
+                Open to opportunities
+              </div>
+              <div className="space-y-2">
+                <p className="text-neutral-400 text-base">Hello, I'm</p>
+                <h1 className="text-6xl md:text-7xl font-bold tracking-tight leading-none">
+                  <span className="bg-gradient-to-r from-white via-neutral-100 to-violet-300 bg-clip-text text-transparent">
+                    Jacob Horne.
+                  </span>
+                </h1>
+              </div>
+              <p className="max-w-md text-neutral-400 leading-relaxed text-sm md:text-base">
                 I build, research, and teach technology and systems to solve problems and help people.
               </p>
+              <div className="flex gap-3 flex-wrap">
+                <a
+                  href="/resume.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-full bg-violet-600 hover:bg-violet-500 px-6 py-2.5 text-sm font-medium transition-colors duration-200"
+                >
+                  View Resume
+                </a>
+                <a
+                  href="#contact"
+                  className="rounded-full border border-neutral-700 hover:border-neutral-500 hover:text-white text-neutral-300 px-6 py-2.5 text-sm font-medium transition-all duration-200"
+                >
+                  Contact Me
+                </a>
+              </div>
             </div>
 
-            <div className="flex justify-center md:justify-center">
+            <div className="flex justify-center">
               <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-violet-500/15 blur-3xl scale-125" />
                 <img
                   src={pfp}
                   alt="Jacob Horne"
-                  className="h-72 w-72 md:h-88 md:w-88 rounded-full object-cover"
+                  className="relative h-72 w-72 md:h-80 md:w-80 rounded-full object-cover ring-1 ring-neutral-700"
                 />
-                <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-neutral-200/20" />
               </div>
             </div>
           </div>
         </section>
 
-        {/* ABOUT */}
-        <section id="info" className="py-20 scroll-mt-0">
-          {/* was py-28 */}
-          <div className="mx-auto max-w-6xl space-y-8">
-            <SectionTitle
-              title="About Me"
-            />
-            {/* was text-lg */}
-            <p className="text-base md:text-lg text-neutral-200/80 leading-relaxed">
+        {/* About */}
+        <section id="info" className="py-20 scroll-mt-20">
+          <div className="max-w-3xl space-y-6">
+            <SectionTitle title="About Me" />
+            <p className="text-neutral-400 leading-relaxed text-sm md:text-base">
               I was first introduced to computer science in 8th grade when I signed up for an elective
-              called Computer Science Discoveries simply because I didn’t want to take the other option,
+              called Computer Science Discoveries simply because I didn't want to take the other option,
               Music Appreciation. What started as a convenient choice quickly turned into fascination —
               seeing single lines of code, meaningless on their own, come together to form complex projects
               and systems made me realize how powerful software could be. Throughout high school, that
               fascination evolved into a desire to use this ability to create something out of nothing to
-              help others and solve real problems. Today, I’m focused on building systems, exploring applied
-              AI, and teaching and mentoring others, and I’m looking for roles where I can make meaningful,
+              help others and solve real problems. Today, I'm focused on building systems, exploring applied
+              AI, and teaching and mentoring others, and I'm looking for roles where I can make meaningful,
               real-world impact through technology.
             </p>
           </div>
         </section>
 
-        {/* BUILDING */}
-        <section id="building" className="py-20 scroll-mt-0">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <SectionTitle
-              title="Experience"
-              subtitle="Software roles where I shipped products and systems."
-            />
-            {/* was gap-10 */}
-            <div className="grid gap-8">
-              {building.map((item) => (
+        {/* Experience */}
+        <section id="building" className="py-20 scroll-mt-20">
+          <div className="space-y-8">
+            <SectionTitle title="Experience" subtitle="Software roles where I shipped products and systems." />
+            <div className="grid gap-5">
+              {building.map(item => (
                 <ExperienceCard key={item.role + item.org} item={item} />
               ))}
             </div>
           </div>
         </section>
 
-        {/* RESEARCHING */}
-        <section id="researching" className="py-20 scroll-mt-0">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <SectionTitle
-              title="Research"
-              subtitle="Research and evaluation work in AI + learning."
-            />
-            <div className="grid gap-8">
-              {researching.map((item) => (
+        {/* Research */}
+        <section id="researching" className="py-20 scroll-mt-20">
+          <div className="space-y-8">
+            <SectionTitle title="Research" subtitle="Research and evaluation work in AI + learning." />
+            <div className="grid gap-5">
+              {researching.map(item => (
                 <ExperienceCard key={item.role + item.org} item={item} />
               ))}
             </div>
           </div>
         </section>
 
-        {/* TEACHING */}
-        <section id="teaching" className="py-20 scroll-mt-0">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <SectionTitle
-              title="Teaching"
-              subtitle="Mentoring + instruction in robotics and cybersecurity."
-            />
-            <div className="grid gap-8">
-              {teaching.map((item) => (
+        {/* Teaching */}
+        <section id="teaching" className="py-20 scroll-mt-20">
+          <div className="space-y-8">
+            <SectionTitle title="Teaching" subtitle="Mentoring + instruction in robotics and cybersecurity." />
+            <div className="grid gap-5">
+              {teaching.map(item => (
                 <ExperienceCard key={item.role + item.org} item={item} />
               ))}
             </div>
           </div>
         </section>
 
-        {/* PROJECTS */}
-        <section id="projects" className="py-20 scroll-mt-0">
-          <div className="mx-auto max-w-6xl space-y-8">
+        {/* Projects */}
+        <section id="projects" className="py-20 scroll-mt-20">
+          <div className="space-y-8">
             <SectionTitle title="Projects" subtitle="Featured personal projects." />
-            <div className="grid gap-6 md:grid-cols-2">
-              {projects.map((p) => (
+            <div className="grid gap-5 md:grid-cols-2">
+              {projects.map(p => (
                 <ProjectCard key={p.name} item={p} />
               ))}
             </div>
           </div>
         </section>
 
-        
-
-        {/* HOBBIES */}
-        <section id="hobbies" className="py-20 scroll-mt-0">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <SectionTitle title="Hobbies" subtitle="Things I enjoy doing outside of coding and building." />
-            <p className="text-base md:text-lg text-neutral-200/80 leading-relaxed">
-              Outside of programming, building, and developing, I enjoy reading, cooking 
+        {/* Hobbies */}
+        <section id="hobbies" className="py-20 scroll-mt-20">
+          <div className="max-w-3xl space-y-6">
+            <SectionTitle title="Hobbies" subtitle="Things I enjoy outside of coding and building." />
+            <p className="text-neutral-400 leading-relaxed text-sm md:text-base">
+              Outside of programming, building, and developing, I enjoy reading, cooking,
               and being active. I enjoy playing basketball, playing baseball, and going to the gym.
             </p>
           </div>
         </section>
 
-        {/* CONTACT */}
-        <section id="contact" className="py-20 scroll-mt-0">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <SectionTitle title="Contact Me" subtitle="Let’s connect." />
-            <div className="flex flex-wrap gap-6 text-lg">
-              <a className="underline text-neutral-200/80 hover:text-white" href="mailto:jacobhorne.jth@gmail.com">
-                email
+        {/* Contact */}
+        <section id="contact" className="py-20 scroll-mt-20">
+          <div className="rounded-2xl border border-neutral-800 bg-neutral-900/20 p-10 md:p-14 text-center space-y-6 max-w-2xl mx-auto">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-bold tracking-tight">Get in touch</h2>
+              <p className="text-neutral-500 text-sm">I'm always open to new opportunities and collaborations.</p>
+            </div>
+            <div className="flex flex-wrap justify-center gap-3">
+              <a
+                href="mailto:jacobhorne.jth@gmail.com"
+                className="rounded-full border border-neutral-700 px-5 py-2.5 text-sm text-neutral-300 hover:border-violet-500/50 hover:text-violet-300 transition-all duration-200"
+              >
+                Email
               </a>
-              <a className="underline text-neutral-200/80 hover:text-white" href="https://github.com/jacobhorne-jth">
-                github
+              <a
+                href="https://github.com/jacobhorne-jth"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-neutral-700 px-5 py-2.5 text-sm text-neutral-300 hover:border-violet-500/50 hover:text-violet-300 transition-all duration-200"
+              >
+                GitHub
               </a>
-              <a className="underline text-neutral-200/80 hover:text-white" href="https://linkedin.com/in/jacobhornejth">
-                linkedin
+              <a
+                href="https://linkedin.com/in/jacobhornejth"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-neutral-700 px-5 py-2.5 text-sm text-neutral-300 hover:border-violet-500/50 hover:text-violet-300 transition-all duration-200"
+              >
+                LinkedIn
               </a>
             </div>
           </div>
         </section>
 
-        <div className="h-24" />
+        <div className="h-20" />
       </main>
     </div>
   );
