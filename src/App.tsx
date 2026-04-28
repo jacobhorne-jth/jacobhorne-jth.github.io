@@ -966,8 +966,8 @@ function LaptopVisual() {
               <div><span className="text-purple-400">const</span> <span className="text-blue-300">me</span> = {"{"}</div>
               <div className="pl-4"><span className="text-slate-400">name:</span>  <span className="text-amber-300">"Jacob Horne"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">role:</span>  <span className="text-amber-300">"SWE + Researcher"</span>,</div>
+              <div className="pl-4"><span className="text-slate-400">focus:</span>  <span className="text-amber-300">"AI/ML Systems"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">gpa:</span>   <span className="text-cyan-400">3.9</span>,</div>
-              <div className="pl-4"><span className="text-slate-400">papers:</span> <span className="text-cyan-400">2</span>,</div>
               <div>{"}"}</div>
               <div className="h-2" />
               <div><span className="text-purple-400">async function</span> <span className="text-yellow-300">build</span>{"() {"}</div>
@@ -1020,12 +1020,12 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
                 Jacob Horne.
               </h1>
               <p className="text-2xl md:text-3xl text-slate-300 font-medium">
-                Software Engineer. Researcher. Builder. Teacher. Learner.
+                Software Engineer. Researcher.<br />Builder. Teacher. Learner.
               </p>
             </div>
             <p className="text-base text-slate-400 leading-relaxed max-w-lg">
               I build production-focused software systems across machine learning, full-stack development,
-              and AI research. Currently studying CS at UCI and incoming SWE Intern at Capital One.
+              and AI. Currently studying CS at UCI and incoming SWE Intern at Capital One.
             </p>
             {/* Buttons */}
             <div className="flex flex-wrap gap-3 pt-1">
