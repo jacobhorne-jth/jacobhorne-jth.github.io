@@ -1,5 +1,6 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;  
+@tailwind utilities;
 html { scroll-behavior: smooth; }
-section { scroll-margin-top: 5px; }
+section { scroll-margin-top: 80px; }
+body { transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
