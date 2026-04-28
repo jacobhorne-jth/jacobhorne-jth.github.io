@@ -7,7 +7,6 @@ import {
   Code2,
   Cpu,
   Users,
-  Layers,
   BookOpen,
   Menu,
   X,
@@ -33,34 +32,55 @@ function LinkedinIcon({ className }: { className?: string }) {
   );
 }
 import pfp from "./assets/pfp.png";
+import projAgonus from "./assets/projects/agonus.png";
+import projPropIntel from "./assets/projects/propintel.png";
+import projCrimeMap from "./assets/projects/JacobHorneCrimeMap.png";
+import projOnboarding from "./assets/projects/onbaoardingreal.png";
+import projSMS from "./assets/projects/realsms.png";
+import projWebsite from "./assets/projects/port.png";
+import logoC1 from "./assets/logos/c1-logo.png";
+import logoBTT from "./assets/logos/btt-logo.png";
+import logoTCS from "./assets/logos/tcs-logo.jpg";
+import logoCaretech from "./assets/logos/caretechlogo.jpeg";
+import logoCTC from "./assets/logos/ctclogo.jpeg";
+import logoBlockchain from "./assets/logos/blockchainlogo.jpeg";
+import logoSENS from "./assets/logos/senslogo.jpeg";
+import logoCQ from "./assets/logos/cqlogo.png";
+import logoCARE from "./assets/logos/carelogo.png";
+import logoHandshake from "./assets/logos/hlogo.jpeg";
+import logoThinkNeuro from "./assets/logos/tnlogo.png";
+import logoCOSMOS from "./assets/logos/cosmosLogo.jpeg";
+import logoRFA from "./assets/logos/rfalogo.jpeg";
+import logoSW from "./assets/logos/swlogo.jpeg";
+import logoSL from "./assets/logos/sllogo.png";
+import logoCalit2 from "./assets/logos/calit2.png";
+import logoUCI from "./assets/logos/uci.jpeg";
+import logoDLL from "./assets/logos/dllreal.png";
 
 // ─── Terminal infrastructure ──────────────────────────────────────────────────
 
 type TerminalLine =
   | { type: "input"; text: string }
   | { type: "output"; text: string }
+  | { type: "cols"; left: string; right: string }
   | { type: "blank" };
 
 const HELP_TEXT: TerminalLine[] = [
   { type: "output", text: "" },
   { type: "output", text: "Available commands:" },
-  { type: "output", text: "  help / ?        — show this menu" },
-  { type: "output", text: "  about           — scroll to about" },
-  { type: "output", text: "  education       — scroll to education" },
-  { type: "output", text: "  experience      — scroll to experience" },
-  { type: "output", text: "  research        — scroll to research" },
-  { type: "output", text: "  projects        — scroll to projects" },
-  { type: "output", text: "  contact         — scroll to contact" },
-  { type: "output", text: "  github          — open GitHub profile" },
-  { type: "output", text: "  linkedin        — open LinkedIn profile" },
-  { type: "output", text: "  resume          — open resume PDF" },
-  { type: "output", text: "  email           — show email address" },
-  { type: "output", text: "  whoami          — info about Jacob" },
-  { type: "output", text: "  ls              — list all sections" },
-  { type: "output", text: "  flip            — flip the page" },
-  { type: "output", text: "  game            — play snake" },
-  { type: "output", text: "  clear           — clear terminal" },
-  { type: "output", text: "  exit            — close terminal" },
+  { type: "blank" },
+  { type: "cols", left: "  help / ?   — show this menu",   right: "  github     — open GitHub profile" },
+  { type: "cols", left: "  about      — scroll to about",  right: "  linkedin   — open LinkedIn profile" },
+  { type: "cols", left: "  education  — education",        right: "  resume     — open resume PDF" },
+  { type: "cols", left: "  experience — experience",       right: "  email      — show email address" },
+  { type: "cols", left: "  research   — research",         right: "  whoami     — info about Jacob" },
+  { type: "cols", left: "  projects   — projects",         right: "  ls         — list all sections" },
+  { type: "cols", left: "  contact    — contact",          right: "  flip       — flip the page" },
+  { type: "cols", left: "  game       — play snake",       right: "  hack       — initiate hack sequence" },
+  { type: "cols", left: "  joke       — random dev joke",  right: "  fortune    — words of wisdom" },
+  { type: "cols", left: "  coffee     — ☕",               right: "  skills     — tech stack" },
+  { type: "cols", left: "  ping       — ping jacob",       right: "  clear      — clear terminal" },
+  { type: "cols", left: "  exit       — close terminal",   right: "" },
   { type: "blank" },
 ];
 
@@ -226,6 +246,64 @@ function Terminal({ onClose }: { onClose: () => void }) {
         break;
       }
       case "game": setGameActive(true); return;
+      case "hack":
+        out.push(
+          { type: "output", text: "Initializing hack sequence..." },
+          { type: "output", text: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%" },
+          { type: "output", text: "ACCESS GRANTED." },
+          { type: "output", text: "just kidding. hi :)" },
+          { type: "blank" },
+        ); break;
+      case "joke": {
+        const jokes = [
+          "Why do programmers prefer dark mode? Because light attracts bugs.",
+          "A SQL query walks into a bar, walks up to two tables and asks... can I join you?",
+          "Why do Java developers wear glasses? Because they don't C#.",
+          "How many programmers does it take to change a lightbulb? None, that's a hardware problem.",
+          "I would tell you a UDP joke, but you might not get it.",
+          "There are 10 types of people: those who understand binary and those who don't.",
+        ];
+        out.push({ type: "output", text: jokes[Math.floor(Math.random() * jokes.length)] }, { type: "blank" }); break;
+      }
+      case "fortune": {
+        const fortunes = [
+          "The best time to start was yesterday. The second best time is now.",
+          "Ship it, then iterate.",
+          "You don't have to be great to start, but you have to start to be great.",
+          "Code is read more often than it is written.",
+          "Make it work, make it right, make it fast.",
+          "The secret to getting ahead is getting started.",
+        ];
+        out.push({ type: "output", text: `✦ ${fortunes[Math.floor(Math.random() * fortunes.length)]}` }, { type: "blank" }); break;
+      }
+      case "coffee":
+        out.push(
+          { type: "output", text: "    {  {  {" },
+          { type: "output", text: "    }  }  }" },
+          { type: "output", text: "   .----------." },
+          { type: "output", text: "   |          |)" },
+          { type: "output", text: "   |          |" },
+          { type: "output", text: "    `--------'" },
+          { type: "output", text: "" },
+          { type: "output", text: "  fueled by coffee." },
+          { type: "blank" },
+        ); break;
+      case "skills":
+        out.push(
+          { type: "output", text: "Languages   Python · TypeScript · JavaScript · C/C++ · SQL · Java" },
+          { type: "output", text: "Frameworks  FastAPI · Next.js · React · Node.js · PyTorch · LangChain" },
+          { type: "output", text: "Infra       PostgreSQL · Supabase · pgvector · Docker · AWS" },
+          { type: "output", text: "AI/ML       LLMs · RAG · Agents · PINNs · XGBoost · Transformers" },
+          { type: "blank" },
+        ); break;
+      case "ping":
+        out.push(
+          { type: "output", text: "PING jacob-horne.dev" },
+          { type: "output", text: "64 bytes: icmp_seq=0 ttl=64 time=0.42ms" },
+          { type: "output", text: "64 bytes: icmp_seq=1 ttl=64 time=0.39ms" },
+          { type: "output", text: "jacob is online ✓" },
+          { type: "blank" },
+        ); break;
       case "sudo":
         out.push({ type: "output", text: "Permission denied. Nice try." }, { type: "blank" }); break;
       case "hire me":
@@ -255,14 +333,14 @@ function Terminal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
-      <div className="w-full max-w-2xl mx-4 rounded-xl overflow-hidden shadow-2xl border border-neutral-700" onClick={e => e.stopPropagation()}>
+      <div className="w-full max-w-3xl mx-4 rounded-xl overflow-hidden shadow-2xl border border-neutral-700" onClick={e => e.stopPropagation()}>
         <div className="flex items-center gap-2 bg-neutral-800 px-4 py-3">
           <button onClick={onClose} className="h-3 w-3 rounded-full bg-red-500 hover:bg-red-400 transition" />
           <div className="h-3 w-3 rounded-full bg-yellow-500" />
           <div className="h-3 w-3 rounded-full bg-green-500" />
           <span className="mx-auto text-xs text-neutral-400 font-mono">visitor@jacob-horne — bash</span>
         </div>
-        <div className="bg-[#0d1117] h-96 font-mono text-sm">
+        <div className="bg-[#0d1117] h-[520px] font-mono text-sm">
           {gameActive ? (
             <SnakeGame onExit={() => setGameActive(false)} />
           ) : (
@@ -273,6 +351,12 @@ function Terminal({ onClose }: { onClose: () => void }) {
                   <div key={i} className="flex gap-2 leading-5">
                     <span className="text-green-500 select-none shrink-0">visitor@jacob-horne:~$</span>
                     <span className="text-green-300">{line.text}</span>
+                  </div>
+                );
+                if (line.type === "cols") return (
+                  <div key={i} className="grid grid-cols-2 leading-5">
+                    <span className="text-green-300/75 pl-2">{line.left}</span>
+                    <span className="text-green-300/75 pl-2">{line.right}</span>
                   </div>
                 );
                 return <div key={i} className="text-green-300/75 pl-2 leading-5">{line.text}</div>;
@@ -298,18 +382,21 @@ function Terminal({ onClose }: { onClose: () => void }) {
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 type AboutColumn = { Icon: LucideIcon; text: string };
-type ExpEntry = { company: string; role: string; period: string; desc: string; tags: string[] };
-type ExpSection = {
-  Icon: LucideIcon; iconBg: string; iconColor: string; accentColor: string;
-  title: string; entries: ExpEntry[];
+type RoleEntry = {
+  logo: string;
+  logoImg?: string;
+  company: string;
+  companyLink?: string;
+  role: string;
+  period: string;
+  isActive?: boolean;
+  bullets: string[];
+  featured?: { text: string; url?: string } | { text: string; url?: string }[];
+  tags: string[];
 };
 type Project = {
   name: string; monogram: string; desc: string; tech: string[];
-  accentLine: string; repoUrl: string; demoUrl?: string;
-};
-type ResearchCard = {
-  badge: string; badgeColor: string;
-  title: string; subtitle: string; desc: string; url: string;
+  accentLine: string; repoUrl: string; demoUrl?: string; imgUrl?: string;
 };
 
 const aboutColumns: AboutColumn[] = [
@@ -327,206 +414,327 @@ const aboutColumns: AboutColumn[] = [
   },
 ];
 
-const expSections: ExpSection[] = [
+const experienceRoles: RoleEntry[] = [
   {
-    Icon: Layers,
-    iconBg: "bg-blue-50 dark:bg-blue-900/30",
-    iconColor: "text-blue-600 dark:text-blue-400",
-    accentColor: "border-blue-500",
-    title: "Development",
-    entries: [
-      {
-        company: "Capital One",
-        role: "Incoming Software Engineering Intern",
-        period: "Summer 2025",
-        desc: "Joining the technology team as an SWE Intern.",
-        tags: ["Java", "AWS"],
-      },
-      {
-        company: "Prop.Intel",
-        role: "Full-Stack Engineer",
-        period: "2024 – Present",
-        desc: "Building and shipping production features for a real estate intelligence platform — APIs, data pipelines, and UI.",
-        tags: ["React", "Node.js", "PostgreSQL"],
-      },
-      {
-        company: "Agonus",
-        role: "Backend Developer",
-        period: "2023 – 2024",
-        desc: "Developed REST APIs and data infrastructure for a B2B SaaS platform.",
-        tags: ["Python", "FastAPI", "PostgreSQL"],
-      },
-      {
-        company: "Commit the Change",
-        role: "Software Engineer",
-        period: "2023 – Present",
-        desc: "Open-source software for nonprofits, built with a team of UCI engineers.",
-        tags: ["React", "TypeScript"],
-      },
-    ],
+    logo: "Capit",
+    logoImg: logoC1,
+    company: "Capital One",
+    role: "Software Engineering Intern",
+    period: "Summer 2026",
+    bullets: ["Incoming Summer 2026"],
+    tags: [],
   },
   {
-    Icon: BookOpen,
-    iconBg: "bg-purple-50 dark:bg-purple-900/30",
-    iconColor: "text-purple-600 dark:text-purple-400",
-    accentColor: "border-purple-500",
-    title: "Research",
-    entries: [
-      {
-        company: "UCI Digital Learning Lab",
-        role: "Machine Learning Researcher",
-        period: "2024 – Present",
-        desc: "Token-level confidence signals for LLM reasoning evaluation. Published ICLR 2026, ACL 2025.",
-        tags: ["Python", "PyTorch", "LLMs"],
-      },
-      {
-        company: "Calit2 — Dr. S. Wang",
-        role: "Research Assistant",
-        period: "2024 – Present",
-        desc: "Physics-informed ML for thermal storage system optimization using PINNs.",
-        tags: ["Python", "JAX", "PINNs"],
-      },
-      {
-        company: "CareTech",
-        role: "Computer Vision Researcher",
-        period: "2023 – 2024",
-        desc: "Computer vision for medical device interaction detection in assistive technology.",
-        tags: ["Python", "OpenCV", "YOLO"],
-      },
-      {
-        company: "BIRD-Interact Benchmark",
-        role: "SQL Evaluation Researcher",
-        period: "2024 – Present",
-        desc: "LLM agent that writes, executes, and self-evaluates SQL queries on complex schemas.",
-        tags: ["Python", "LangChain", "SQL"],
-      },
+    logo: "Break", 
+    logoImg: logoBTT,
+    company: "Break Through Tech",
+    role: "AI/ML Fellow",
+    period: "Mar 2026 — Present",
+    isActive: true,
+    bullets: [
+      "Incoming 2026/27 cohort",
     ],
+    tags: [],
   },
   {
-    Icon: Users,
-    iconBg: "bg-green-50 dark:bg-green-900/30",
-    iconColor: "text-green-600 dark:text-green-400",
-    accentColor: "border-green-500",
-    title: "Teaching & Leadership",
-    entries: [
+    logo: "Tata",
+    logoImg: logoTCS,
+    company: "Tata Consultancy Services",
+    role: "Software Engineer (Capstone)",
+    period: "Jan 2026 — Present",
+    isActive: true,
+    bullets: [
+      "Built a 5-stage agentic pipeline with an ethics gate blocking vulnerable users from persuasion responses with 100% deterministic accuracy.",
+      "Designed a zero-shot DeBERTa v3 classifier across 8 emotion labels and 12 financial intent categories mapped to Cialdini-backed YAML strategy files.",
+      "Built a PDF/OCR ingestion pipeline across 6 banking document types with OpenAI embeddings in pgvector for semantic retrieval.",
+    ],
+    tags: ["Python", "DeBERTa", "GPT-4o-mini", "FastAPI", "pgvector", "OpenAI"],
+  },
+  {
+    logo: "CareT",
+    logoImg: logoCaretech,
+    company: "CareTech at UCI",
+    role: "Software Developer",
+    period: "Oct 2025 — Present",
+    isActive: true,
+    bullets: [
+      "Processed and prepared 28K+ food images using Python, OpenCV, and PyTorch across 270+ diverse food categories.",
+      "Trained PyTorch object detection models via Roboflow and Colab with augmentation techniques (CLAHE, brightness, gamma), achieving 81% classification accuracy.",
+      "Developing a web-based interface for real-time food recognition integrated into the full nutrition tracking platform.",
+    ],
+    tags: ["Python", "PyTorch", "OpenCV", "Roboflow", "Next.js", "FastAPI", "Supabase"],
+  },
+  {
+    logo: "Comm",
+    logoImg: logoCTC,
+    company: "Commit the Change",
+    role: "Full-Stack Developer",
+    period: "Oct 2025 — Present",
+    isActive: true,
+    bullets: [
+      "Built a scheduling/quota-management platform with React and TypeScript supporting 23,000+ patients across clinics.",
+      "Developed secure Node.js/Express REST APIs processing 5,000+ requests/week for auth and workflow automation.",
+      "Implemented Chakra UI, Zustand interfaces backed by PostgreSQL, reducing booking conflicts and scheduling workload by 30%.",
+    ],
+    tags: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Chakra UI"],
+  },
+  {
+    logo: "Block",
+    logoImg: logoBlockchain,
+    company: "Blockchain @ UCI",
+    role: "Technical Developer",
+    period: "Oct 2025 — Present",
+    isActive: true,
+    bullets: [
+      "Developing the backend agent system for Agonus, an AI-powered crypto trading tournament platform.",
+      "Building full-stack infrastructure for autonomous trading agents to execute strategies and compete on-chain in real time.",
+      "Powering real-time agent performance tracking and strategy update broadcasts.",
+    ],
+    tags: ["Python", "FastAPI", "TypeScript", "Blockchain", "AI Agents"],
+  },
+  {
+    logo: "SENS",
+    logoImg: logoSENS,
+    company: "SENS Psychology",
+    role: "Software Development Intern",
+    period: "Sep 2025 — Jan 2026",
+    bullets: [
+      "Built an internal workflow system with Next.js and TypeScript supporting 30+ staff and 1,200+ monthly interactions.",
+      "Reduced patient intake time by 50% by replacing manual processes with Node.js/React intake, ticketing, and call-routing pipelines.",
+      "Cut manual email work 60% with Microsoft Azure notifications; modeled task lifecycle in Prisma/Zenstack for scalable workflow automation.",
+    ],
+    tags: ["Next.js", "Node.js", "TypeScript", "PostgreSQL", "Prisma", "Azure"],
+  },
+  {
+    logo: "Crowd",
+    logoImg: logoCQ,
+    company: "CrowdQuant",
+    role: "Software Engineering Intern",
+    period: "Jun 2025 — Aug 2025",
+    bullets: [
+      "Built a crowdsourced stock prediction platform with FastAPI and React, integrating Supabase and JWT auth with role-based access control for 100+ test users.",
+      "Developed PyTorch training pipelines for ResNet18 and MobileNetV2, improving forecasting accuracy by 20%.",
+      "Scaled GPU workloads using Runpod, reducing training time by 40% through optimized distributed training workflows.",
+    ],
+    tags: ["Python", "FastAPI", "React", "PyTorch", "Supabase", "Runpod", "JWT"],
+  },
+  {
+    logo: "CARE",
+    logoImg: logoCARE,
+    company: "CARE Initiative",
+    role: "Software Lead",
+    period: "Sep 2021 — Aug 2024",
+    bullets: [
+      "Led development of a wrist-worn embedded systems device for bilateral stimulation therapy.",
+      "Built a React Native companion app with real-time Bluetooth device communication.",
+      "Designed hardware and software systems to support users experiencing panic attacks.",
+    ],
+    tags: ["Embedded C", "C++", "React Native", "Hardware", "BLE"],
+  },
+];
+
+const researchRoles: RoleEntry[] = [
+  {
+    logo: "C2",
+    logoImg: logoCalit2,
+    company: "Calit2 @ UCI",
+    role: "AI/ML Undergraduate Researcher",
+    period: "Apr 2026 — Present",
+    isActive: true,
+    bullets: [
+      "Building GRU, LSTM, and PINN surrogate models to predict thermal storage temperature profiles (T_inner, T_outer, T_avg) across 150s transient simulations.",
+      "Designed a physics-informed loss function enforcing heat transfer PDEs, achieving R² > 0.97 for T_inner prediction across 10 held-out test cases.",
+      "Implemented full autoregressive rollout with an InitStateEncoder to warm-start hidden state, eliminating teacher forcing during inference for stable long-horizon prediction.",
+    ],
+    tags: ["Python", "PyTorch", "GRU", "LSTM", "PINN", "Physics-Informed ML"],
+  },
+  {
+    logo: "UCI",
+    logoImg: logoDLL,
+    company: "UCI Digital Learning Lab",
+    role: "Research Assistant",
+    period: "Dec 2025 — Present",
+    isActive: true,
+    bullets: [
+      "Analyzed LLM output datasets using NumPy, Pandas, and Matplotlib for token log-probs, confidence behavior, and uncertainty modeling.",
+      "Built multi-agent evaluation pipelines in LangGraph with critic, advocate, and judge agents orchestrating rubric-based reasoning and scoring across essay evaluation workflows.",
+      "Co-authored paper accepted to ICLR 2026 LLM Reasoning Workshop on multi-agent evaluation and token-level confidence.",
+    ],
+    featured: [
       {
-        company: "MAISS Program — UCI",
-        role: "Peer Mentor",
-        period: "2024 – Present",
-        desc: "Mentoring underrepresented CS students through the MAISS program at UCI.",
-        tags: [],
+        text: "Paper accepted to ICLR 2026 LLM Reasoning Workshop — \"The First Tokens Matter: Early Confidence Signals for Evaluating LLM Reasoning\"",
+        url: "https://openreview.net/forum?id=0FOOrwSQ9E",
       },
       {
-        company: "Robotics for All",
-        role: "Instructor",
-        period: "2023 – 2024",
-        desc: "Taught programming and robotics fundamentals to K–12 students in underserved communities.",
-        tags: ["Python", "Robotics"],
-      },
-      {
-        company: "PECS",
-        role: "Cybersecurity Tutor",
-        period: "2023",
-        desc: "Taught cybersecurity fundamentals — networking, ethical hacking basics, and digital safety.",
-        tags: ["Security", "Networking"],
+        text: "Paper accepted to ACL 2026 Student Research Workshop",
+        url: "https://openreview.net/forum?id=thD04Xbris",
       },
     ],
+    tags: ["Python", "LangGraph", "NLP", "NumPy", "Pandas", "Matplotlib", "LLMs"],
+  },
+  {
+    logo: "Hand",
+    logoImg: logoHandshake,
+    company: "Handshake",
+    role: "AI Model Validation Expert",
+    period: "Sep 2025 — Dec 2025",
+    bullets: [
+      "Validated LLM outputs across production AI systems for accuracy, reliability, and safety.",
+      "Optimized data-labeling workflows to improve consistency and labeling throughput.",
+      "Enforced model compliance standards for enterprise AI deployments.",
+    ],
+    tags: ["LLMs", "Data Labeling", "QA", "AI Safety"],
+  },
+  {
+    logo: "Think",
+    logoImg: logoThinkNeuro,
+    company: "Think Neuro",
+    role: "AI Researcher",
+    period: "Sep 2024 — Jan 2025",
+    bullets: [
+      "Conducted bibliometric analysis of 90+ peer-reviewed studies on AI/ML in brain-computer interfaces and neurofeedback.",
+      "Applied R-based statistical analysis to uncover trends in neuroimaging, neural decoding, and AI-driven neurotechnology.",
+      "Produced research summaries identifying emerging directions across the BCI research landscape.",
+    ],
+    tags: ["R", "Python", "Data Visualization", "Research", "BCI"],
+  },
+  {
+    logo: "UCSD",
+    logoImg: logoCOSMOS,
+    company: "UCSD COSMOS — Game AI Design",
+    role: "Student Researcher",
+    period: "Jul 2023 — Aug 2023",
+    bullets: [
+      "Researched AI-driven game design and computational modeling with a focus on simulation.",
+      "Implemented C# AI state machines and behavior trees in Unity.",
+      "Created original video games demonstrating learned AI and simulation principles.",
+    ],
+    tags: ["C#", "Unity", "AI/ML", "Game Design"],
+  },
+];
+
+const teachingRoles: RoleEntry[] = [
+  {
+    logo: "Robo",
+    logoImg: logoRFA,
+    company: "Robotics for All",
+    role: "Lead Instructor",
+    period: "Jan 2023 — Dec 2024",
+    bullets: [
+      "Instructed classes of 30+ middle school students in Python, Java, and robotics fundamentals.",
+      "Designed hands-on project-based curriculum emphasizing STEM accessibility and creative problem solving.",
+      "Guided students from zero programming experience to building functional robotics projects.",
+    ],
+    tags: ["Python", "Java", "Robotics", "Curriculum Design", "STEM Education"],
+  },
+  {
+    logo: "PECS",
+    company: "PECS",
+    role: "Cybersecurity Instructor",
+    period: "Sep 2023 — Jun 2024",
+    bullets: [
+      "Hosted bi-monthly cybersecurity workshops at local senior centers.",
+      "Covered password management, phishing detection, safe browsing, and privacy settings.",
+      "Improved digital literacy and online safety for vulnerable populations.",
+    ],
+    tags: ["Cybersecurity", "Workshop Design", "Community Education"],
+  },
+  {
+    logo: "Scho",
+    logoImg: logoSW,
+    company: "Schoolhouse.world",
+    role: "Tutor",
+    period: "Aug 2022 — Jun 2023",
+    bullets: [
+      "Led SAT bootcamps and one-on-one tutoring for 20+ students in CS, math, and physics.",
+      "Taught Python, Java, data structures, algebra through calculus, and mechanics.",
+      "Adapted instruction to individual learning styles and pacing needs.",
+    ],
+    tags: ["Python", "Java", "Mathematics", "Tutoring", "SAT Prep"],
+  },
+  {
+    logo: "STEM",
+    logoImg: logoSL,
+    company: "STEM League",
+    role: "Java & Python Mentor",
+    period: "Jun 2022 — Aug 2022",
+    bullets: [
+      "Mentored students through personalized Python and Java fundamentals instruction.",
+      "Built strong programming and problem-solving foundations for competitive learners.",
+    ],
+    tags: ["Python", "Java", "Mentoring"],
   },
 ];
 
 const projects: Project[] = [
   {
-    name: "Customer LTV Estimator",
-    monogram: "LTV",
-    desc: "ML pipeline to predict customer lifetime value using behavioral data.",
-    tech: ["Python", "XGBoost", "AWS"],
-    accentLine: "bg-blue-500",
-    repoUrl: "https://github.com/jacobhorne-jth/customer-ltv-estimator",
+    name: "Agonus",
+    monogram: "AGN",
+    desc: "Decentralized AI trading platform where autonomous agents compete in crypto tournaments with on-chain betting, real-time leaderboards, and tokenized rewards.",
+    tech: ["LangChain", "FastAPI", "Next.js", "Solidity", "PostgreSQL"],
+    accentLine: "bg-yellow-500",
+    repoUrl: "#",
+    demoUrl: "https://agonus-frontend-45256917921.us-central1.run.app/",
+    imgUrl: projAgonus,
   },
   {
-    name: "Encrypted Chat App",
-    monogram: "ECA",
-    desc: "End-to-end encrypted messaging app with real-time communication.",
-    tech: ["React", "Node.js", "Socket.io"],
-    accentLine: "bg-emerald-500",
-    repoUrl: "https://github.com/jacobhorne-jth/encrypted-chat-app",
-  },
-  {
-    name: "AI Data Cleaning Assistant",
-    monogram: "ADC",
-    desc: "LLM-powered tool to automate and validate dirty data.",
-    tech: ["Python", "OpenAI", "Streamlit"],
-    accentLine: "bg-purple-500",
-    repoUrl: "https://github.com/jacobhorne-jth/ai-data-cleaning-assistant",
+    name: "Prop.Intel",
+    monogram: "PRP",
+    desc: "AI property risk platform generating real-time reports using ATTOM ownership data, FEMA National Risk Index datasets, and a ridge regression model across 3,100+ counties.",
+    tech: ["Next.js", "TypeScript", "Python", "Ridge Regression"],
+    accentLine: "bg-orange-500",
+    repoUrl: "https://github.com/jacobhorne-jth/prop-intel",
+    imgUrl: projPropIntel,
   },
   {
     name: "SF Crime Mapper",
     monogram: "SCM",
-    desc: "Interactive visualization of crime data with geospatial insights.",
-    tech: ["Python", "Folium", "JS"],
+    desc: "Full-stack interactive web app that forecasts San Francisco neighborhood-level incident risk and visualizes it on a Mapbox choropleth.",
+    tech: ["FastAPI", "Prophet", "XGBoost", "React", "Vite"],
     accentLine: "bg-amber-500",
     repoUrl: "https://github.com/jacobhorne-jth/sf-crime-mapper",
+    imgUrl: projCrimeMap,
   },
   {
-    name: "Bioinformatics Pipeline",
-    monogram: "BIO",
-    desc: "Automated pipeline for genomic data processing and analysis.",
-    tech: ["Nextflow", "Python", "Docker"],
-    accentLine: "bg-cyan-500",
-    repoUrl: "#",
+    name: "GitHub Onboarding Agent",
+    monogram: "GOA",
+    desc: "AI-powered GitHub onboarding agent that ingests any repository and provides code-aware summaries, repo exploration, and RAG-driven Q&A.",
+    tech: ["Python", "FastAPI", "LangChain", "LangGraph", "Pinecone"],
+    accentLine: "bg-purple-500",
+    repoUrl: "https://github.com/jacobhorne-jth/github-onboarding-agent",
+    imgUrl: projOnboarding,
   },
   {
-    name: "SQL Evaluation Agent",
-    monogram: "SQL",
-    desc: "LLM agent that writes, executes, and evaluates SQL queries.",
-    tech: ["Python", "LangChain", "SQL"],
+    name: "SMS Spam Detector",
+    monogram: "SMS",
+    desc: "FastAPI app that detects SMS spam with Logistic Regression, combining TF-IDF text analysis and engineered features like phone number detection and spam keywords.",
+    tech: ["Python", "FastAPI", "Logistic Regression", "TF-IDF"],
     accentLine: "bg-rose-500",
-    repoUrl: "#",
+    repoUrl: "https://github.com/jacobhorne-jth/sms-spam-detector",
+    imgUrl: projSMS,
+  },
+  {
+    name: "Portfolio Website",
+    monogram: "JH",
+    desc: "This portfolio — built with React, TypeScript, and Tailwind CSS. Features a dark/light mode, interactive terminal with snake game, and responsive design.",
+    tech: ["React", "TypeScript", "Tailwind CSS", "Vite"],
+    accentLine: "bg-blue-500",
+    repoUrl: "https://github.com/jacobhorne-jth/jacobhorne-jth.github.io",
+    imgUrl: projWebsite,
   },
 ];
 
-const researchHighlights: ResearchCard[] = [
-  {
-    badge: "Published",
-    badgeColor: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
-    title: "ICLR 2026 Workshop",
-    subtitle: "LLM Reasoning Workshop",
-    desc: "\"The First Tokens Matter: Early Confidence Signals for Evaluating LLM Reasoning\"",
-    url: "https://openreview.net/forum?id=0FOOrwSQ9E",
-  },
-  {
-    badge: "Accepted",
-    badgeColor: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300",
-    title: "ACL Student Research",
-    subtitle: "ACL 2025",
-    desc: "Multi-agent evaluation framework with token-level confidence signals for LLM assessment.",
-    url: "#",
-  },
-  {
-    badge: "Active",
-    badgeColor: "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300",
-    title: "Calit2 PINNs Research",
-    subtitle: "Physics-Informed ML",
-    desc: "Physics-informed machine learning for thermal storage system optimization under Dr. S. Wang.",
-    url: "#",
-  },
-  {
-    badge: "Active",
-    badgeColor: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
-    title: "SQL Evaluation Agent",
-    subtitle: "BIRD-Interact Benchmark",
-    desc: "Automated SQL agent that writes, executes, and self-evaluates queries against complex schemas.",
-    url: "#",
-  },
-];
 
 const coursework = [
-  "CS 161 — Design & Analysis of Algorithms",
   "CS 178 — Machine Learning & Data Mining",
-  "CS 143A — Principles of Operating Systems",
-  "CS 171 — Introduction to AI",
-  "CS 122A — Introduction to Data Management",
+  "CS 171 — Introduction to Artificial Intelligence",
+  "CS 180A/B — Project in Computer Science",
   "ICS 46 — Data Structures & Analysis",
+  "ICS 45C — Programming in C/C++",
+  "ICS H32 — Python Programming & Libraries (Accelerated)",
+  "ICS 33 — Intermediate Programming",
+  "STATS 67 — Probability & Statistics for CS",
+  "IN4MATX 43 — Introduction to Software Engineering",
 ];
 
 const navLinks = [
@@ -534,6 +742,7 @@ const navLinks = [
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
   { label: "Research", href: "#research" },
+  { label: "Teaching", href: "#teaching" },
   { label: "Education", href: "#education" },
   { label: "Now", href: "#explore" },
   { label: "Contact", href: "#education" },
@@ -541,13 +750,92 @@ const navLinks = [
 
 // ─── SectionHeader ─────────────────────────────────────────────────────────────
 
-function SectionHeader({ number, title }: { number: string; title: string }) {
+function SectionHeader({ number, title, subtitle }: { number: string; title: string; subtitle?: string }) {
   return (
-    <div className="flex items-baseline gap-3 mb-14">
-      <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">
-        {number}
-      </span>
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">{title}</h2>
+    <div className="mb-8">
+      <div className="flex items-baseline gap-3">
+        <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">
+          {number}
+        </span>
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">{title}</h2>
+      </div>
+      {subtitle && <p className="mt-2 text-sm text-gray-500 dark:text-slate-400">{subtitle}</p>}
+    </div>
+  );
+}
+
+// ─── RoleCard ──────────────────────────────────────────────────────────────────
+
+function RoleCard({ entry }: { entry: RoleEntry }) {
+  return (
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 flex flex-col gap-4">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="h-10 w-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
+            {entry.logoImg
+              ? <img src={entry.logoImg} alt={entry.company} className="h-full w-full object-cover" />
+              : <span className="text-[9px] font-bold text-slate-300 leading-none text-center px-0.5">{entry.logo}</span>}
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-semibold text-gray-900 dark:text-white text-sm leading-snug">{entry.role}</span>
+              {entry.isActive && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/15 px-2 py-0.5 text-[10px] font-medium text-blue-400">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shrink-0" />
+                  Active
+                </span>
+              )}
+            </div>
+            <div className="text-xs text-slate-400 mt-0.5">
+              {entry.companyLink ? (
+                <a href={entry.companyLink} target="_blank" rel="noreferrer" className="hover:text-blue-400 transition-colors inline-flex items-center gap-1">
+                  {entry.company} <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              ) : entry.company}
+            </div>
+          </div>
+        </div>
+        <span className="text-[11px] font-mono text-gray-400 dark:text-slate-500 shrink-0 pt-0.5">{entry.period}</span>
+      </div>
+
+      {/* Bullets */}
+      {entry.bullets.length > 0 && (
+        <ul className="space-y-1.5">
+          {entry.bullets.map((b, i) => (
+            <li key={i} className="flex gap-2 text-sm text-gray-600 dark:text-slate-300 leading-relaxed">
+              <span className="mt-[7px] h-1.5 w-1.5 rounded-sm bg-blue-500 shrink-0" />
+              {b}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Featured callout */}
+      {entry.featured && (Array.isArray(entry.featured) ? entry.featured : [entry.featured]).map((f, i) => (
+        <a
+          key={i}
+          href={f.url ?? "#"}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-start gap-2 rounded-xl bg-blue-500/10 border border-blue-500/20 px-4 py-3 text-xs text-blue-300 hover:bg-blue-500/15 transition-colors"
+        >
+          <span className="text-yellow-400 shrink-0 mt-px">★</span>
+          <span className="flex-1 leading-relaxed">{f.text}</span>
+          {f.url && <ExternalLink className="h-3 w-3 shrink-0 mt-px text-blue-400" />}
+        </a>
+      ))}
+
+      {/* Tags */}
+      {entry.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {entry.tags.map(t => (
+            <span key={t} className="text-[11px] rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-2.5 py-0.5 text-gray-500 dark:text-slate-400">
+              {t}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -567,7 +855,7 @@ function Navbar({
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur border-b border-gray-100 dark:border-slate-800">
-      <div className="max-w-[1120px] mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <a href="#top" className="flex items-center gap-2.5 group">
           <span className="h-8 w-8 rounded-lg bg-gray-900 dark:bg-blue-600 text-white text-sm font-bold grid place-items-center group-hover:bg-blue-600 dark:group-hover:bg-blue-500 transition-colors duration-200">
@@ -600,7 +888,6 @@ function Navbar({
             onClick={onOpenTerminal}
             className="ml-1 flex items-center gap-1.5 rounded-lg border border-gray-800 dark:border-green-500/40 bg-gray-900 dark:bg-green-500/10 px-3 py-1.5 text-xs font-mono text-white dark:text-green-400 hover:bg-gray-700 dark:hover:bg-green-500/20 dark:hover:border-green-400/60 transition-all duration-150 shadow-sm"
           >
-            <TerminalIcon className="h-3.5 w-3.5" />
             &gt;_
           </button>
         </nav>
@@ -627,7 +914,7 @@ function Navbar({
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="md:hidden border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950">
-          <div className="max-w-[1120px] mx-auto px-6 py-4 space-y-1">
+          <div className="max-w-[1220px] mx-auto px-6 py-4 space-y-1">
             {navLinks.map(l => (
               <a
                 key={l.label}
@@ -642,7 +929,7 @@ function Navbar({
               onClick={() => { setMenuOpen(false); onOpenTerminal(); }}
               className="flex items-center gap-2 px-3 py-2 text-sm font-mono text-gray-800 dark:text-green-400 hover:text-blue-600 dark:hover:text-green-300"
             >
-              <TerminalIcon className="h-4 w-4" /> &gt;_ Terminal
+              &gt;_ Terminal
             </button>
           </div>
         </div>
@@ -723,20 +1010,20 @@ function LaptopVisual() {
 function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   return (
     <section id="top" className="bg-slate-950 text-white">
-      <div className="max-w-[1120px] mx-auto px-6 md:px-8 py-28 md:py-36">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8 pt-24 pb-36 md:pt-28 md:pb-48">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Left */}
-          <div className="space-y-6">
-            <p className="font-mono text-sm text-blue-400 tracking-wide">&gt; Hello, I'm</p>
-            <div className="space-y-2">
-              <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-none text-white">
+          <div className="space-y-7">
+            <p className="font-mono text-base text-blue-400 tracking-wide">&gt; Hello, I'm</p>
+            <div className="space-y-3">
+              <h1 className="text-6xl md:text-7xl font-bold tracking-tight leading-none text-white">
                 Jacob Horne.
               </h1>
-              <p className="text-xl md:text-2xl text-slate-300 font-medium">
-                Software Engineer. ML Researcher. Builder.
+              <p className="text-2xl md:text-3xl text-slate-300 font-medium">
+                Software Engineer. Researcher. Builder. Teacher. Learner.
               </p>
             </div>
-            <p className="text-slate-400 leading-relaxed max-w-md">
+            <p className="text-base text-slate-400 leading-relaxed max-w-lg">
               I build production-focused software systems across machine learning, full-stack development,
               and AI research. Currently studying CS at UCI and incoming SWE Intern at Capital One.
             </p>
@@ -778,7 +1065,6 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
               onClick={onOpenTerminal}
               className="inline-flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/8 px-4 py-2 font-mono text-sm text-green-400 hover:border-green-500/60 hover:bg-green-500/15 transition-all duration-150"
             >
-              <TerminalIcon className="h-4 w-4" />
               &gt;_ open terminal
             </button>
           </div>
@@ -797,8 +1083,8 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
 
 function AboutSection() {
   return (
-    <section id="about" className="bg-white dark:bg-slate-900 py-24 scroll-mt-20">
-      <div className="max-w-[1120px] mx-auto px-6 md:px-8">
+    <section id="about" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="01" title="About Me" />
         <div className="grid md:grid-cols-[280px_1fr] gap-14 items-start">
           {/* Photo */}
@@ -838,54 +1124,11 @@ function AboutSection() {
 
 function ExperienceSection() {
   return (
-    <section id="experience" className="bg-gray-50 dark:bg-slate-950 py-24 scroll-mt-20">
-      <div className="max-w-[1120px] mx-auto px-6 md:px-8">
+    <section id="experience" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="02" title="Experience" />
-        <div className="grid md:grid-cols-3 gap-6">
-          {expSections.map(sec => (
-            <div
-              key={sec.title}
-              className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-7 flex flex-col"
-            >
-              {/* Category header */}
-              <div className="flex items-center gap-3 mb-6 pb-5 border-b border-gray-100 dark:border-slate-800">
-                <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ${sec.iconBg}`}>
-                  <sec.Icon className={`h-4.5 w-4.5 ${sec.iconColor}`} strokeWidth={1.75} />
-                </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white text-base">{sec.title}</h3>
-              </div>
-
-              {/* Entries */}
-              <div className="space-y-5">
-                {sec.entries.map(e => (
-                  <div key={e.company} className={`pl-3 border-l-2 ${sec.accentColor}`}>
-                    <div className="flex items-baseline justify-between gap-2 flex-wrap">
-                      <span className="font-semibold text-gray-900 dark:text-white text-sm leading-snug">
-                        {e.company}
-                      </span>
-                      <span className="text-[11px] font-mono text-gray-400 dark:text-slate-500 shrink-0">
-                        {e.period}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5 mb-1.5">{e.role}</p>
-                    <p className="text-xs text-gray-600 dark:text-slate-300 leading-relaxed">{e.desc}</p>
-                    {e.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {e.tags.map(t => (
-                          <span
-                            key={t}
-                            className="text-[10px] rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-2 py-0.5 text-gray-500 dark:text-slate-400"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+        <div className="grid sm:grid-cols-2 gap-5">
+          {experienceRoles.map(e => <RoleCard key={e.company + e.role} entry={e} />)}
         </div>
       </div>
     </section>
@@ -896,21 +1139,19 @@ function ExperienceSection() {
 
 function ProjectsSection() {
   return (
-    <section id="projects" className="bg-white dark:bg-slate-900 py-24 scroll-mt-20">
-      <div className="max-w-[1120px] mx-auto px-6 md:px-8">
+    <section id="projects" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         {/* Header row */}
-        <div className="flex items-baseline justify-between mb-14">
-          <div className="flex items-baseline gap-3">
-            <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">03</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Featured Projects</h2>
-          </div>
+        <div className="flex items-baseline gap-4 mb-8">
+          <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">03</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Featured Projects</h2>
           <a
             href="https://github.com/jacobhorne-jth"
             target="_blank"
             rel="noreferrer"
-            className="hidden sm:flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-500 font-medium transition-colors duration-150"
+            className="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-500 font-medium transition-colors duration-150 pb-1"
           >
-            View all projects <ArrowRight className="h-3.5 w-3.5" />
+            View all <ArrowRight className="h-3.5 w-3.5" />
           </a>
         </div>
 
@@ -922,10 +1163,14 @@ function ProjectsSection() {
             >
               {/* Header area */}
               <div className="relative bg-slate-900 aspect-[16/9] flex items-center justify-center overflow-hidden">
-                <div className={`absolute top-0 left-0 right-0 h-0.5 ${p.accentLine}`} />
-                <span className="text-5xl font-black font-mono text-slate-700/60 select-none tracking-tighter">
-                  {p.monogram}
-                </span>
+                <div className={`absolute top-0 left-0 right-0 h-0.5 z-10 ${p.accentLine}`} />
+                {p.imgUrl ? (
+                  <img src={p.imgUrl} alt={p.name} className="w-full h-full object-cover object-top" />
+                ) : (
+                  <span className="text-5xl font-black font-mono text-slate-700/60 select-none tracking-tighter">
+                    {p.monogram}
+                  </span>
+                )}
                 <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/10 transition-colors duration-300" />
               </div>
               {/* Body */}
@@ -970,17 +1215,6 @@ function ProjectsSection() {
           ))}
         </div>
 
-        {/* Mobile "view all" */}
-        <div className="sm:hidden mt-8 text-center">
-          <a
-            href="https://github.com/jacobhorne-jth"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-500 font-medium"
-          >
-            View all projects <ArrowRight className="h-3.5 w-3.5" />
-          </a>
-        </div>
       </div>
     </section>
   );
@@ -990,32 +1224,26 @@ function ProjectsSection() {
 
 function ResearchSection() {
   return (
-    <section id="research" className="bg-gray-50 dark:bg-slate-950 py-24 scroll-mt-20">
-      <div className="max-w-[1120px] mx-auto px-6 md:px-8">
-        <SectionHeader number="04" title="Research Highlights" />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {researchHighlights.map(r => (
-            <a
-              key={r.title}
-              href={r.url}
-              target="_blank"
-              rel="noreferrer"
-              className={`group bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 p-6 flex flex-col hover:shadow-md hover:border-blue-200 dark:hover:border-blue-700 transition-all duration-200 ${r.url === "#" ? "pointer-events-none" : ""}`}
-            >
-              <span className={`self-start rounded-full px-2.5 py-0.5 text-xs font-medium mb-4 ${r.badgeColor}`}>
-                {r.badge}
-              </span>
-              <h3 className="font-semibold text-gray-900 dark:text-white text-sm leading-tight">{r.title}</h3>
-              <p className="text-xs text-blue-600 mt-1 mb-3">{r.subtitle}</p>
-              <p className="text-xs text-gray-600 dark:text-slate-300 leading-relaxed flex-1">{r.desc}</p>
-              {r.url !== "#" && (
-                <div className="mt-4 flex items-center gap-1 text-xs text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-150">
-                  <span>Read paper</span>
-                  <ExternalLink className="h-3 w-3" />
-                </div>
-              )}
-            </a>
-          ))}
+    <section id="research" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8">
+        <SectionHeader number="04" title="Research" />
+        <div className="grid sm:grid-cols-2 gap-5">
+          {researchRoles.map(e => <RoleCard key={e.company + e.role} entry={e} />)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Teaching & Mentorship ────────────────────────────────────────────────────
+
+function TeachingSection() {
+  return (
+    <section id="teaching" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8">
+        <SectionHeader number="05" title="Teaching & Mentorship" />
+        <div className="grid sm:grid-cols-2 gap-5">
+          {teachingRoles.map(e => <RoleCard key={e.company + e.role} entry={e} />)}
         </div>
       </div>
     </section>
@@ -1026,26 +1254,23 @@ function ResearchSection() {
 
 function EducationContact() {
   return (
-    <section id="education" className="bg-white dark:bg-slate-900 py-24 scroll-mt-20">
-      <div className="max-w-[1120px] mx-auto px-6 md:px-8">
+    <section id="education" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="grid md:grid-cols-2 gap-16 items-start">
           {/* Education */}
           <div>
             <div className="flex items-baseline gap-3 mb-10">
-              <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">05</span>
+              <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">06</span>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Education</h2>
             </div>
             <div className="rounded-2xl border border-gray-200 dark:border-slate-700 p-8">
-              <div className="text-6xl font-black text-gray-100 dark:text-slate-800 leading-none mb-5 select-none tracking-tight">
-                UCI
-              </div>
+              <img src={logoUCI} alt="UCI" className="h-16 w-16 rounded-xl object-cover mb-5" />
               <div className="space-y-1">
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">University of California, Irvine</p>
                 <p className="text-sm text-gray-600 dark:text-slate-300">B.S. Computer Science</p>
-                <p className="text-sm text-gray-600 dark:text-slate-300">Business Information Management</p>
-                <p className="text-sm text-blue-600">Campuswide Honors Collegium</p>
+                <p className="text-sm text-blue-400">Campuswide Honors Collegium</p>
                 <p className="text-sm font-medium text-gray-800 dark:text-slate-100 pt-1">GPA: 3.9</p>
-                <p className="text-xs text-gray-400 dark:text-slate-500 font-mono">Expected Graduation: June 2027</p>
+                <p className="text-xs text-gray-400 dark:text-slate-500 font-mono">Expected Graduation: Jun 2027</p>
               </div>
               <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-800">
                 <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-3">
@@ -1066,7 +1291,7 @@ function EducationContact() {
           {/* Contact */}
           <div>
             <div className="flex items-baseline gap-3 mb-10">
-              <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">06</span>
+              <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">07</span>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Let's Connect</h2>
             </div>
             <div className="space-y-5">
@@ -1106,6 +1331,8 @@ function EducationContact() {
               <div className="pt-4">
                 <a
                   href="mailto:jacobhorne.jth@gmail.com"
+                  target="_blank"
+                  rel="noreferrer"
                   className="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 text-sm font-medium transition-colors duration-150"
                 >
                   Let's Build Something
@@ -1114,6 +1341,68 @@ function EducationContact() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Now ──────────────────────────────────────────────────────────────────────
+
+function NowSection() {
+  const items = [
+    {
+      label: "Building",
+      entries: [
+        "ML surrogates (GRU + PINN) for thermal energy storage prediction @ Calit2",
+        "Agentic ethics gate pipeline for financial chatbot @ TCS Capstone",
+        "Smart contract audit playground",
+        "Full-stack appointment-management platform for Celebrating Life Community Health Center",
+        "Nutrition tracking app with real-time food scanning for vitamin intake and recommendations",
+      ],
+    },
+    {
+      label: "Learning",
+      entries: [
+        "Physics-informed neural networks and heat transfer PDE constraints",
+        "Multi-agent LLM evaluation and token-level confidence modeling",
+        "Distributed systems / networks — scalability patterns, consensus, and fault tolerance",
+        "LLM optimization — quantization, KV caching, and inference throughput",
+      ],
+    },
+    {
+      label: "Up next",
+      entries: [
+        "Incoming SWE Intern @ Capital One — Summer 2026",
+        "Break Through Tech AI/ML Fellowship — 2026/27 cohort",
+        "MAISS Peer Mentor @ UCI",
+      ],
+    },
+  ];
+
+  return (
+    <section id="now" className="bg-slate-950 border-t border-slate-800 pt-16 pb-20 scroll-mt-16">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8">
+        <div className="mb-10">
+          <div className="flex items-baseline gap-3">
+            <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">Now</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white">What I'm up to</h2>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {items.map(col => (
+            <div key={col.label} className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+              <p className="text-xs font-bold tracking-[0.2em] text-blue-500 uppercase mb-4">{col.label}</p>
+              <ul className="space-y-3">
+                {col.entries.map((e, i) => (
+                  <li key={i} className="flex gap-2.5 text-sm text-slate-300 leading-relaxed">
+                    <span className="mt-[7px] h-1.5 w-1.5 rounded-sm bg-blue-500 shrink-0" />
+                    {e}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -1129,7 +1418,7 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
       iconClass: "text-green-400 group-hover:text-green-300",
       borderClass: "border-green-500/30 group-hover:border-green-500/60 group-hover:shadow-sm group-hover:shadow-green-500/10",
       arrowClass: "text-slate-600 group-hover:text-green-400",
-      label: ">_ Terminal Mode",
+      label: "Terminal Mode",
       sub: "Interactive CLI experience",
       action: onOpenTerminal,
       href: null as string | null,
@@ -1142,7 +1431,7 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
       label: "Now",
       sub: "What I'm building & learning",
       action: null as (() => void) | null,
-      href: "#explore",
+      href: "#now",
     },
     {
       Icon: BookOpen,
@@ -1158,7 +1447,7 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
 
   return (
     <section id="explore" className="bg-slate-950 border-t border-slate-800">
-      <div className="max-w-[1120px] mx-auto">
+      <div className="max-w-[1220px] mx-auto">
         <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-800">
           {items.map(item => {
             const inner = (
@@ -1203,7 +1492,9 @@ export default function App() {
       <ExperienceSection />
       <ProjectsSection />
       <ResearchSection />
+      <TeachingSection />
       <EducationContact />
+      <NowSection />
       <ExploreBar onOpenTerminal={openTerminal} />
     </div>
   );
