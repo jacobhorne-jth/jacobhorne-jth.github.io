@@ -76,11 +76,11 @@ const HELP_TEXT: TerminalLine[] = [
   { type: "cols", left: "  research   — research",         right: "  whoami     — info about Jacob" },
   { type: "cols", left: "  projects   — projects",         right: "  ls         — list all sections" },
   { type: "cols", left: "  contact    — contact",          right: "  flip       — flip the page" },
-  { type: "cols", left: "  game       — play snake",       right: "  hack       — initiate hack sequence" },
-  { type: "cols", left: "  joke       — random dev joke",  right: "  fortune    — words of wisdom" },
-  { type: "cols", left: "  coffee     — ☕",               right: "  skills     — tech stack" },
-  { type: "cols", left: "  ping       — ping jacob",       right: "  clear      — clear terminal" },
-  { type: "cols", left: "  exit       — close terminal",   right: "" },
+  { type: "cols", left: "  game       — play snake",       right: "  pong       — play pong" },
+  { type: "cols", left: "  hack       — initiate hack",    right: "  joke       — random dev joke" },
+  { type: "cols", left: "  fortune    — words of wisdom",  right: "  coffee     — ☕" },
+  { type: "cols", left: "  skills     — tech stack",       right: "  ping       — ping jacob" },
+  { type: "cols", left: "  clear      — clear terminal",   right: "  exit       — close terminal" },
   { type: "blank" },
 ];
 
@@ -178,6 +178,151 @@ function SnakeGame({ onExit }: { onExit: () => void }) {
   );
 }
 
+// ─── Pong game ───────────────────────────────────────────────────────────────
+
+function PongGame({ onExit }: { onExit: () => void }) {
+  const COLS = 50, ROWS = 16, PADDLE_H = 4, PADDLE_SPEED = 0.9;
+  const PLAYER_X = 1, AI_X = COLS - 2;
+  const keysHeld = useRef(new Set<string>());
+  const playerY = useRef((ROWS - PADDLE_H) / 2);
+  const aiY = useRef((ROWS - PADDLE_H) / 2);
+  const ballX = useRef(COLS / 2);
+  const ballY = useRef(ROWS / 2);
+  const ballVX = useRef(1.0);
+  const ballVY = useRef(0.5);
+  const playerScore = useRef(0);
+  const aiScore = useRef(0);
+  const phase = useRef<"idle" | "playing" | "gameover">("idle");
+  const [, tick] = useState(0);
+  const redraw = () => tick(n => n + 1);
+
+  const resetBall = (dir: 1 | -1) => {
+    ballX.current = COLS / 2;
+    ballY.current = ROWS / 2;
+    ballVX.current = dir * 1.0;
+    ballVY.current = (Math.random() > 0.5 ? 1 : -1) * 0.45;
+  };
+
+  const restart = () => {
+    playerY.current = (ROWS - PADDLE_H) / 2;
+    aiY.current = (ROWS - PADDLE_H) / 2;
+    playerScore.current = 0;
+    aiScore.current = 0;
+    resetBall(1);
+    phase.current = "idle";
+    redraw();
+  };
+
+  useEffect(() => {
+    const onDown = (e: KeyboardEvent) => {
+      if (["ArrowUp","ArrowDown","w","s","W","S"," "].includes(e.key)) e.preventDefault();
+      keysHeld.current.add(e.key);
+      if (e.key === " ") {
+        if (phase.current === "idle") { phase.current = "playing"; redraw(); }
+        else if (phase.current === "gameover") restart();
+      } else if (e.key === "Escape" || e.key === "q") onExit();
+    };
+    const onUp = (e: KeyboardEvent) => keysHeld.current.delete(e.key);
+    window.addEventListener("keydown", onDown);
+    window.addEventListener("keyup", onUp);
+    return () => { window.removeEventListener("keydown", onDown); window.removeEventListener("keyup", onUp); };
+  }, [onExit]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (phase.current !== "playing") return;
+
+      if (keysHeld.current.has("ArrowUp") || keysHeld.current.has("w") || keysHeld.current.has("W"))
+        playerY.current = Math.max(0, playerY.current - PADDLE_SPEED);
+      if (keysHeld.current.has("ArrowDown") || keysHeld.current.has("s") || keysHeld.current.has("S"))
+        playerY.current = Math.min(ROWS - PADDLE_H, playerY.current + PADDLE_SPEED);
+
+      ballX.current += ballVX.current;
+      ballY.current += ballVY.current;
+
+      if (ballY.current <= 0)        { ballY.current = 0;        ballVY.current =  Math.abs(ballVY.current); }
+      if (ballY.current >= ROWS - 1) { ballY.current = ROWS - 1; ballVY.current = -Math.abs(ballVY.current); }
+
+      const bx = ballX.current, by = ballY.current;
+
+      if (bx <= PLAYER_X + 1 && ballVX.current < 0) {
+        const py = playerY.current;
+        if (by >= py && by < py + PADDLE_H) {
+          ballX.current = PLAYER_X + 1.1;
+          ballVX.current = Math.min(Math.abs(ballVX.current) * 1.05, 2.2);
+          ballVY.current = ((by - (py + PADDLE_H / 2)) / (PADDLE_H / 2)) * 0.9;
+        }
+      }
+      if (bx >= AI_X - 1 && ballVX.current > 0) {
+        const ay = aiY.current;
+        if (by >= ay && by < ay + PADDLE_H) {
+          ballX.current = AI_X - 1.1;
+          ballVX.current = -Math.min(Math.abs(ballVX.current) * 1.05, 2.2);
+          ballVY.current = ((by - (ay + PADDLE_H / 2)) / (PADDLE_H / 2)) * 0.9;
+        }
+      }
+
+      const aiCenter = aiY.current + PADDLE_H / 2;
+      if (ballY.current > aiCenter + 0.3) aiY.current = Math.min(ROWS - PADDLE_H, aiY.current + 0.65);
+      else if (ballY.current < aiCenter - 0.3) aiY.current = Math.max(0, aiY.current - 0.65);
+
+      if (ballX.current < 0) {
+        aiScore.current++;
+        if (aiScore.current >= 5) phase.current = "gameover"; else resetBall(-1);
+      } else if (ballX.current > COLS) {
+        playerScore.current++;
+        if (playerScore.current >= 5) phase.current = "gameover"; else resetBall(1);
+      }
+
+      redraw();
+    }, 60);
+    return () => clearInterval(id);
+  }, []);
+
+  const rows = Array.from({ length: ROWS }, (_, y) =>
+    Array.from({ length: COLS }, (_, x) => {
+      const bx = Math.round(ballX.current), by = Math.round(ballY.current);
+      const py = Math.floor(playerY.current), ay = Math.floor(aiY.current);
+      if (x === bx && y === by) return "●";
+      if (x === PLAYER_X && y >= py && y < py + PADDLE_H) return "█";
+      if (x === AI_X && y >= ay && y < ay + PADDLE_H) return "█";
+      if (x === Math.floor(COLS / 2) && y % 2 === 0) return "┊";
+      return " ";
+    }).join("")
+  );
+
+  return (
+    <div className="flex flex-col h-full p-3 gap-2 select-none font-mono">
+      <div className="flex justify-between text-xs text-green-600">
+        <span>you: {playerScore.current}</span>
+        <span>pong.exe  ↑↓/WS to move · [q] quit</span>
+        <span>cpu: {aiScore.current}</span>
+      </div>
+      <div className="flex-1 flex items-center justify-center border border-green-900/40 rounded-lg">
+        {phase.current === "idle" && (
+          <div className="text-center space-y-2">
+            <div className="text-green-400 text-base">PONG</div>
+            <div className="text-green-700 text-xs">↑↓ or W/S to move · first to 5 wins</div>
+            <div className="text-green-700 text-xs">[space] to start · [q] quit</div>
+          </div>
+        )}
+        {phase.current === "gameover" && (
+          <div className="text-center space-y-2">
+            <div className={playerScore.current >= 5 ? "text-green-400" : "text-red-400"}>
+              {playerScore.current >= 5 ? "YOU WIN!" : "GAME OVER"}
+            </div>
+            <div className="text-green-500 text-xs">{playerScore.current} — {aiScore.current}</div>
+            <div className="text-green-700 text-xs">[space] restart · [q] quit</div>
+          </div>
+        )}
+        {phase.current === "playing" && (
+          <pre className="text-green-400 text-xs leading-tight">{rows.join("\n")}</pre>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Terminal ─────────────────────────────────────────────────────────────────
 
 function Terminal({ onClose }: { onClose: () => void }) {
@@ -189,7 +334,7 @@ function Terminal({ onClose }: { onClose: () => void }) {
   ]);
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
   const [historyIdx, setHistoryIdx] = useState(-1);
-  const [gameActive, setGameActive] = useState(false);
+  const [activeGame, setActiveGame] = useState<"snake" | "pong" | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -245,7 +390,8 @@ function Terminal({ onClose }: { onClose: () => void }) {
         out.push({ type: "output", text: isFlipped ? "right-side up." : "flipped! type flip again to undo." }, { type: "blank" });
         break;
       }
-      case "game": setGameActive(true); return;
+      case "game": setActiveGame("snake"); return;
+      case "pong": setActiveGame("pong"); return;
       case "hack":
         out.push(
           { type: "output", text: "Initializing hack sequence..." },
@@ -341,8 +487,10 @@ function Terminal({ onClose }: { onClose: () => void }) {
           <span className="mx-auto text-xs text-neutral-400 font-mono">visitor@jacob-horne — bash</span>
         </div>
         <div className="bg-[#0d1117] h-[520px] font-mono text-sm">
-          {gameActive ? (
-            <SnakeGame onExit={() => setGameActive(false)} />
+          {activeGame === "snake" ? (
+            <SnakeGame onExit={() => setActiveGame(null)} />
+          ) : activeGame === "pong" ? (
+            <PongGame onExit={() => setActiveGame(null)} />
           ) : (
             <div className="h-full overflow-y-auto p-4 cursor-text" onClick={() => inputRef.current?.focus()}>
               {lines.map((line, i) => {
@@ -397,6 +545,7 @@ type RoleEntry = {
 type Project = {
   name: string; monogram: string; desc: string; tech: string[];
   accentLine: string; repoUrl: string; demoUrl?: string; imgUrl?: string;
+  group?: string;
 };
 
 const aboutColumns: AboutColumn[] = [
@@ -676,6 +825,7 @@ const projects: Project[] = [
     repoUrl: "#",
     demoUrl: "https://agonus-frontend-45256917921.us-central1.run.app/",
     imgUrl: projAgonus,
+    group: "Blockchain @ UCI",
   },
   {
     name: "Prop.Intel",
@@ -787,7 +937,7 @@ function RoleCard({ entry }: { entry: RoleEntry }) {
                 </span>
               )}
             </div>
-            <div className="text-xs text-slate-400 mt-0.5">
+            <div className="text-xs text-slate-400 dark:text-slate-300 mt-0.5">
               {entry.companyLink ? (
                 <a href={entry.companyLink} target="_blank" rel="noreferrer" className="hover:text-blue-400 transition-colors inline-flex items-center gap-1">
                   {entry.company} <ExternalLink className="h-2.5 w-2.5" />
@@ -796,7 +946,7 @@ function RoleCard({ entry }: { entry: RoleEntry }) {
             </div>
           </div>
         </div>
-        <span className="text-[11px] font-mono text-gray-400 dark:text-slate-500 shrink-0 pt-0.5">{entry.period}</span>
+        <span className="text-[11px] font-mono text-gray-500 dark:text-slate-300 shrink-0 pt-0.5">{entry.period}</span>
       </div>
 
       {/* Bullets */}
@@ -940,7 +1090,31 @@ function Navbar({
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
+const CURRENTLY_ITEMS = [
+  "Building an AI smart contract audit playground that proves exploits",
+  "Building a real-time food recognition and vitamin tracking platform",
+  "Building an appointment-management platform for local non profit",
+  "Researching physics-informed ML (PINNs) for thermal storage optimization",
+  "Building a financial chatbot with an agentic ethics gate for persuasian",
+  "Researching uncertainty in multi-agent LLMs through token analysis",
+];
+
 function LaptopVisual() {
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    let tid: ReturnType<typeof setTimeout>;
+    const id = setInterval(() => {
+      setVisible(false);
+      tid = setTimeout(() => {
+        setIdx(i => (i + 1) % CURRENTLY_ITEMS.length);
+        setVisible(true);
+      }, 350);
+    }, 7000);
+    return () => { clearInterval(id); clearTimeout(tid); };
+  }, []);
+
   return (
     <div className="relative">
       <div className="absolute -inset-4 bg-blue-500/8 rounded-3xl blur-2xl" />
@@ -961,18 +1135,18 @@ function LaptopVisual() {
           <div className="grid grid-cols-[1fr_148px] gap-4">
             {/* Code panel */}
             <div className="font-mono text-xs leading-[1.65] text-slate-300 overflow-hidden">
-              <div><span className="text-blue-400">import</span> <span className="text-slate-300">{"{ build }"}</span> <span className="text-blue-400">from</span> <span className="text-green-400">'@jacob'</span></div>
-              <div className="h-2" />
-              <div><span className="text-purple-400">const</span> <span className="text-blue-300">me</span> = {"{"}</div>
-              <div className="pl-4"><span className="text-slate-400">name:</span>  <span className="text-amber-300">"Jacob Horne"</span>,</div>
-              <div className="pl-4"><span className="text-slate-400">role:</span>  <span className="text-amber-300">"SWE + Researcher"</span>,</div>
-              <div className="pl-4"><span className="text-slate-400">focus:</span>  <span className="text-amber-300">"AI/ML Systems"</span>,</div>
-              <div className="pl-4"><span className="text-slate-400">gpa:</span>   <span className="text-cyan-400">3.9</span>,</div>
-              <div>{"}"}</div>
-              <div className="h-2" />
-              <div><span className="text-purple-400">async function</span> <span className="text-yellow-300">build</span>{"() {"}</div>
-              <div className="pl-4 text-slate-500">{"// turning ideas into impact"}</div>
-              <div className="pl-4"><span className="text-blue-400">return</span> me.create();</div>
+              <div><span className="text-purple-400">const</span> <span className="text-blue-300">jacob</span> = {"{"}</div>
+              <div className="pl-4"><span className="text-slate-400">name:</span>{"      "}<span className="text-amber-300">"Jacob Horne"</span>,</div>
+              <div className="pl-4"><span className="text-slate-400">role:</span>{"      "}<span className="text-amber-300">"Incoming SWE Intern @ Capital One"</span>,</div>
+              <div className="pl-4"><span className="text-slate-400">studying:</span>{"  "}<span className="text-amber-300">"CS @ UCI"</span>,</div>
+              <div className="pl-4"><span className="text-slate-400">gpa:</span>{"       "}<span className="text-cyan-400">3.9</span>,</div>
+              <div className="pl-4 min-h-[3.3em]">
+                <span className="text-slate-400">currently: </span>
+                <span
+                  className="text-green-300 transition-opacity duration-300"
+                  style={{ opacity: visible ? 1 : 0 }}
+                >"{CURRENTLY_ITEMS[idx]}",</span>
+              </div>
               <div>{"}"}</div>
             </div>
             {/* Stats panel */}
@@ -1189,13 +1363,13 @@ function ProjectsSection() {
                 </div>
               </div>
               {/* Footer links */}
-              <div className="px-5 pb-4 flex gap-3">
+              <div className="px-5 pb-4 flex items-center gap-3 flex-wrap">
                 {p.repoUrl !== "#" && (
                   <a
                     href={p.repoUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white transition-colors duration-150"
+                    className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-150"
                   >
                     <GithubIcon className="h-3.5 w-3.5" /> Code
                   </a>
@@ -1205,10 +1379,15 @@ function ProjectsSection() {
                     href={p.demoUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white transition-colors duration-150"
+                    className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-150"
                   >
                     <ExternalLink className="h-3.5 w-3.5" /> Demo
                   </a>
+                )}
+                {p.group && (
+                  <span className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-300 ml-auto">
+                    <Users className="h-3 w-3 shrink-0" /> {p.group}
+                  </span>
                 )}
               </div>
             </div>
@@ -1299,6 +1478,14 @@ function EducationContact() {
                 I'm always open to new opportunities, research collaborations, and interesting conversations.
                 Reach out anytime.
               </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs text-gray-500 dark:text-slate-400 font-mono shrink-0">Open to internships/opportunities:</span>
+                {["Fall 2026", "Winter 2027", "Summer 2027"].map(term => (
+                  <span key={term} className="rounded-full bg-green-500/10 border border-green-500/25 px-2.5 py-0.5 text-xs text-green-400 font-mono">
+                    {term}
+                  </span>
+                ))}
+              </div>
               <div className="space-y-3 pt-2">
                 {[
                   {
