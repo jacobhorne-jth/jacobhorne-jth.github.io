@@ -1235,12 +1235,15 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
               </a>
             </div>
             {/* Terminal button — prominent */}
-            <button
-              onClick={onOpenTerminal}
-              className="inline-flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/8 px-4 py-2 font-mono text-sm text-green-400 hover:border-green-500/60 hover:bg-green-500/15 transition-all duration-150"
-            >
-              &gt;_ open terminal
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={onOpenTerminal}
+                className="inline-flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/8 px-4 py-2 font-mono text-sm text-green-400 hover:border-green-500/60 hover:bg-green-500/15 transition-all duration-150"
+              >
+                &gt;_ open terminal
+              </button>
+              <span className="text-xs text-slate-500 font-mono">← try terminal mode</span>
+            </div>
           </div>
 
           {/* Right: visual */}
