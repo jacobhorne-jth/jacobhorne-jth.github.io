@@ -1139,7 +1139,7 @@ function LaptopVisual() {
             <div className="space-y-2">
               {([
                 { label: "Projects", value: "12+", pct: 75, color: "bg-blue-500" },
-                { label: "Papers", value: "2", pct: 35, color: "bg-purple-500" },
+                { label: "Papers", value: "3", pct: 35, color: "bg-purple-500" },
                 { label: "Mentored", value: "50+", pct: 85, color: "bg-green-500" },
               ] as const).map(s => (
                 <div key={s.label} className="bg-slate-800/80 rounded-lg p-2.5 border border-slate-700/30">
