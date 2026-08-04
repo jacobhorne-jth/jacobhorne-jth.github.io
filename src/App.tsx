@@ -39,6 +39,8 @@ import projOnboarding from "./assets/projects/onbaoardingreal.png";
 import projSMS from "./assets/projects/realsms.png";
 import projWebsite from "./assets/projects/port.png";
 import logoC1 from "./assets/logos/c1-logo.png";
+import logoSandia from "./assets/logos/sandia.jpg";
+import logoURP from "./assets/logos/urp.jpeg";
 import logoTCS from "./assets/logos/tcs-logo.jpg";
 import logoCaretech from "./assets/logos/caretechlogo.jpeg";
 import logoCTC from "./assets/logos/ctclogo.jpeg";
@@ -578,11 +580,24 @@ const experienceRoles: RoleEntry[] = [
   },
   {
     logo: "SNL",
+    logoImg: logoSandia,
     company: "Sandia National Laboratories",
     role: "Incoming Software Engineering Intern — AI R&D Toolkits",
     period: "Fall 2026",
     bullets: ["Incoming software engineering internship focused on AI R&D toolkits."],
     tags: ["AI R&D", "Software Engineering"],
+  },
+  {
+    logo: "URP",
+    logoImg: logoURP,
+    company: "Underwater Robotics Project @ UCI",
+    role: "Incoming Perception Engineer",
+    period: "Incoming",
+    bullets: [
+      "Joining the perception team to build computer vision systems for underwater robotics.",
+      "Planning to work on sensing, detection, and autonomy pipelines for robotic operation in aquatic environments.",
+    ],
+    tags: ["Computer Vision", "Robotics", "Perception", "Autonomy"],
   },
   {
     logo: "CareT",
@@ -1532,6 +1547,7 @@ function NowSection() {
       label: "Up next",
       entries: [
         "Incoming SWE Intern @ Sandia National Laboratories — Fall 2026",
+        "Incoming Perception Engineer @ Underwater Robotics Project at UCI",
         "Continuing LLM systems research @ UCI Digital Learning Lab",
         "Turning the personal operating system project into a durable daily workflow",
       ],
@@ -1633,245 +1649,10 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   );
 }
 
-// ─── Swimming fish easter egg ─────────────────────────────────────────────────
-
-const FISH_EMOJIS = ["🐟", "🐠", "🐡"];
-
-function SwimmingFish({ onDone, onClick }: { onDone: () => void; onClick: () => void }) {
-  const fishRef = useRef<HTMLSpanElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
-  const onDoneRef = useRef(onDone);
-  useEffect(() => { onDoneRef.current = onDone; });
-
-  useEffect(() => {
-    const fish = fishRef.current;
-    const label = labelRef.current;
-    if (!fish || !label) return;
-
-    const SPEED = 0.85;
-    const WANDER = 0.044;   // max random turn per frame (rad)
-    const MARGIN = 110;     // px from viewport edge before steering kicks in
-    const STEER = 0.08;     // steering strength near edges
-
-    const w = window.innerWidth, h = window.innerHeight;
-    let x = MARGIN + Math.random() * (w - MARGIN * 2);
-    let y = MARGIN + Math.random() * (h - MARGIN * 2);
-    let angle = Math.random() * Math.PI * 2;
-
-    fish.textContent = FISH_EMOJIS[Math.floor(Math.random() * FISH_EMOJIS.length)];
-
-    // Fade fish in
-    requestAnimationFrame(() => { fish.style.opacity = "0.48"; });
-
-    // Show "click me!" label after a delay
-    const labelTid = window.setTimeout(() => { label.style.opacity = "1"; }, 5000 + Math.random() * 4000);
-
-    let raf: number;
-    const frame = () => {
-      // Wander
-      angle += (Math.random() - 0.5) * WANDER * 2;
-      // Steer away from edges (proportional force)
-      if (x < MARGIN)       angle += STEER * (MARGIN - x) / MARGIN;
-      if (x > w - MARGIN)   angle -= STEER * (x - (w - MARGIN)) / MARGIN;
-      if (y < MARGIN)       angle += STEER * (MARGIN - y) / MARGIN;
-      if (y > h - MARGIN)   angle -= STEER * (y - (h - MARGIN)) / MARGIN;
-
-      x = Math.max(24, Math.min(w - 36, x + Math.cos(angle) * SPEED));
-      y = Math.max(24, Math.min(h - 36, y + Math.sin(angle) * SPEED));
-
-      fish.style.left  = `${x}px`;
-      fish.style.top   = `${y}px`;
-      fish.style.transform = `scaleX(${Math.cos(angle) < 0 ? 1 : -1})`;
-
-      label.style.left = `${x - 10}px`;
-      label.style.top  = `${y + 34}px`;
-
-      raf = requestAnimationFrame(frame);
-    };
-    raf = requestAnimationFrame(frame);
-
-    // Fade out after a random lifetime, then signal done
-    const lifetime = 35000 + Math.random() * 55000; // 35–90s
-    const fadeTid = window.setTimeout(() => {
-      fish.style.transition  = "opacity 1.5s";
-      label.style.transition = "opacity 1.5s";
-      fish.style.opacity  = "0";
-      label.style.opacity = "0";
-      window.setTimeout(() => onDoneRef.current(), 1500);
-    }, lifetime);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(labelTid);
-      clearTimeout(fadeTid);
-    };
-  }, []);
-
-  return (
-    <>
-      <span
-        ref={fishRef}
-        style={{
-          position: "fixed", zIndex: 25, fontSize: "28px",
-          cursor: "pointer", userSelect: "none",
-          pointerEvents: "auto", lineHeight: 1,
-          display: "inline-block", padding: "8px",
-          left: "-200px", top: "-200px",
-          opacity: 0, transition: "opacity 1.2s",
-        }}
-        onClick={onClick}
-      />
-      <span
-        ref={labelRef}
-        style={{
-          position: "fixed", zIndex: 25,
-          fontSize: "9px", fontFamily: "monospace",
-          color: "#86efac", opacity: 0,
-          pointerEvents: "none", userSelect: "none",
-          transition: "opacity 1.2s", whiteSpace: "nowrap",
-        }}
-      >
-        click me!
-      </span>
-    </>
-  );
-}
-
-function FishSpawner({ onClick }: { onClick: () => void }) {
-  const [active, setActive] = useState(false);
-  const [fishKey, setFishKey] = useState(0);
-  const tidRef = useRef<number | undefined>(undefined);
-
-  useEffect(() => {
-    // First fish: 20–40s after load
-    tidRef.current = window.setTimeout(() => setActive(true), 20000 + Math.random() * 20000);
-    return () => clearTimeout(tidRef.current);
-  }, []);
-
-  const handleDone = () => {
-    setActive(false);
-    // Next fish: 50–120s later
-    tidRef.current = window.setTimeout(() => {
-      setFishKey(k => k + 1);
-      setActive(true);
-    }, 50000 + Math.random() * 70000);
-  };
-
-  if (!active) return null;
-  return <SwimmingFish key={fishKey} onDone={handleDone} onClick={onClick} />;
-}
-
-// ─── Marine life easter egg page ──────────────────────────────────────────────
-
-function MarineEasterEgg({ onClose }: { onClose: () => void }) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
-  const facts = [
-    {
-      emoji: "🐙",
-      title: "Octopuses are the blueprint",
-      body: "2/3 of an octopus's neurons live in its arms, not its brain — fully distributed intelligence. I think about this constantly when designing systems.",
-    },
-    {
-      emoji: "🦈",
-      title: "450 million years of uptime",
-      body: "Sharks predate trees. They've survived five mass extinctions without meaningful redesign. Respect the architecture that just works.",
-    },
-    {
-      emoji: "🦐",
-      title: "Mantis shrimp are unreal",
-      body: "16 types of photoreceptors. Humans have 3. They can see polarized light and punch with the force of a bullet. I want to write a paper about them someday.",
-    },
-    {
-      emoji: "🪸",
-      title: "Reef efficiency nerd",
-      body: "Coral reefs cover less than 1% of the ocean floor but host 25% of all marine species. Maximum diversity per unit area. That's good software.",
-    },
-    {
-      emoji: "🐋",
-      title: "Whale songs hit different",
-      body: "Blue whale calls are the loudest animal sounds on Earth and travel thousands of miles. Long-distance distributed messaging, implemented in 1000 BCE.",
-    },
-    {
-      emoji: "🌊",
-      title: "The ocean is the best debugger",
-      body: "Grew up near the coast. The ocean forces systems thinking — everything is interconnected, everything has a feedback loop, nothing exists in isolation.",
-    },
-  ];
-
-  return (
-    <div
-      className="fixed inset-0 z-50 overflow-y-auto"
-      style={{ background: "linear-gradient(to bottom, #010d1f, #020b18, #030f1c)" }}
-      onClick={onClose}
-    >
-      {/* decorative background blobs */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-blue-900/20 blur-3xl" />
-        <div className="absolute bottom-1/3 right-1/4 h-64 w-64 rounded-full bg-cyan-900/15 blur-3xl" />
-      </div>
-
-      <div
-        className="relative min-h-screen flex flex-col items-center justify-start px-6 py-20"
-        onClick={e => e.stopPropagation()}
-      >
-        {/* close */}
-        <button
-          onClick={onClose}
-          className="absolute top-6 right-6 text-slate-600 hover:text-slate-300 transition-colors"
-          aria-label="Close"
-        >
-          <X className="h-5 w-5" />
-        </button>
-
-        {/* header */}
-        <div className="text-center mb-14">
-          <div className="text-6xl mb-5 select-none">🐟</div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            you found the fish.
-          </h1>
-          <p className="text-sm font-mono text-blue-400/70 mb-2">
-            secret page · for the curious
-          </p>
-          <div className="h-px w-20 mx-auto bg-blue-600/40 mt-4" />
-        </div>
-
-        {/* intro */}
-        <p className="text-slate-300 text-center leading-relaxed max-w-lg mb-14 text-[15px]">
-          Beyond the resume, I'm genuinely obsessed with the ocean and the things that live in it.
-          Here are some things about me you'd only find out if you asked — or clicked a fish.
-        </p>
-
-        {/* facts */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl w-full mb-14">
-          {facts.map(f => (
-            <div
-              key={f.title}
-              className="rounded-2xl border border-blue-900/40 bg-blue-950/30 p-6 text-left hover:border-blue-700/50 hover:bg-blue-950/50 transition-all duration-200"
-            >
-              <div className="text-3xl mb-3 select-none">{f.emoji}</div>
-              <h3 className="font-semibold text-white text-sm mb-2">{f.title}</h3>
-              <p className="text-slate-400 text-xs leading-relaxed">{f.body}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* footer */}
-        <p className="text-slate-700 text-xs font-mono">esc or click outside to close</p>
-      </div>
-    </div>
-  );
-}
-
 // ─── App ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
   const [terminalOpen, setTerminalOpen] = useState(false);
-  const [marineOpen, setMarineOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
   const openTerminal = () => setTerminalOpen(true);
   const closeTerminal = () => setTerminalOpen(false);
@@ -1879,7 +1660,6 @@ export default function App() {
   return (
     <div className={`min-h-screen${darkMode ? " dark" : ""}`}>
       {terminalOpen && <Terminal onClose={closeTerminal} />}
-      {marineOpen && <MarineEasterEgg onClose={() => setMarineOpen(false)} />}
       <Navbar onOpenTerminal={openTerminal} darkMode={darkMode} onToggleDark={() => setDarkMode(v => !v)} />
       <Hero onOpenTerminal={openTerminal} />
       <AboutSection />
@@ -1890,7 +1670,6 @@ export default function App() {
       <EducationContact />
       <NowSection />
       <ExploreBar onOpenTerminal={openTerminal} />
-      <FishSpawner onClick={() => setMarineOpen(true)} />
     </div>
   );
 }
