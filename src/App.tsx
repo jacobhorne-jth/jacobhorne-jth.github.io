@@ -1255,24 +1255,25 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
 
 function AboutSection() {
   return (
-    <section id="about" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+    <section id="about" className="bg-gray-50 dark:bg-slate-950 pt-10 pb-28 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="01" title="About Me" />
-        <div className="grid md:grid-cols-[280px_1fr] gap-14 items-start">
+        <div className="grid md:grid-cols-[340px_1fr] gap-12 lg:gap-16 items-start">
           {/* Photo */}
           <div className="relative shrink-0">
-            <div className="rounded-2xl overflow-hidden bg-gray-100 dark:bg-slate-800 aspect-[4/5]">
+            <div className="rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-800 aspect-[4/5] border border-gray-200 dark:border-slate-800 shadow-lg shadow-slate-950/10">
               <img src={pfp} alt="Jacob Horne" className="w-full h-full object-cover" />
             </div>
-            <div className="absolute -bottom-4 -right-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md rounded-xl px-4 py-3">
-              <p className="text-xs text-gray-400 dark:text-slate-500">Current</p>
-              <p className="text-sm font-semibold text-gray-900 dark:text-white">@ Capital One</p>
+            <div className="absolute -bottom-5 -right-5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-lg shadow-slate-950/20 rounded-lg px-4 py-3 min-w-44">
+              <p className="text-[11px] font-mono text-blue-600 dark:text-blue-400">Current role</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">SWE Intern</p>
+              <p className="text-xs text-gray-500 dark:text-slate-400">@ Capital One</p>
             </div>
           </div>
 
           {/* Text */}
-          <div className="space-y-8">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+          <div className="space-y-7">
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight max-w-3xl">
               Building ML systems<br className="hidden sm:block" /> from research to production.
             </h3>
             <p className="max-w-3xl text-sm md:text-base text-gray-600 dark:text-slate-300 leading-relaxed">
@@ -1282,16 +1283,16 @@ function AboutSection() {
             </p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {aboutHighlights.map(item => (
-                <div key={item.label} className="border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
+                <div key={item.label} className="border-l-2 border-blue-500 bg-white dark:bg-slate-900 px-4 py-3 shadow-sm shadow-slate-950/5">
                   <p className="text-[11px] font-mono text-blue-600 dark:text-blue-400">{item.label}</p>
                   <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white leading-snug">{item.detail}</p>
                 </div>
               ))}
             </div>
-            <div className="grid sm:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-3 gap-6 pt-2">
               {aboutColumns.map((col, i) => (
-                <div key={i}>
-                  <div className="h-9 w-9 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mb-3">
+                <div key={i} className="border-t border-gray-200 dark:border-slate-800 pt-5">
+                  <div className="h-9 w-9 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mb-4">
                     <col.Icon className="h-4.5 w-4.5 text-blue-600" strokeWidth={1.75} />
                   </div>
                   <p className="text-sm text-gray-600 dark:text-slate-300 leading-relaxed">{col.text}</p>
