@@ -39,7 +39,6 @@ import projOnboarding from "./assets/projects/onbaoardingreal.png";
 import projSMS from "./assets/projects/realsms.png";
 import projWebsite from "./assets/projects/port.png";
 import logoC1 from "./assets/logos/c1-logo.png";
-import logoBTT from "./assets/logos/btt-logo.png";
 import logoTCS from "./assets/logos/tcs-logo.jpg";
 import logoCaretech from "./assets/logos/caretechlogo.jpeg";
 import logoCTC from "./assets/logos/ctclogo.jpeg";
@@ -47,8 +46,6 @@ import logoBlockchain from "./assets/logos/blockchainlogo.jpeg";
 import logoSENS from "./assets/logos/senslogo.jpeg";
 import logoCQ from "./assets/logos/cqlogo.png";
 import logoCARE from "./assets/logos/carelogo.png";
-import logoHandshake from "./assets/logos/hlogo.jpeg";
-import logoThinkNeuro from "./assets/logos/tnlogo.png";
 import logoCOSMOS from "./assets/logos/cosmosLogo.jpeg";
 import logoRFA from "./assets/logos/rfalogo.jpeg";
 import logoSW from "./assets/logos/swlogo.jpeg";
@@ -372,7 +369,7 @@ function Terminal({ onClose }: { onClose: () => void }) {
         out.push(
           { type: "output", text: "Jacob Horne" },
           { type: "output", text: "Software Engineer · ML Researcher · Instructor" },
-          { type: "output", text: "UCI Computer Science — GPA 3.9" },
+          { type: "output", text: "UCI Computer Science — GPA 3.92" },
           { type: "blank" },
         ); break;
       case "ls":
@@ -438,8 +435,8 @@ function Terminal({ onClose }: { onClose: () => void }) {
         out.push(
           { type: "output", text: "Languages   Python · TypeScript · JavaScript · C/C++ · SQL · Java" },
           { type: "output", text: "Frameworks  FastAPI · Next.js · React · Node.js · PyTorch · LangChain" },
-          { type: "output", text: "Infra       PostgreSQL · Supabase · pgvector · Docker · AWS" },
-          { type: "output", text: "AI/ML       LLMs · RAG · Agents · PINNs · XGBoost · Transformers" },
+          { type: "output", text: "Infra       Databricks · Airflow · PostgreSQL · Docker · AWS" },
+          { type: "output", text: "AI/ML       Recommenders · LLMs · RAG · Agents · PINNs · CUDA" },
           { type: "blank" },
         ); break;
       case "ping":
@@ -569,43 +566,30 @@ const experienceRoles: RoleEntry[] = [
     logoImg: logoC1,
     company: "Capital One",
     role: "Software Engineering Intern",
-    period: "Summer 2026",
-    bullets: ["Incoming Summer 2026"],
-    tags: [],
-  },
-  {
-    logo: "Break", 
-    logoImg: logoBTT,
-    company: "Break Through Tech",
-    role: "AI/ML Fellow",
-    period: "Mar 2026 — Present",
+    period: "Jun 2026 — Present",
     isActive: true,
     bullets: [
-      "Incoming 2026/27 cohort",
+      "Working on ML recommender infrastructure for customer-message experiences.",
+      "Replaced a network API call with an in-process SDK, reducing latency by 25% for 60M+ monthly customers.",
+      "Built Databricks/PySpark sampling pipelines over 800M+ historical customer-message outcomes, enabling candidate recommender models to test against broader production behavior 28x faster.",
+      "Automated sampling and upstream jobs in Apache Airflow with 18 schema, distribution, and multiplier quality checks.",
     ],
-    tags: [],
+    tags: ["Python", "PySpark", "Databricks", "Airflow", "Recommender Systems"],
   },
   {
-    logo: "Tata",
-    logoImg: logoTCS,
-    company: "Tata Consultancy Services",
-    role: "Software Engineer (Capstone)",
-    period: "Jan 2026 — Present",
-    isActive: true,
-    bullets: [
-      "Built a 5-stage agentic pipeline with an ethics gate blocking vulnerable users from persuasion responses with 100% deterministic accuracy.",
-      "Designed a zero-shot DeBERTa v3 classifier across 8 emotion labels and 12 financial intent categories mapped to Cialdini-backed YAML strategy files.",
-      "Built a PDF/OCR ingestion pipeline across 6 banking document types with OpenAI embeddings in pgvector for semantic retrieval.",
-    ],
-    tags: ["Python", "DeBERTa", "GPT-4o-mini", "FastAPI", "pgvector", "OpenAI"],
+    logo: "SNL",
+    company: "Sandia National Laboratories",
+    role: "Incoming Software Engineering Intern — AI R&D Toolkits",
+    period: "Fall 2026",
+    bullets: ["Incoming software engineering internship focused on AI R&D toolkits."],
+    tags: ["AI R&D", "Software Engineering"],
   },
   {
     logo: "CareT",
     logoImg: logoCaretech,
     company: "CareTech at UCI",
     role: "Software Developer",
-    period: "Oct 2025 — Present",
-    isActive: true,
+    period: "Oct 2025 — Jun 2026",
     bullets: [
       "Processed and prepared 28K+ food images using Python, OpenCV, and PyTorch across 270+ diverse food categories.",
       "Trained PyTorch object detection models via Roboflow and Colab with augmentation techniques (CLAHE, brightness, gamma), achieving 81% classification accuracy.",
@@ -618,8 +602,7 @@ const experienceRoles: RoleEntry[] = [
     logoImg: logoCTC,
     company: "Commit the Change",
     role: "Full-Stack Developer",
-    period: "Oct 2025 — Present",
-    isActive: true,
+    period: "Oct 2025 — Jun 2026",
     bullets: [
       "Built a scheduling/quota-management platform with React and TypeScript supporting 23,000+ patients across clinics.",
       "Developed secure Node.js/Express REST APIs processing 5,000+ requests/week for auth and workflow automation.",
@@ -632,8 +615,7 @@ const experienceRoles: RoleEntry[] = [
     logoImg: logoBlockchain,
     company: "Blockchain @ UCI",
     role: "Technical Developer",
-    period: "Oct 2025 — Present",
-    isActive: true,
+    period: "Oct 2025 — Apr 2026",
     bullets: [
       "Developing the backend agent system for Agonus, an AI-powered crypto trading tournament platform.",
       "Building full-stack infrastructure for autonomous trading agents to execute strategies and compete on-chain in real time.",
@@ -722,32 +704,6 @@ const researchRoles: RoleEntry[] = [
     tags: ["Python", "LangGraph", "NLP", "NumPy", "Pandas", "Matplotlib", "LLMs"],
   },
   {
-    logo: "Hand",
-    logoImg: logoHandshake,
-    company: "Handshake",
-    role: "AI Model Validation Expert",
-    period: "Sep 2025 — Dec 2025",
-    bullets: [
-      "Validated LLM outputs across production AI systems for accuracy, reliability, and safety.",
-      "Optimized data-labeling workflows to improve consistency and labeling throughput.",
-      "Enforced model compliance standards for enterprise AI deployments.",
-    ],
-    tags: ["LLMs", "Data Labeling", "QA", "AI Safety"],
-  },
-  {
-    logo: "Think",
-    logoImg: logoThinkNeuro,
-    company: "Think Neuro",
-    role: "AI Researcher",
-    period: "Sep 2024 — Jan 2025",
-    bullets: [
-      "Conducted bibliometric analysis of 90+ peer-reviewed studies on AI/ML in brain-computer interfaces and neurofeedback.",
-      "Applied R-based statistical analysis to uncover trends in neuroimaging, neural decoding, and AI-driven neurotechnology.",
-      "Produced research summaries identifying emerging directions across the BCI research landscape.",
-    ],
-    tags: ["R", "Python", "Data Visualization", "Research", "BCI"],
-  },
-  {
     logo: "UCSD",
     logoImg: logoCOSMOS,
     company: "UCSD COSMOS — Game AI Design",
@@ -826,6 +782,16 @@ const projects: Project[] = [
     demoUrl: "https://agonus-frontend-45256917921.us-central1.run.app/",
     imgUrl: projAgonus,
     group: "Blockchain @ UCI",
+  },
+  {
+    name: "TCS Banking AI Capstone",
+    monogram: "TCS",
+    desc: "React/FastAPI banking chatbot with DeBERTa ethics checks, PDF/OCR document ingestion, OpenAI embeddings, and PostgreSQL/pgvector retrieval to ground customer guidance in banking data.",
+    tech: ["FastAPI", "PostgreSQL", "pgvector", "OpenAI", "DeBERTa"],
+    accentLine: "bg-sky-500",
+    repoUrl: "#",
+    imgUrl: logoTCS,
+    group: "Tata Consultancy Services",
   },
   {
     name: "Prop.Intel",
@@ -1091,12 +1057,13 @@ function Navbar({
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CURRENTLY_ITEMS = [
-  "Building an AI smart contract audit playground that proves exploits",
-  "Building a real-time food recognition and vitamin tracking platform",
-  "Building an appointment-management platform for local non profit",
-  "Researching physics-informed ML (PINNs) for thermal storage optimization",
-  "Building a financial chatbot with an agentic ethics gate for persuasian",
-  "Researching uncertainty in multi-agent LLMs through token analysis",
+  "Working on recommender infrastructure at Capital One",
+  "Building PySpark sampling pipelines for ML recommender evaluation",
+  "Researching token-level confidence and LLM evaluation at DLL",
+  "Researching physics-informed ML for thermal storage optimization",
+  "Learning system design to understand the systems around me",
+  "Building a CUDA LLM project from the kernels up",
+  "Building a personal operating system across my tools",
 ];
 
 function LaptopVisual() {
@@ -1137,7 +1104,7 @@ function LaptopVisual() {
             <div className="font-mono text-xs leading-[1.65] text-slate-300 overflow-hidden">
               <div><span className="text-purple-400">const</span> <span className="text-blue-300">jacob</span> = {"{"}</div>
               <div className="pl-4"><span className="text-slate-400">name:</span>{"      "}<span className="text-amber-300">"Jacob Horne"</span>,</div>
-              <div className="pl-4"><span className="text-slate-400">role:</span>{"      "}<span className="text-amber-300">"Incoming SWE Intern @ Capital One"</span>,</div>
+              <div className="pl-4"><span className="text-slate-400">role:</span>{"      "}<span className="text-amber-300">"SWE Intern @ Capital One"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">studying:</span>{"  "}<span className="text-amber-300">"CS @ UCI"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">gpa:</span>{"       "}<span className="text-cyan-400">3.9</span>,</div>
               <div className="pl-4 min-h-[3.3em]">
@@ -1199,7 +1166,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
             </div>
             <p className="text-base text-slate-400 leading-relaxed max-w-lg">
               I build production-focused software systems across machine learning, full-stack development,
-              and AI. Currently studying CS at UCI and incoming SWE Intern at Capital One.
+              and AI. Currently studying CS at UCI and interning as a Software Engineer at Capital One.
             </p>
             {/* Buttons */}
             <div className="flex flex-wrap gap-3 pt-1">
@@ -1270,7 +1237,7 @@ function AboutSection() {
               <img src={pfp} alt="Jacob Horne" className="w-full h-full object-cover" />
             </div>
             <div className="absolute -bottom-4 -right-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-md rounded-xl px-4 py-3">
-              <p className="text-xs text-gray-400 dark:text-slate-500">Incoming</p>
+              <p className="text-xs text-gray-400 dark:text-slate-500">Current</p>
               <p className="text-sm font-semibold text-gray-900 dark:text-white">@ Capital One</p>
             </div>
           </div>
@@ -1451,8 +1418,8 @@ function EducationContact() {
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">University of California, Irvine</p>
                 <p className="text-sm text-gray-600 dark:text-slate-300">B.S. Computer Science</p>
                 <p className="text-sm text-blue-400">Campuswide Honors Collegium</p>
-                <p className="text-sm font-medium text-gray-800 dark:text-slate-100 pt-1">GPA: 3.9</p>
-                <p className="text-xs text-gray-400 dark:text-slate-500 font-mono">Expected Graduation: Jun 2027</p>
+                <p className="text-sm font-medium text-gray-800 dark:text-slate-100 pt-1">GPA: 3.92</p>
+                <p className="text-xs text-gray-400 dark:text-slate-500 font-mono">Expected Graduation: Jun 2028</p>
               </div>
               <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-800">
                 <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-3">
@@ -1483,7 +1450,7 @@ function EducationContact() {
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs text-gray-500 dark:text-slate-400 font-mono shrink-0">Open to internships/opportunities:</span>
-                {["Fall 2026", "Winter 2027", "Summer 2027"].map(term => (
+                {["Winter 2027", "Summer 2027", "Fall 2027"].map(term => (
                   <span key={term} className="rounded-full bg-green-500/10 border border-green-500/25 px-2.5 py-0.5 text-xs text-green-400 font-mono">
                     {term}
                   </span>
@@ -1544,28 +1511,29 @@ function NowSection() {
     {
       label: "Building",
       entries: [
-        "ML surrogates (GRU + PINN) for thermal energy storage prediction @ Calit2",
-        "Agentic ethics gate pipeline for financial chatbot @ TCS Capstone",
-        "Smart contract audit playground",
-        "Full-stack appointment-management platform for Celebrating Life Community Health Center",
-        "Nutrition tracking app with real-time food scanning for vitamin intake and recommendations",
+        "ML recommender infrastructure for customer-message experiences @ Capital One",
+        "Databricks/PySpark sampling pipelines for recommender evaluation",
+        "Token-level confidence and multi-agent LLM evaluation pipelines @ UCI Digital Learning Lab",
+        "Physics-informed GRU/PINN surrogates for thermal storage prediction @ Calit2",
+        "CUDA LLM systems project focused on lower-level model execution",
+        "A personal operating system that connects my tools, notes, workflows, and automations",
       ],
     },
     {
       label: "Learning",
       entries: [
-        "Physics-informed neural networks and heat transfer PDE constraints",
-        "Multi-agent LLM evaluation and token-level confidence modeling",
-        "Distributed systems / networks — scalability patterns, consensus, and fault tolerance",
-        "LLM optimization — quantization, KV caching, and inference throughput",
+        "System design so I can better understand the production systems around me",
+        "Recommender systems, offline evaluation, and production data pipelines",
+        "Physics-informed neural networks and heat-transfer constraints",
+        "LLM optimization, CUDA kernels, quantization, KV caching, and inference throughput",
       ],
     },
     {
       label: "Up next",
       entries: [
-        "Incoming SWE Intern @ Capital One — Summer 2026",
-        "Break Through Tech AI/ML Fellowship — 2026/27 cohort",
-        "MAISS Peer Mentor @ UCI",
+        "Incoming SWE Intern @ Sandia National Laboratories — Fall 2026",
+        "Continuing LLM systems research @ UCI Digital Learning Lab",
+        "Turning the personal operating system project into a durable daily workflow",
       ],
     },
   ];
@@ -1665,10 +1633,245 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   );
 }
 
+// ─── Swimming fish easter egg ─────────────────────────────────────────────────
+
+const FISH_EMOJIS = ["🐟", "🐠", "🐡"];
+
+function SwimmingFish({ onDone, onClick }: { onDone: () => void; onClick: () => void }) {
+  const fishRef = useRef<HTMLSpanElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const onDoneRef = useRef(onDone);
+  useEffect(() => { onDoneRef.current = onDone; });
+
+  useEffect(() => {
+    const fish = fishRef.current;
+    const label = labelRef.current;
+    if (!fish || !label) return;
+
+    const SPEED = 0.85;
+    const WANDER = 0.044;   // max random turn per frame (rad)
+    const MARGIN = 110;     // px from viewport edge before steering kicks in
+    const STEER = 0.08;     // steering strength near edges
+
+    const w = window.innerWidth, h = window.innerHeight;
+    let x = MARGIN + Math.random() * (w - MARGIN * 2);
+    let y = MARGIN + Math.random() * (h - MARGIN * 2);
+    let angle = Math.random() * Math.PI * 2;
+
+    fish.textContent = FISH_EMOJIS[Math.floor(Math.random() * FISH_EMOJIS.length)];
+
+    // Fade fish in
+    requestAnimationFrame(() => { fish.style.opacity = "0.48"; });
+
+    // Show "click me!" label after a delay
+    const labelTid = window.setTimeout(() => { label.style.opacity = "1"; }, 5000 + Math.random() * 4000);
+
+    let raf: number;
+    const frame = () => {
+      // Wander
+      angle += (Math.random() - 0.5) * WANDER * 2;
+      // Steer away from edges (proportional force)
+      if (x < MARGIN)       angle += STEER * (MARGIN - x) / MARGIN;
+      if (x > w - MARGIN)   angle -= STEER * (x - (w - MARGIN)) / MARGIN;
+      if (y < MARGIN)       angle += STEER * (MARGIN - y) / MARGIN;
+      if (y > h - MARGIN)   angle -= STEER * (y - (h - MARGIN)) / MARGIN;
+
+      x = Math.max(24, Math.min(w - 36, x + Math.cos(angle) * SPEED));
+      y = Math.max(24, Math.min(h - 36, y + Math.sin(angle) * SPEED));
+
+      fish.style.left  = `${x}px`;
+      fish.style.top   = `${y}px`;
+      fish.style.transform = `scaleX(${Math.cos(angle) < 0 ? 1 : -1})`;
+
+      label.style.left = `${x - 10}px`;
+      label.style.top  = `${y + 34}px`;
+
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+
+    // Fade out after a random lifetime, then signal done
+    const lifetime = 35000 + Math.random() * 55000; // 35–90s
+    const fadeTid = window.setTimeout(() => {
+      fish.style.transition  = "opacity 1.5s";
+      label.style.transition = "opacity 1.5s";
+      fish.style.opacity  = "0";
+      label.style.opacity = "0";
+      window.setTimeout(() => onDoneRef.current(), 1500);
+    }, lifetime);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(labelTid);
+      clearTimeout(fadeTid);
+    };
+  }, []);
+
+  return (
+    <>
+      <span
+        ref={fishRef}
+        style={{
+          position: "fixed", zIndex: 25, fontSize: "28px",
+          cursor: "pointer", userSelect: "none",
+          pointerEvents: "auto", lineHeight: 1,
+          display: "inline-block", padding: "8px",
+          left: "-200px", top: "-200px",
+          opacity: 0, transition: "opacity 1.2s",
+        }}
+        onClick={onClick}
+      />
+      <span
+        ref={labelRef}
+        style={{
+          position: "fixed", zIndex: 25,
+          fontSize: "9px", fontFamily: "monospace",
+          color: "#86efac", opacity: 0,
+          pointerEvents: "none", userSelect: "none",
+          transition: "opacity 1.2s", whiteSpace: "nowrap",
+        }}
+      >
+        click me!
+      </span>
+    </>
+  );
+}
+
+function FishSpawner({ onClick }: { onClick: () => void }) {
+  const [active, setActive] = useState(false);
+  const [fishKey, setFishKey] = useState(0);
+  const tidRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    // First fish: 20–40s after load
+    tidRef.current = window.setTimeout(() => setActive(true), 20000 + Math.random() * 20000);
+    return () => clearTimeout(tidRef.current);
+  }, []);
+
+  const handleDone = () => {
+    setActive(false);
+    // Next fish: 50–120s later
+    tidRef.current = window.setTimeout(() => {
+      setFishKey(k => k + 1);
+      setActive(true);
+    }, 50000 + Math.random() * 70000);
+  };
+
+  if (!active) return null;
+  return <SwimmingFish key={fishKey} onDone={handleDone} onClick={onClick} />;
+}
+
+// ─── Marine life easter egg page ──────────────────────────────────────────────
+
+function MarineEasterEgg({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const facts = [
+    {
+      emoji: "🐙",
+      title: "Octopuses are the blueprint",
+      body: "2/3 of an octopus's neurons live in its arms, not its brain — fully distributed intelligence. I think about this constantly when designing systems.",
+    },
+    {
+      emoji: "🦈",
+      title: "450 million years of uptime",
+      body: "Sharks predate trees. They've survived five mass extinctions without meaningful redesign. Respect the architecture that just works.",
+    },
+    {
+      emoji: "🦐",
+      title: "Mantis shrimp are unreal",
+      body: "16 types of photoreceptors. Humans have 3. They can see polarized light and punch with the force of a bullet. I want to write a paper about them someday.",
+    },
+    {
+      emoji: "🪸",
+      title: "Reef efficiency nerd",
+      body: "Coral reefs cover less than 1% of the ocean floor but host 25% of all marine species. Maximum diversity per unit area. That's good software.",
+    },
+    {
+      emoji: "🐋",
+      title: "Whale songs hit different",
+      body: "Blue whale calls are the loudest animal sounds on Earth and travel thousands of miles. Long-distance distributed messaging, implemented in 1000 BCE.",
+    },
+    {
+      emoji: "🌊",
+      title: "The ocean is the best debugger",
+      body: "Grew up near the coast. The ocean forces systems thinking — everything is interconnected, everything has a feedback loop, nothing exists in isolation.",
+    },
+  ];
+
+  return (
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto"
+      style={{ background: "linear-gradient(to bottom, #010d1f, #020b18, #030f1c)" }}
+      onClick={onClose}
+    >
+      {/* decorative background blobs */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-blue-900/20 blur-3xl" />
+        <div className="absolute bottom-1/3 right-1/4 h-64 w-64 rounded-full bg-cyan-900/15 blur-3xl" />
+      </div>
+
+      <div
+        className="relative min-h-screen flex flex-col items-center justify-start px-6 py-20"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* close */}
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 text-slate-600 hover:text-slate-300 transition-colors"
+          aria-label="Close"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        {/* header */}
+        <div className="text-center mb-14">
+          <div className="text-6xl mb-5 select-none">🐟</div>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            you found the fish.
+          </h1>
+          <p className="text-sm font-mono text-blue-400/70 mb-2">
+            secret page · for the curious
+          </p>
+          <div className="h-px w-20 mx-auto bg-blue-600/40 mt-4" />
+        </div>
+
+        {/* intro */}
+        <p className="text-slate-300 text-center leading-relaxed max-w-lg mb-14 text-[15px]">
+          Beyond the resume, I'm genuinely obsessed with the ocean and the things that live in it.
+          Here are some things about me you'd only find out if you asked — or clicked a fish.
+        </p>
+
+        {/* facts */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl w-full mb-14">
+          {facts.map(f => (
+            <div
+              key={f.title}
+              className="rounded-2xl border border-blue-900/40 bg-blue-950/30 p-6 text-left hover:border-blue-700/50 hover:bg-blue-950/50 transition-all duration-200"
+            >
+              <div className="text-3xl mb-3 select-none">{f.emoji}</div>
+              <h3 className="font-semibold text-white text-sm mb-2">{f.title}</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">{f.body}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* footer */}
+        <p className="text-slate-700 text-xs font-mono">esc or click outside to close</p>
+      </div>
+    </div>
+  );
+}
+
 // ─── App ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
   const [terminalOpen, setTerminalOpen] = useState(false);
+  const [marineOpen, setMarineOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
   const openTerminal = () => setTerminalOpen(true);
   const closeTerminal = () => setTerminalOpen(false);
@@ -1676,6 +1879,7 @@ export default function App() {
   return (
     <div className={`min-h-screen${darkMode ? " dark" : ""}`}>
       {terminalOpen && <Terminal onClose={closeTerminal} />}
+      {marineOpen && <MarineEasterEgg onClose={() => setMarineOpen(false)} />}
       <Navbar onOpenTerminal={openTerminal} darkMode={darkMode} onToggleDark={() => setDarkMode(v => !v)} />
       <Hero onOpenTerminal={openTerminal} />
       <AboutSection />
@@ -1686,6 +1890,7 @@ export default function App() {
       <EducationContact />
       <NowSection />
       <ExploreBar onOpenTerminal={openTerminal} />
+      <FishSpawner onClick={() => setMarineOpen(true)} />
     </div>
   );
 }
