@@ -552,15 +552,15 @@ type Project = {
 const aboutColumns: AboutColumn[] = [
   {
     Icon: Code2,
-    text: "I'm passionate about building technology that solves real-world problems and creates meaningful impact.",
+    text: "I build software that turns messy data and product constraints into systems people can actually use.",
   },
   {
     Icon: Cpu,
-    text: "I enjoy working at the intersection of AI, systems, and product — turning ideas into scalable, data-driven solutions.",
+    text: "My current work sits across recommender infrastructure, LLM evaluation, physics-informed ML, and robotics perception.",
   },
   {
     Icon: Users,
-    text: "Whether I'm researching new ML techniques or shipping full-stack products, I thrive where I can learn, build, and grow with others.",
+    text: "I like teams where research taste, engineering discipline, and user empathy all matter at the same time.",
   },
 ];
 
@@ -1266,7 +1266,7 @@ function AboutSection() {
           {/* Text */}
           <div className="space-y-8">
             <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
-              Builder. Problem Solver.<br className="hidden sm:block" /> Lifelong Learner.
+              Building ML systems<br className="hidden sm:block" /> from research to production.
             </h3>
             <div className="grid sm:grid-cols-3 gap-6">
               {aboutColumns.map((col, i) => (
