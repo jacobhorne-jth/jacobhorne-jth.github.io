@@ -704,7 +704,7 @@ const researchRoles: RoleEntry[] = [
     bullets: [
       "Analyzed LLM output datasets using NumPy, Pandas, and Matplotlib for token log-probs, confidence behavior, and uncertainty modeling.",
       "Built multi-agent evaluation pipelines in LangGraph with critic, advocate, and judge agents orchestrating rubric-based reasoning and scoring across essay evaluation workflows.",
-      "Co-authored paper accepted to ICLR 2026 LLM Reasoning Workshop on multi-agent evaluation and token-level confidence.",
+      "Co-authored papers on multi-agent LLM evaluation, token-level confidence, and reasoning quality across ICLR, ACL SRW, and GEM venues.",
     ],
     featured: [
       {
@@ -712,8 +712,12 @@ const researchRoles: RoleEntry[] = [
         url: "https://openreview.net/forum?id=0FOOrwSQ9E",
       },
       {
-        text: "Paper accepted to ACL 2026 Student Research Workshop",
-        url: "https://openreview.net/forum?id=thD04Xbris",
+        text: "ACL 2026 Student Research Workshop — \"The Confident Liar: Diagnosing Multi-Agent Debate with Log-Probabilities and LLM-as-Judge\"",
+        url: "https://aclanthology.org/2026.acl-srw.121/",
+      },
+      {
+        text: "GEM 2026 — \"Early-Token Confidence Predicts Reasoning Quality in Multi-Agent LLM Debate\"",
+        url: "https://aclanthology.org/2026.gem-main.60/",
       },
     ],
     tags: ["Python", "LangGraph", "NLP", "NumPy", "Pandas", "Matplotlib", "LLMs"],
