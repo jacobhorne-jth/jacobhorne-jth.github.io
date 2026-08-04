@@ -564,6 +564,13 @@ const aboutColumns: AboutColumn[] = [
   },
 ];
 
+const aboutHighlights = [
+  { label: "Capital One", detail: "Recommender infrastructure" },
+  { label: "UCI Digital Learning Lab", detail: "LLM evaluation research" },
+  { label: "Calit2", detail: "Physics-informed ML" },
+  { label: "URP @ UCI", detail: "Robotics perception" },
+];
+
 const experienceRoles: RoleEntry[] = [
   {
     logo: "Capit",
@@ -1268,6 +1275,19 @@ function AboutSection() {
             <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
               Building ML systems<br className="hidden sm:block" /> from research to production.
             </h3>
+            <p className="max-w-3xl text-sm md:text-base text-gray-600 dark:text-slate-300 leading-relaxed">
+              I am a CS student at UCI working on production recommender systems, LLM evaluation research,
+              physics-informed modeling, and robotics perception. I care about the path from idea to shipped
+              system: data, constraints, interfaces, reliability, and the people who use the work.
+            </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {aboutHighlights.map(item => (
+                <div key={item.label} className="border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
+                  <p className="text-[11px] font-mono text-blue-600 dark:text-blue-400">{item.label}</p>
+                  <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white leading-snug">{item.detail}</p>
+                </div>
+              ))}
+            </div>
             <div className="grid sm:grid-cols-3 gap-6">
               {aboutColumns.map((col, i) => (
                 <div key={i}>
