@@ -435,10 +435,12 @@ function Terminal({ onClose }: { onClose: () => void }) {
         ); break;
       case "skills":
         out.push(
-          { type: "output", text: "Languages   Python · TypeScript · JavaScript · C/C++ · SQL · Java" },
-          { type: "output", text: "Frameworks  FastAPI · Next.js · React · Node.js · PyTorch · LangChain" },
-          { type: "output", text: "Infra       Databricks · Airflow · PostgreSQL · Docker · AWS" },
-          { type: "output", text: "AI/ML       Recommenders · LLMs · RAG · Agents · PINNs · CUDA" },
+          { type: "output", text: "Languages   Python · TypeScript · JavaScript · C/C++ · SQL · Java · R" },
+          { type: "output", text: "ML/Data     PyTorch · scikit-learn · PySpark · NumPy · Pandas · OpenCV" },
+          { type: "output", text: "Backend     FastAPI · Node.js · Express · PostgreSQL · Redis · pgvector" },
+          { type: "output", text: "Frontend    React · Next.js · Tailwind CSS · Zustand · Chakra UI" },
+          { type: "output", text: "Infra       Databricks · Airflow · Docker · AWS · Supabase · Git" },
+          { type: "output", text: "Focus       Recommenders · LLM eval · Agents · PINNs · CUDA · Perception" },
           { type: "blank" },
         ); break;
       case "ping":
