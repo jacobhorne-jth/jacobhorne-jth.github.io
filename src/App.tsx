@@ -363,7 +363,7 @@ function Terminal({ onClose }: { onClose: () => void }) {
         window.open("https://linkedin.com/in/jacobhornejth", "_blank");
         out.push({ type: "output", text: "Opening LinkedIn..." }, { type: "blank" }); break;
       case "resume":
-        window.open("/resume.pdf", "_blank");
+        window.open("/JacobHorneResume.pdf", "_blank");
         out.push({ type: "output", text: "Opening resume..." }, { type: "blank" }); break;
       case "email":
         out.push({ type: "output", text: "jacobhorne.jth@gmail.com" }, { type: "blank" }); break;
@@ -1203,7 +1203,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
             {/* Buttons */}
             <div className="flex flex-wrap gap-3 pt-1">
               <a
-                href="/resume.pdf"
+                href="/JacobHorneResume.pdf"
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-lg bg-blue-600 hover:bg-blue-500 px-5 py-2.5 text-sm font-medium transition-colors duration-150"
