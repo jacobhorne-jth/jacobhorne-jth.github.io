@@ -1,0 +1,62 @@
+Jacob Horne
+(669) 261-1669 | jacobhorne.jth@gmail.com | github.com/jacobhorne-jth | linkedin.com/in/jacobhornejth | Santa Clara, CA
+
+EDUCATION
+University of California, Irvine                                                     June 2028
+Bachelor of Science in Computer Science; Campuswide Honors Collegium                 GPA: 3.92
+Coursework: Object-Oriented Programming (C/C++), Data Structures & Algorithms, Databases, Computer Architecture
+
+EXPERIENCE
+Sandia National Laboratories                                                         Aug 2026 - Present
+Software Engineering Intern - AI R&D Tooling                                         Livermore, CA
+- Building AI R&D tooling that makes Sandia's AI research usable by researchers, engineers, and mission users.
+- Turning research workflows into practical software interfaces, tooling, and systems users can rely on.
+
+Capital One                                                                          Jun 2026 - Aug 2026
+Software Engineering Intern - ML Recommender Infrastructure                          New York, NY
+- Replaced a network API call with an in-process SDK to reduce latency by 25% for 60M+ customers monthly.
+- Built Databricks/PySpark sampling pipeline over 800M+ historical customer-message outcomes, enabling candidate
+  recommender models to test against broader production behavior 28x faster.
+- Automated sampling and upstream jobs in Apache Airflow with 18 schema, distribution, and multiplier quality checks.
+
+UCI Digital Learning Lab                                                             Dec 2025 - Present
+Research Assistant - LLM Systems and Evaluation                                      Irvine, CA
+- Built Python-based multi-agent essay-grading pipelines with LangGraph, implementing critic, advocate, and judge agents.
+- Analyzed LLM output datasets using NumPy, Pandas, and Matplotlib for token log-probs, behavior, and confidence.
+- Co-authored paper accepted to ICLR 2026 LLM Workshop on multi-agent evaluation and token-level LLM confidence.
+
+Calit2                                                                               Apr 2026 - Present
+AI/ML Undergraduate Researcher - Physics-Informed Machine Learning                   Irvine, CA
+- Built and optimized a physics-informed PyTorch/GRU time-series pipeline with heat-transfer residual losses and
+  initial-condition constraints to replace hours-long FEA simulations with fast cylindrical wall temperature predictions.
+- Accelerated model training with MPS/GPU support, gradient clipping, bounded parameter discovery, and multi-seed
+  benchmarking to compare PINN, LSTM, and GRU architectures across timestep resolutions and thermal scenarios.
+- Achieved R-squared = 0.99 with 12,000x faster inference than FEA, enabling scalable heat-transfer modeling.
+
+CareTech, UCI                                                                        Oct 2025 - Jun 2026
+Software Developer - Computer Vision                                                 Irvine, CA
+- Built a Next.js/FastAPI food-scanning app for real-time model inference and automated vitamin and nutrient tracking.
+- Integrated PyTorch inference with backend APIs and nutrition data, converting food predictions into live intake totals.
+- Processed and augmented 28K+ food images across 270+ categories, training PyTorch models to 81% accuracy.
+
+Commit the Change, UCI                                                               Oct 2025 - Jun 2026
+Full-Stack Developer - Backend and Platform                                          Irvine, CA
+- Built Node.js/Express APIs processing 5,000+ weekly requests for a scheduling platform serving 18,000+ patients.
+- Reduced booking conflicts and manual scheduling workload by 30% with real-time appointment and quota tracking.
+
+PROJECTS
+Agonus (Blockchain, UCI) | LangChain, FastAPI, Next.js, Solidity, PostgreSQL         Oct 2025 - Apr 2026
+- Built a decentralized AI trading platform where autonomous agents compete in crypto tournaments with on-chain betting,
+  real-time performance tracking, tokenized reward incentives, and a live tournament dashboard UI.
+- Architected LangChain ReAct agents with custom tools for market data, trade execution, planning, and memory; designed
+  Celery/Redis orchestration with scheduling, locking, and crash recovery to manage 10+ concurrent agents.
+
+Tata Consultancy Services Capstone | FastAPI, PostgreSQL, pgvector, OpenAI, DeBERTa  Jan 2026 - Jun 2026
+- Co-developed a React/FastAPI banking chatbot with DeBERTa ethics checks for safe, compliant customer guidance.
+- Owned an end-to-end document RAG pipeline with PDF/OCR ingestion, document classification, figure extraction, OpenAI
+  embeddings, PostgreSQL/pgvector retrieval, and banking-metric analysis to ground responses in customer data.
+
+TECHNICAL SKILLS
+Languages: Python, TypeScript, JavaScript, C/C++, SQL, Java, R, MIPS Assembly
+ML/Data: PyTorch, scikit-learn, TensorFlow, PySpark, OpenCV, LangChain, LangGraph, NumPy, Pandas, Matplotlib
+Platforms/Tools: Databricks, Airflow, PostgreSQL, Redis, Celery, FastAPI, Docker, Git, AWS (ECS, Fargate, S3, CloudWatch)
