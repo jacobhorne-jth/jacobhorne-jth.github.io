@@ -573,28 +573,31 @@ const aboutHighlights = [
 
 const experienceRoles: RoleEntry[] = [
   {
+    logo: "SNL",
+    logoImg: logoSandia,
+    company: "Sandia National Laboratories",
+    role: "Software Engineering Intern — AI R&D Tooling",
+    period: "Aug 2026 — Present",
+    isActive: true,
+    bullets: [
+      "Building AI R&D tooling that makes Sandia's AI research more usable for researchers, engineers, and mission users.",
+      "Turning research workflows into practical software interfaces, tooling, and systems users can rely on.",
+    ],
+    tags: ["AI R&D", "Developer Tooling", "Software Engineering"],
+  },
+  {
     logo: "Capit",
     logoImg: logoC1,
     company: "Capital One",
     role: "Software Engineering Intern",
-    period: "Jun 2026 — Present",
-    isActive: true,
+    period: "Jun 2026 — Aug 2026",
     bullets: [
-      "Working on ML recommender infrastructure for customer-message experiences.",
+      "Built ML recommender infrastructure for customer-message experiences.",
       "Replaced a network API call with an in-process SDK, reducing latency by 25% for 60M+ monthly customers.",
       "Built Databricks/PySpark sampling pipelines over 800M+ historical customer-message outcomes, enabling candidate recommender models to test against broader production behavior 28x faster.",
       "Automated sampling and upstream jobs in Apache Airflow with 18 schema, distribution, and multiplier quality checks.",
     ],
     tags: ["Python", "PySpark", "Databricks", "Airflow", "Recommender Systems"],
-  },
-  {
-    logo: "SNL",
-    logoImg: logoSandia,
-    company: "Sandia National Laboratories",
-    role: "Incoming Software Engineering Intern — AI R&D Toolkits",
-    period: "Fall 2026",
-    bullets: ["Incoming software engineering internship focused on AI R&D toolkits."],
-    tags: ["AI R&D", "Software Engineering"],
   },
   {
     logo: "URP",
@@ -1555,8 +1558,9 @@ function NowSection() {
     {
       label: "Building",
       entries: [
-        "ML recommender infrastructure for customer-message experiences @ Capital One",
-        "Databricks/PySpark sampling pipelines for recommender evaluation",
+        "AI R&D tooling that makes Sandia's AI research usable by real users",
+        "Interfaces and systems for turning research workflows into practical software",
+        "Previously built ML recommender infrastructure for customer-message experiences @ Capital One",
         "Token-level confidence and multi-agent LLM evaluation pipelines @ UCI Digital Learning Lab",
         "Physics-informed GRU/PINN surrogates for thermal storage prediction @ Calit2",
         "CUDA LLM systems project focused on lower-level model execution",
@@ -1567,7 +1571,7 @@ function NowSection() {
       label: "Learning",
       entries: [
         "System design so I can better understand the production systems around me",
-        "Recommender systems, offline evaluation, and production data pipelines",
+        "AI R&D tooling, research-to-user workflows, and production data pipelines",
         "Physics-informed neural networks and heat-transfer constraints",
         "LLM optimization, CUDA kernels, quantization, KV caching, and inference throughput",
       ],
@@ -1575,7 +1579,6 @@ function NowSection() {
     {
       label: "Up next",
       entries: [
-        "Incoming SWE Intern @ Sandia National Laboratories — Fall 2026",
         "Incoming Perception Engineer @ Underwater Robotics Project at UCI",
         "Continuing LLM systems research @ UCI Digital Learning Lab",
         "Turning the personal operating system project into a durable daily workflow",
