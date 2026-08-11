@@ -552,11 +552,11 @@ type Project = {
 const aboutColumns: AboutColumn[] = [
   {
     Icon: Code2,
-    text: "I build software that turns messy data and product constraints into systems people can actually use.",
+    text: "I build AI R&D tooling that turns research systems into software people can actually use.",
   },
   {
     Icon: Cpu,
-    text: "My current work sits across recommender infrastructure, LLM evaluation, physics-informed ML, and robotics perception.",
+    text: "My current work focuses on making Sandia's AI research more usable for researchers, engineers, and mission users.",
   },
   {
     Icon: Users,
@@ -565,10 +565,10 @@ const aboutColumns: AboutColumn[] = [
 ];
 
 const aboutHighlights = [
-  { label: "Capital One", detail: "Recommender infrastructure" },
+  { label: "Sandia National Labs", detail: "AI R&D tooling" },
+  { label: "Capital One", detail: "Previously SWE intern" },
   { label: "UCI Digital Learning Lab", detail: "LLM evaluation research" },
   { label: "Calit2", detail: "Physics-informed ML" },
-  { label: "URP @ UCI", detail: "Robotics perception" },
 ];
 
 const experienceRoles: RoleEntry[] = [
@@ -1085,8 +1085,9 @@ function Navbar({
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CURRENTLY_ITEMS = [
-  "Working on recommender infrastructure at Capital One",
-  "Building PySpark sampling pipelines for ML recommender evaluation",
+  "Building AI R&D tooling at Sandia National Labs",
+  "Making Sandia's AI research usable by real users",
+  "Previously built recommender infrastructure at Capital One",
   "Researching token-level confidence and LLM evaluation at DLL",
   "Researching physics-informed ML for thermal storage optimization",
   "Learning system design to understand the systems around me",
@@ -1132,7 +1133,7 @@ function LaptopVisual() {
             <div className="font-mono text-xs leading-[1.65] text-slate-300 overflow-hidden">
               <div><span className="text-purple-400">const</span> <span className="text-blue-300">jacob</span> = {"{"}</div>
               <div className="pl-4"><span className="text-slate-400">name:</span>{"      "}<span className="text-amber-300">"Jacob Horne"</span>,</div>
-              <div className="pl-4"><span className="text-slate-400">role:</span>{"      "}<span className="text-amber-300">"SWE Intern @ Capital One"</span>,</div>
+              <div className="pl-4"><span className="text-slate-400">role:</span>{"      "}<span className="text-amber-300">"SWE Intern @ Sandia National Labs"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">studying:</span>{"  "}<span className="text-amber-300">"CS @ UCI"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">gpa:</span>{"       "}<span className="text-cyan-400">3.9</span>,</div>
               <div className="pl-4 min-h-[3.3em]">
@@ -1194,7 +1195,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
             </div>
             <p className="text-base text-slate-400 leading-relaxed max-w-lg">
               I build production-focused software systems across machine learning, full-stack development,
-              and AI. Currently studying CS at UCI and interning as a Software Engineer at Capital One.
+              and AI. Currently studying CS at UCI and interning as a Software Engineer at Sandia National Labs.
             </p>
             {/* Buttons */}
             <div className="flex flex-wrap gap-3 pt-1">
@@ -1267,7 +1268,7 @@ function AboutSection() {
             <div className="absolute -bottom-5 -right-5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-lg shadow-slate-950/20 rounded-lg px-4 py-3 min-w-44">
               <p className="text-[11px] font-mono text-blue-600 dark:text-blue-400">Current role</p>
               <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">SWE Intern</p>
-              <p className="text-xs text-gray-500 dark:text-slate-400">@ Capital One</p>
+              <p className="text-xs text-gray-500 dark:text-slate-400">@ Sandia National Labs</p>
             </div>
           </div>
 
@@ -1277,8 +1278,9 @@ function AboutSection() {
               Building ML systems<br className="hidden sm:block" /> from research to production.
             </h3>
             <p className="max-w-3xl text-sm md:text-base text-gray-600 dark:text-slate-300 leading-relaxed">
-              I am a CS student at UCI working on production recommender systems, LLM evaluation research,
-              physics-informed modeling, and robotics perception. I care about the path from idea to shipped
+              I am a CS student at UCI working on AI R&D tooling at Sandia National Labs, after previously
+              building production recommender infrastructure as a Capital One SWE intern. I also work on LLM
+              evaluation research, physics-informed modeling, and robotics perception. I care about the path from idea to shipped
               system: data, constraints, interfaces, reliability, and the people who use the work.
             </p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
