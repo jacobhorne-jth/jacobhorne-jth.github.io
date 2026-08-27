@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Jacob Horne Resume</title>
+    <style>
+      @page { size: letter; margin: 0.36in 0.44in; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: #111827;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 9.2px;
+        line-height: 1.22;
+      }
+      h1 {
+        margin: 0;
+        text-align: center;
+        font-size: 19px;
+        letter-spacing: 0.2px;
+      }
+      .contact {
+        margin: 2px 0 6px;
+        text-align: center;
+        font-size: 8.7px;
+      }
+      h2 {
+        margin: 6px 0 2px;
+        border-bottom: 1px solid #111827;
+        font-size: 10.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .item { margin-top: 3px; }
+      .role { font-weight: 700; }
+      .muted { color: #374151; }
+      .right { white-space: nowrap; text-align: right; }
+      ul {
+        margin: 1px 0 0 13px;
+        padding: 0;
+      }
+      li { margin: 1px 0; }
+      .skills { margin-top: 2px; }
+    </style>
+  </head>
+  <body>
+    <h1>Jacob Horne</h1>
+    <div class="contact">
+      (669) 261-1669 | jacobhorne.jth@gmail.com | github.com/jacobhorne-jth |
+      linkedin.com/in/jacobhornejth | Santa Clara, CA
+    </div>
+
+    <h2>Education</h2>
+    <div class="row">
+      <div><span class="role">University of California, Irvine</span> - B.S. Computer Science; Campuswide Honors Collegium</div>
+      <div class="right">June 2028</div>
+    </div>
+    <div class="row">
+      <div>GPA: 3.92 | Coursework: Machine Learning, AI, Data Structures, C/C++, Software Engineering, Probability</div>
+      <div class="right">Irvine, CA</div>
+    </div>
+
+    <h2>Experience</h2>
+    <div class="item">
+      <div class="row">
+        <div><span class="role">Sandia National Laboratories</span> - Software Engineering Intern, AI R&amp;D Tooling</div>
+        <div class="right">Aug 2026 - Present</div>
+      </div>
+      <ul>
+        <li>Building full-stack AI R&amp;D tooling that makes Sandia research usable by researchers, engineers, and mission users.</li>
+        <li>Turning research workflows into practical interfaces, reliable software systems, and tools users can operate under constraints.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <div class="row">
+        <div><span class="role">Capital One</span> - Software Engineering Intern, ML Recommender Infrastructure</div>
+        <div class="right">Jun 2026 - Aug 2026</div>
+      </div>
+      <ul>
+        <li>Replaced a network API call with an in-process SDK, reducing latency by 25% for 60M+ monthly customers.</li>
+        <li>Built Databricks/PySpark sampling pipelines over 800M+ historical outcomes, enabling recommender models to test against broader production behavior 28x faster.</li>
+        <li>Automated sampling and upstream Airflow jobs with 18 schema, distribution, and multiplier quality checks.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <div class="row">
+        <div><span class="role">Underwater Robotics Project @ UCI</span> - Perception Engineer, Autonomous Robotics</div>
+        <div class="right">Aug 2026 - Present</div>
+      </div>
+      <ul>
+        <li>Building perception software for an autonomous underwater robot, focusing on camera, sonar, detection, and autonomy constraints.</li>
+        <li>Evaluating classical vision and CNN-based approaches under RoboSub constraints; learning publish-subscribe robotics architecture and Dockerized deployment.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <div class="row">
+        <div><span class="role">UCI Digital Learning Lab</span> - Research Assistant, LLM Systems and Evaluation</div>
+        <div class="right">Dec 2025 - Present</div>
+      </div>
+      <ul>
+        <li>Built Python/LangGraph multi-agent essay-evaluation pipelines with critic, advocate, and judge agents.</li>
+        <li>Analyzed token log-probabilities and confidence behavior with NumPy, Pandas, and Matplotlib.</li>
+        <li>Researching multi-turn text-to-SQL confidence using query execution, repair behavior, and token-level uncertainty signals.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <div class="row">
+        <div><span class="role">Calit2 @ UCI</span> - AI/ML Undergraduate Researcher, Physics-Informed ML</div>
+        <div class="right">Apr 2026 - Present</div>
+      </div>
+      <ul>
+        <li>Built PyTorch GRU/LSTM/PINN surrogate models for cylindrical wall temperature prediction across transient heat-transfer simulations.</li>
+        <li>Designed physics-informed residual losses and autoregressive rollouts, reaching R-squared &gt; 0.97 on held-out test cases.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <div class="row">
+        <div><span class="role">CareTech @ UCI</span> - Software Developer, Computer Vision</div>
+        <div class="right">Oct 2025 - Jun 2026</div>
+      </div>
+      <ul>
+        <li>Built a Next.js/FastAPI food-recognition app and processed 28K+ images across 270+ categories for PyTorch inference.</li>
+      </ul>
+    </div>
+
+    <h2>Publications</h2>
+    <ul>
+      <li>ICLR 2026 LLM Reasoning Workshop: The First Tokens Matter: Early Confidence Signals for Evaluating LLM Reasoning.</li>
+      <li>ACL 2026 Student Research Workshop: The Confident Liar: Diagnosing Multi-Agent Debate with Log-Probabilities and LLM-as-Judge.</li>
+      <li>GEM 2026: Early-Token Confidence Predicts Reasoning Quality in Multi-Agent LLM Debate.</li>
+    </ul>
+
+    <h2>Projects</h2>
+    <div class="item">
+      <div class="row">
+        <div><span class="role">Agonus</span> - LangChain, FastAPI, Next.js, Solidity, PostgreSQL</div>
+        <div class="right">Oct 2025 - Apr 2026</div>
+      </div>
+      <ul>
+        <li>Built a decentralized AI trading platform where autonomous agents compete in crypto tournaments with on-chain betting and live leaderboards.</li>
+        <li>Architected ReAct agents with tools for market data, planning, memory, and trade execution; used Celery/Redis orchestration for concurrent agents.</li>
+      </ul>
+    </div>
+    <div class="item">
+      <div class="row">
+        <div><span class="role">Tata Consultancy Services Capstone</span> - FastAPI, PostgreSQL, pgvector, OpenAI, DeBERTa</div>
+        <div class="right">Jan 2026 - Jun 2026</div>
+      </div>
+      <ul>
+        <li>Co-developed a banking chatbot with DeBERTa ethics checks, PDF/OCR ingestion, OpenAI embeddings, and PostgreSQL/pgvector retrieval.</li>
+      </ul>
+    </div>
+
+    <h2>Technical Skills</h2>
+    <div class="skills"><span class="role">Languages:</span> Python, TypeScript, JavaScript, C/C++, SQL, Java, R, MIPS Assembly</div>
+    <div class="skills"><span class="role">ML/Data:</span> PyTorch, scikit-learn, TensorFlow, PySpark, OpenCV, LangChain, LangGraph, NumPy, Pandas, Matplotlib</div>
+    <div class="skills"><span class="role">Platforms:</span> Databricks, Airflow, PostgreSQL, Redis, Celery, FastAPI, Docker, Git, AWS, Supabase</div>
+  </body>
+</html>
