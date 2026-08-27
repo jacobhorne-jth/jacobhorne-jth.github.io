@@ -1,10 +1,10 @@
 # Jacob Horne Portfolio
 
-Personal portfolio site for Jacob Horne, a CS student at UC Irvine and current Software Engineering Intern at Sandia National Labs building AI R&D tooling.
+Personal portfolio site for Jacob Horne, a CS student at UC Irvine building AI tooling, ML systems, robotics perception software, and LLM evaluation research workflows.
 
 The site highlights work making Sandia's AI research usable by researchers, engineers, and mission users.
 
-It also covers previous Software Engineering Internship work at Capital One on ML recommender infrastructure, research at UCI Digital Learning Lab and Calit2, projects, teaching, and contact information.
+It also covers previous Software Engineering Internship work at Capital One on ML recommender infrastructure, publications, underwater robotics perception work, projects, teaching, and contact information.
 
 ## Development
 
@@ -17,3 +17,7 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## Resume
+
+The editable resume source lives at `resume/JacobHorneResume.html`. The public PDFs are generated from that file.
