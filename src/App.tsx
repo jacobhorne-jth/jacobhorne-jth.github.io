@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import {
   Terminal as TerminalIcon,
   Mail,
@@ -85,28 +85,44 @@ const HELP_TEXT: TerminalLine[] = [
 
 // ─── Snake game ──────────────────────────────────────────────────────────────
 
+const SNAKE_COLS = 30;
+const SNAKE_ROWS = 13;
+const SNAKE_INIT = [{ x: 8, y: 6 }, { x: 7, y: 6 }, { x: 6, y: 6 }];
+const SNAKE_START_FOOD = { x: 18, y: 6 };
+
 function SnakeGame({ onExit }: { onExit: () => void }) {
-  const COLS = 30, ROWS = 13;
   type Pt = { x: number; y: number };
-  const mkFood = (s: Pt[]): Pt => {
+  type Phase = "idle" | "playing" | "dead";
+  const mkFood = useCallback((s: Pt[]): Pt => {
     let p: Pt;
-    do { p = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) }; }
+    do { p = { x: Math.floor(Math.random() * SNAKE_COLS), y: Math.floor(Math.random() * SNAKE_ROWS) }; }
     while (s.some(b => b.x === p.x && b.y === p.y));
     return p;
-  };
-  const INIT: Pt[] = [{ x: 8, y: 6 }, { x: 7, y: 6 }, { x: 6, y: 6 }];
-  const snakeRef = useRef<Pt[]>(INIT);
+  }, []);
+  const snakeRef = useRef<Pt[]>(SNAKE_INIT);
   const nextDir = useRef<"U" | "D" | "L" | "R">("R");
   const curDir = useRef<"U" | "D" | "L" | "R">("R");
-  const foodRef = useRef<Pt>(mkFood(INIT));
+  const foodRef = useRef<Pt>(SNAKE_START_FOOD);
   const scoreRef = useRef(0);
-  const phase = useRef<"idle" | "playing" | "dead">("idle");
-  const [, tick] = useState(0);
-  const redraw = () => tick(n => n + 1);
-  const restart = () => {
-    snakeRef.current = [...INIT]; nextDir.current = "R"; curDir.current = "R";
-    foodRef.current = mkFood(INIT); scoreRef.current = 0; phase.current = "idle"; redraw();
-  };
+  const phase = useRef<Phase>("idle");
+  const [view, setView] = useState({
+    snake: SNAKE_INIT,
+    food: SNAKE_START_FOOD,
+    score: 0,
+    phase: "idle" as Phase,
+  });
+  const redraw = useCallback(() => {
+    setView({
+      snake: [...snakeRef.current],
+      food: { ...foodRef.current },
+      score: scoreRef.current,
+      phase: phase.current,
+    });
+  }, []);
+  const restart = useCallback(() => {
+    snakeRef.current = [...SNAKE_INIT]; nextDir.current = "R"; curDir.current = "R";
+    foodRef.current = mkFood(SNAKE_INIT); scoreRef.current = 0; phase.current = "idle"; redraw();
+  }, [mkFood, redraw]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const d = nextDir.current;
@@ -122,7 +138,7 @@ function SnakeGame({ onExit }: { onExit: () => void }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onExit]);
+  }, [onExit, redraw, restart]);
   useEffect(() => {
     const id = setInterval(() => {
       if (phase.current !== "playing") return;
@@ -130,7 +146,7 @@ function SnakeGame({ onExit }: { onExit: () => void }) {
       const { x: hx, y: hy } = snakeRef.current[0];
       const nx = hx + (curDir.current === "R" ? 1 : curDir.current === "L" ? -1 : 0);
       const ny = hy + (curDir.current === "D" ? 1 : curDir.current === "U" ? -1 : 0);
-      if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS ||
+      if (nx < 0 || nx >= SNAKE_COLS || ny < 0 || ny >= SNAKE_ROWS ||
           snakeRef.current.slice(0, -1).some(s => s.x === nx && s.y === ny)) {
         phase.current = "dead"; redraw(); return;
       }
@@ -140,36 +156,36 @@ function SnakeGame({ onExit }: { onExit: () => void }) {
       snakeRef.current = ns; redraw();
     }, 120);
     return () => clearInterval(id);
-  }, []);
-  const grid = Array.from({ length: ROWS }, (_, y) =>
-    Array.from({ length: COLS }, (_, x) => {
-      if (snakeRef.current[0].x === x && snakeRef.current[0].y === y) return "■";
-      if (snakeRef.current.slice(1).some(s => s.x === x && s.y === y)) return "□";
-      if (foodRef.current.x === x && foodRef.current.y === y) return "◆";
+  }, [mkFood, redraw]);
+  const grid = Array.from({ length: SNAKE_ROWS }, (_, y) =>
+    Array.from({ length: SNAKE_COLS }, (_, x) => {
+      if (view.snake[0].x === x && view.snake[0].y === y) return "■";
+      if (view.snake.slice(1).some(s => s.x === x && s.y === y)) return "□";
+      if (view.food.x === x && view.food.y === y) return "◆";
       return "·";
     }).join("")
   ).join("\n");
   return (
     <div className="flex flex-col h-full p-3 gap-2 select-none font-mono">
       <div className="flex justify-between text-xs text-green-600">
-        <span>snake.exe</span><span>score: {scoreRef.current}</span><span>[q] quit</span>
+        <span>snake.exe</span><span>score: {view.score}</span><span>[q] quit</span>
       </div>
       <div className="flex-1 flex items-center justify-center border border-green-900/40 rounded-lg">
-        {phase.current === "idle" && (
+        {view.phase === "idle" && (
           <div className="text-center space-y-2">
             <div className="text-green-400 text-base">SNAKE</div>
             <div className="text-green-700 text-xs">arrow keys to move</div>
             <div className="text-green-700 text-xs">[space] to start · [q] quit</div>
           </div>
         )}
-        {phase.current === "dead" && (
+        {view.phase === "dead" && (
           <div className="text-center space-y-2">
             <div className="text-red-400">GAME OVER</div>
-            <div className="text-green-500 text-xs">score: {scoreRef.current}</div>
+            <div className="text-green-500 text-xs">score: {view.score}</div>
             <div className="text-green-700 text-xs">[space] restart · [q] quit</div>
           </div>
         )}
-        {phase.current === "playing" && (
+        {view.phase === "playing" && (
           <pre className="text-green-400 text-xs leading-tight">{grid}</pre>
         )}
       </div>
