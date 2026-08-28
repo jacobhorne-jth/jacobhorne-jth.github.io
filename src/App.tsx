@@ -420,15 +420,15 @@ type Project = {
 const aboutColumns: AboutColumn[] = [
   {
     Icon: Code2,
-    text: "I build AI R&D tooling that turns research systems into software people can actually use.",
+    text: "I like turning research ideas into usable systems: interfaces, data pipelines, evaluation loops, and the glue between them.",
   },
   {
     Icon: Cpu,
-    text: "My current work focuses on making Sandia's AI research more usable for researchers, engineers, and mission users.",
+    text: "I enjoy the lower levels too: CUDA, model execution, systems design, and the constraints that make software feel real.",
   },
   {
     Icon: Users,
-    text: "I like teams where research taste, engineering discipline, and user empathy all matter at the same time.",
+    text: "The work I care about sits between people and hard technical systems: AI tooling, robotics perception, and learning infrastructure.",
   },
 ];
 
