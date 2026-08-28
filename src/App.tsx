@@ -75,7 +75,7 @@ const HELP_TEXT: TerminalLine[] = [
   { type: "cols", left: "  research   — research",         right: "  whoami     — info about Jacob" },
   { type: "cols", left: "  projects   — projects",         right: "  ls         — list all sections" },
   { type: "cols", left: "  contact    — contact",          right: "  flip       — flip the page" },
-  { type: "cols", left: "  game       — play snake",       right: "  pong       — play pong" },
+  { type: "cols", left: "  game       — play snake",       right: "  publications — publications" },
   { type: "cols", left: "  hack       — initiate hack",    right: "  joke       — random dev joke" },
   { type: "cols", left: "  fortune    — words of wisdom",  right: "  coffee     — ☕" },
   { type: "cols", left: "  skills     — tech stack",       right: "  ping       — ping jacob" },
@@ -193,151 +193,6 @@ function SnakeGame({ onExit }: { onExit: () => void }) {
   );
 }
 
-// ─── Pong game ───────────────────────────────────────────────────────────────
-
-function PongGame({ onExit }: { onExit: () => void }) {
-  const COLS = 50, ROWS = 16, PADDLE_H = 4, PADDLE_SPEED = 0.9;
-  const PLAYER_X = 1, AI_X = COLS - 2;
-  const keysHeld = useRef(new Set<string>());
-  const playerY = useRef((ROWS - PADDLE_H) / 2);
-  const aiY = useRef((ROWS - PADDLE_H) / 2);
-  const ballX = useRef(COLS / 2);
-  const ballY = useRef(ROWS / 2);
-  const ballVX = useRef(1.0);
-  const ballVY = useRef(0.5);
-  const playerScore = useRef(0);
-  const aiScore = useRef(0);
-  const phase = useRef<"idle" | "playing" | "gameover">("idle");
-  const [, tick] = useState(0);
-  const redraw = () => tick(n => n + 1);
-
-  const resetBall = (dir: 1 | -1) => {
-    ballX.current = COLS / 2;
-    ballY.current = ROWS / 2;
-    ballVX.current = dir * 1.0;
-    ballVY.current = (Math.random() > 0.5 ? 1 : -1) * 0.45;
-  };
-
-  const restart = () => {
-    playerY.current = (ROWS - PADDLE_H) / 2;
-    aiY.current = (ROWS - PADDLE_H) / 2;
-    playerScore.current = 0;
-    aiScore.current = 0;
-    resetBall(1);
-    phase.current = "idle";
-    redraw();
-  };
-
-  useEffect(() => {
-    const onDown = (e: KeyboardEvent) => {
-      if (["ArrowUp","ArrowDown","w","s","W","S"," "].includes(e.key)) e.preventDefault();
-      keysHeld.current.add(e.key);
-      if (e.key === " ") {
-        if (phase.current === "idle") { phase.current = "playing"; redraw(); }
-        else if (phase.current === "gameover") restart();
-      } else if (e.key === "Escape" || e.key === "q") onExit();
-    };
-    const onUp = (e: KeyboardEvent) => keysHeld.current.delete(e.key);
-    window.addEventListener("keydown", onDown);
-    window.addEventListener("keyup", onUp);
-    return () => { window.removeEventListener("keydown", onDown); window.removeEventListener("keyup", onUp); };
-  }, [onExit]);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      if (phase.current !== "playing") return;
-
-      if (keysHeld.current.has("ArrowUp") || keysHeld.current.has("w") || keysHeld.current.has("W"))
-        playerY.current = Math.max(0, playerY.current - PADDLE_SPEED);
-      if (keysHeld.current.has("ArrowDown") || keysHeld.current.has("s") || keysHeld.current.has("S"))
-        playerY.current = Math.min(ROWS - PADDLE_H, playerY.current + PADDLE_SPEED);
-
-      ballX.current += ballVX.current;
-      ballY.current += ballVY.current;
-
-      if (ballY.current <= 0)        { ballY.current = 0;        ballVY.current =  Math.abs(ballVY.current); }
-      if (ballY.current >= ROWS - 1) { ballY.current = ROWS - 1; ballVY.current = -Math.abs(ballVY.current); }
-
-      const bx = ballX.current, by = ballY.current;
-
-      if (bx <= PLAYER_X + 1 && ballVX.current < 0) {
-        const py = playerY.current;
-        if (by >= py && by < py + PADDLE_H) {
-          ballX.current = PLAYER_X + 1.1;
-          ballVX.current = Math.min(Math.abs(ballVX.current) * 1.05, 2.2);
-          ballVY.current = ((by - (py + PADDLE_H / 2)) / (PADDLE_H / 2)) * 0.9;
-        }
-      }
-      if (bx >= AI_X - 1 && ballVX.current > 0) {
-        const ay = aiY.current;
-        if (by >= ay && by < ay + PADDLE_H) {
-          ballX.current = AI_X - 1.1;
-          ballVX.current = -Math.min(Math.abs(ballVX.current) * 1.05, 2.2);
-          ballVY.current = ((by - (ay + PADDLE_H / 2)) / (PADDLE_H / 2)) * 0.9;
-        }
-      }
-
-      const aiCenter = aiY.current + PADDLE_H / 2;
-      if (ballY.current > aiCenter + 0.3) aiY.current = Math.min(ROWS - PADDLE_H, aiY.current + 0.65);
-      else if (ballY.current < aiCenter - 0.3) aiY.current = Math.max(0, aiY.current - 0.65);
-
-      if (ballX.current < 0) {
-        aiScore.current++;
-        if (aiScore.current >= 5) phase.current = "gameover"; else resetBall(-1);
-      } else if (ballX.current > COLS) {
-        playerScore.current++;
-        if (playerScore.current >= 5) phase.current = "gameover"; else resetBall(1);
-      }
-
-      redraw();
-    }, 60);
-    return () => clearInterval(id);
-  }, []);
-
-  const rows = Array.from({ length: ROWS }, (_, y) =>
-    Array.from({ length: COLS }, (_, x) => {
-      const bx = Math.round(ballX.current), by = Math.round(ballY.current);
-      const py = Math.floor(playerY.current), ay = Math.floor(aiY.current);
-      if (x === bx && y === by) return "●";
-      if (x === PLAYER_X && y >= py && y < py + PADDLE_H) return "█";
-      if (x === AI_X && y >= ay && y < ay + PADDLE_H) return "█";
-      if (x === Math.floor(COLS / 2) && y % 2 === 0) return "┊";
-      return " ";
-    }).join("")
-  );
-
-  return (
-    <div className="flex flex-col h-full p-3 gap-2 select-none font-mono">
-      <div className="flex justify-between text-xs text-green-600">
-        <span>you: {playerScore.current}</span>
-        <span>pong.exe  ↑↓/WS to move · [q] quit</span>
-        <span>cpu: {aiScore.current}</span>
-      </div>
-      <div className="flex-1 flex items-center justify-center border border-green-900/40 rounded-lg">
-        {phase.current === "idle" && (
-          <div className="text-center space-y-2">
-            <div className="text-green-400 text-base">PONG</div>
-            <div className="text-green-700 text-xs">↑↓ or W/S to move · first to 5 wins</div>
-            <div className="text-green-700 text-xs">[space] to start · [q] quit</div>
-          </div>
-        )}
-        {phase.current === "gameover" && (
-          <div className="text-center space-y-2">
-            <div className={playerScore.current >= 5 ? "text-green-400" : "text-red-400"}>
-              {playerScore.current >= 5 ? "YOU WIN!" : "GAME OVER"}
-            </div>
-            <div className="text-green-500 text-xs">{playerScore.current} — {aiScore.current}</div>
-            <div className="text-green-700 text-xs">[space] restart · [q] quit</div>
-          </div>
-        )}
-        {phase.current === "playing" && (
-          <pre className="text-green-400 text-xs leading-tight">{rows.join("\n")}</pre>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // ─── Terminal ─────────────────────────────────────────────────────────────────
 
 function Terminal({ onClose }: { onClose: () => void }) {
@@ -349,7 +204,7 @@ function Terminal({ onClose }: { onClose: () => void }) {
   ]);
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
   const [historyIdx, setHistoryIdx] = useState(-1);
-  const [activeGame, setActiveGame] = useState<"snake" | "pong" | null>(null);
+  const [activeGame, setActiveGame] = useState<"snake" | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -406,7 +261,6 @@ function Terminal({ onClose }: { onClose: () => void }) {
         break;
       }
       case "game": setActiveGame("snake"); return;
-      case "pong": setActiveGame("pong"); return;
       case "hack":
         out.push(
           { type: "output", text: "Initializing hack sequence..." },
@@ -506,8 +360,6 @@ function Terminal({ onClose }: { onClose: () => void }) {
         <div className="bg-[#0d1117] h-[520px] font-mono text-sm">
           {activeGame === "snake" ? (
             <SnakeGame onExit={() => setActiveGame(null)} />
-          ) : activeGame === "pong" ? (
-            <PongGame onExit={() => setActiveGame(null)} />
           ) : (
             <div className="h-full overflow-y-auto p-4 cursor-text" onClick={() => inputRef.current?.focus()}>
               {lines.map((line, i) => {
