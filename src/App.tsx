@@ -798,10 +798,11 @@ const navLinks = [
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
   { label: "Research", href: "#research" },
+  { label: "Publications", href: "#publications" },
   { label: "Teaching", href: "#teaching" },
   { label: "Education", href: "#education" },
-  { label: "Now", href: "#explore" },
-  { label: "Contact", href: "#education" },
+  { label: "Now", href: "#now" },
+  { label: "Contact", href: "#contact" },
 ];
 
 // ─── SectionHeader ─────────────────────────────────────────────────────────────
