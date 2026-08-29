@@ -1601,10 +1601,10 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
       iconClass: "text-slate-400 group-hover:text-blue-400",
       borderClass: "border-slate-700 group-hover:border-blue-500/50",
       arrowClass: "text-slate-600 group-hover:text-blue-400",
-      label: "Deep Dives",
-      sub: "In-depth project case studies",
+      label: "Publications",
+      sub: "LLM evaluation and confidence",
       action: null,
-      href: "#projects",
+      href: "#publications",
     },
   ];
 
