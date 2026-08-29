@@ -416,6 +416,13 @@ type Project = {
   accentLine: string; repoUrl: string; demoUrl?: string; imgUrl?: string;
   group?: string;
 };
+type Publication = {
+  venue: string;
+  title: string;
+  detail: string;
+  url?: string;
+  tags: string[];
+};
 
 const aboutColumns: AboutColumn[] = [
   {
@@ -739,6 +746,36 @@ const projects: Project[] = [
     accentLine: "bg-blue-500",
     repoUrl: "https://github.com/jacobhorne-jth/jacobhorne-jth.github.io",
     imgUrl: projWebsite,
+  },
+];
+
+const publications: Publication[] = [
+  {
+    venue: "ICLR 2026 LLM Reasoning Workshop",
+    title: "The First Tokens Matter: Early Confidence Signals for Evaluating LLM Reasoning",
+    detail: "Explores whether early token-level confidence can predict reasoning quality and expose failure modes in LLM outputs.",
+    url: "https://openreview.net/forum?id=0FOOrwSQ9E",
+    tags: ["LLM Evaluation", "Confidence", "Reasoning"],
+  },
+  {
+    venue: "ACL 2026 Student Research Workshop",
+    title: "The Confident Liar: Diagnosing Multi-Agent Debate with Log-Probabilities and LLM-as-Judge",
+    detail: "Studies multi-agent debate behavior through log-probability signals, judge scoring, and failure analysis.",
+    url: "https://aclanthology.org/2026.acl-srw.121/",
+    tags: ["Multi-Agent Systems", "NLP", "Log-Probabilities"],
+  },
+  {
+    venue: "GEM 2026",
+    title: "Early-Token Confidence Predicts Reasoning Quality in Multi-Agent LLM Debate",
+    detail: "Connects early confidence patterns to downstream reasoning quality in debate-style LLM evaluation workflows.",
+    url: "https://aclanthology.org/2026.gem-main.60/",
+    tags: ["LLMs", "Evaluation", "Debate"],
+  },
+  {
+    venue: "UCI Digital Learning Lab",
+    title: "Multi-Turn Text-to-SQL Confidence and Repair",
+    detail: "Ongoing research on token log-probabilities, query execution, and repair behavior in text-to-SQL systems.",
+    tags: ["Text-to-SQL", "Uncertainty", "Research"],
   },
 ];
 
