@@ -226,7 +226,8 @@ function Terminal({ onClose }: { onClose: () => void }) {
       case "experience": scrollTo("experience"); return;
       case "research": scrollTo("research"); return;
       case "projects": scrollTo("projects"); return;
-      case "contact": scrollTo("education"); return;
+      case "contact": scrollTo("contact"); return;
+      case "publications": scrollTo("publications"); return;
       case "github":
         window.open("https://github.com/jacobhorne-jth", "_blank");
         out.push({ type: "output", text: "Opening GitHub..." }, { type: "blank" }); break;
@@ -247,7 +248,7 @@ function Terminal({ onClose }: { onClose: () => void }) {
         ); break;
       case "ls":
         out.push(
-          { type: "output", text: "about/  experience/  projects/  research/  education/  contact/" },
+          { type: "output", text: "about/  experience/  projects/  research/  publications/  teaching/  education/  now/  contact/" },
           { type: "blank" },
         ); break;
       case "clear":
