@@ -1339,13 +1339,60 @@ function ResearchSection() {
   );
 }
 
+// ─── Publications ─────────────────────────────────────────────────────────────
+
+function PublicationsSection() {
+  return (
+    <section id="publications" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8">
+        <SectionHeader
+          number="05"
+          title="Publications"
+          subtitle="LLM evaluation, confidence signals, and research systems I am helping turn into durable workflows."
+        />
+        <div className="grid md:grid-cols-2 gap-5">
+          {publications.map(pub => (
+            <a
+              key={pub.title}
+              href={pub.url ?? "#research"}
+              target={pub.url ? "_blank" : undefined}
+              rel={pub.url ? "noreferrer" : undefined}
+              className="group rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 transition-all duration-200 hover:border-blue-400/50 hover:shadow-md hover:shadow-slate-950/10"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold tracking-[0.16em] uppercase text-blue-600 dark:text-blue-400">
+                    {pub.venue}
+                  </p>
+                  <h3 className="mt-3 text-lg font-semibold leading-snug text-gray-900 dark:text-white">
+                    {pub.title}
+                  </h3>
+                </div>
+                {pub.url && <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-gray-400 transition-colors group-hover:text-blue-500" />}
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-slate-300">{pub.detail}</p>
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {pub.tags.map(tag => (
+                  <span key={tag} className="rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-2.5 py-0.5 text-xs text-gray-600 dark:text-slate-400">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Teaching & Mentorship ────────────────────────────────────────────────────
 
 function TeachingSection() {
   return (
     <section id="teaching" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        <SectionHeader number="05" title="Teaching & Mentorship" />
+        <SectionHeader number="06" title="Teaching & Mentorship" />
         <div className="grid sm:grid-cols-2 gap-5">
           {teachingRoles.map(e => <RoleCard key={e.company + e.role} entry={e} />)}
         </div>
@@ -1364,7 +1411,7 @@ function EducationContact() {
           {/* Education */}
           <div>
             <div className="flex items-baseline gap-3 mb-10">
-              <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">06</span>
+              <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">07</span>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Education</h2>
             </div>
             <div className="rounded-2xl border border-gray-200 dark:border-slate-700 p-8">
@@ -1393,9 +1440,9 @@ function EducationContact() {
           </div>
 
           {/* Contact */}
-          <div>
+          <div id="contact" className="scroll-mt-20">
             <div className="flex items-baseline gap-3 mb-10">
-              <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">07</span>
+              <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">08</span>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Let's Connect</h2>
             </div>
             <div className="space-y-5">
@@ -1606,6 +1653,7 @@ export default function App() {
       <ExperienceSection />
       <ProjectsSection />
       <ResearchSection />
+      <PublicationsSection />
       <TeachingSection />
       <EducationContact />
       <NowSection />
