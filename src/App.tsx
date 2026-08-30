@@ -1047,8 +1047,9 @@ function LaptopVisual() {
               <div><span className="text-purple-400">const</span> <span className="text-blue-300">jacob</span> = {"{"}</div>
               <div className="pl-4"><span className="text-slate-400">name:</span>{"      "}<span className="text-amber-300">"Jacob Horne"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">role:</span>{"      "}<span className="text-amber-300">"SWE Intern @ Sandia National Labs"</span>,</div>
+              <div className="pl-4"><span className="text-slate-400">previous:</span>{"  "}<span className="text-amber-300">"SWE Intern @ Capital One"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">studying:</span>{"  "}<span className="text-amber-300">"CS @ UCI"</span>,</div>
-              <div className="pl-4"><span className="text-slate-400">gpa:</span>{"       "}<span className="text-cyan-400">3.9</span>,</div>
+              <div className="pl-4"><span className="text-slate-400">gpa:</span>{"       "}<span className="text-cyan-400">3.92</span>,</div>
               <div className="pl-4 min-h-[3.3em]">
                 <span className="text-slate-400">currently: </span>
                 <span
