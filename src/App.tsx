@@ -998,14 +998,14 @@ function Navbar({
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CURRENTLY_ITEMS = [
-  "Building AI R&D tooling at Sandia National Labs",
-  "Making Sandia's AI research usable by real users",
-  "Previously built recommender infrastructure at Capital One",
-  "Researching token-level confidence and LLM evaluation at DLL",
-  "Researching physics-informed ML for thermal storage optimization",
-  "Learning system design to understand the systems around me",
-  "Building a CUDA LLM project from the kernels up",
-  "Building a personal operating system across my tools",
+  "CUDA Project",
+  "Lazarus project",
+  "text-to-SQL research",
+  "physics-informed ML research",
+  "Sandia full-stack work making AI research usable by users",
+  "studying system design",
+  "personal operating system",
+  "underwater robotics perception engineering",
 ];
 
 function LaptopVisual() {
