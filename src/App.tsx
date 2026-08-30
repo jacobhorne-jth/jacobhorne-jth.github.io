@@ -1108,8 +1108,8 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
               </p>
             </div>
             <p className="text-base text-slate-400 leading-relaxed max-w-lg">
-              I build production-focused software systems across machine learning, full-stack development,
-              and AI. Currently studying CS at UCI and interning as a Software Engineer at Sandia National Labs.
+              I like building the connective tissue between research and real users: full-stack AI tooling,
+              evaluation systems, perception pipelines, and the occasional low-level detour into CUDA and systems design.
             </p>
             {/* Buttons */}
             <div className="flex flex-wrap gap-3 pt-1">
