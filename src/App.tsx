@@ -742,7 +742,7 @@ const projects: Project[] = [
   {
     name: "Portfolio Website",
     monogram: "JH",
-    desc: "This portfolio — built with React, TypeScript, and Tailwind CSS. Features a dark/light mode, interactive terminal with snake game, and responsive design.",
+    desc: "This portfolio — built with React, TypeScript, and Tailwind CSS. Features focused storytelling, dark/light mode, and an interactive terminal Easter egg.",
     tech: ["React", "TypeScript", "Tailwind CSS", "Vite"],
     accentLine: "bg-blue-500",
     repoUrl: "https://github.com/jacobhorne-jth/jacobhorne-jth.github.io",
