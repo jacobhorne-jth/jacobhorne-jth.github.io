@@ -1516,30 +1516,28 @@ function NowSection() {
     {
       label: "Building",
       entries: [
-        "AI R&D tooling that makes Sandia's AI research usable by real users",
-        "Interfaces and systems for turning research workflows into practical software",
-        "Previously built ML recommender infrastructure for customer-message experiences @ Capital One",
-        "Token-level confidence and multi-agent LLM evaluation pipelines @ UCI Digital Learning Lab",
-        "Physics-informed GRU/PINN surrogates for thermal storage prediction @ Calit2",
-        "CUDA LLM systems project focused on lower-level model execution",
-        "A personal operating system that connects my tools, notes, workflows, and automations",
+        "Full-stack AI R&D tooling at Sandia that makes research usable by real users",
+        "A CUDA project to understand model execution closer to the hardware",
+        "Lazarus, a project about bringing old workflows and scattered context back to life",
+        "A personal operating system that connects my tools, notes, automations, and daily decisions",
+      ],
+    },
+    {
+      label: "Researching",
+      entries: [
+        "Text-to-SQL confidence, query execution, repair loops, and token log-probability signals",
+        "Physics-informed ML for thermal storage prediction and fast surrogate modeling",
+        "Multi-agent LLM evaluation pipelines that reveal where reasoning systems fail",
+        "Underwater robotics perception: camera, sonar, detection, and autonomy constraints",
       ],
     },
     {
       label: "Learning",
       entries: [
-        "System design so I can better understand the production systems around me",
-        "AI R&D tooling, research-to-user workflows, and production data pipelines",
-        "Physics-informed neural networks and heat-transfer constraints",
-        "LLM optimization, CUDA kernels, quantization, KV caching, and inference throughput",
-      ],
-    },
-    {
-      label: "Up next",
-      entries: [
-        "Incoming Perception Engineer @ Underwater Robotics Project at UCI",
-        "Continuing LLM systems research @ UCI Digital Learning Lab",
-        "Turning the personal operating system project into a durable daily workflow",
+        "System design, because I want to understand the production systems around me",
+        "CUDA kernels, quantization, KV caching, and inference throughput",
+        "Robotics software architecture, Dockerized deployments, and publish-subscribe systems",
+        "How to make research tools feel calm, legible, and useful under real constraints",
       ],
     },
   ];
