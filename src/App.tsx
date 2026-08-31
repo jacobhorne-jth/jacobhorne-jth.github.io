@@ -424,6 +424,7 @@ type Publication = {
   url?: string;
   tags: string[];
 };
+type Tone = "cyan" | "emerald" | "violet" | "amber" | "rose" | "blue";
 type DetailItem = {
   id: string;
   eyebrow: string;
@@ -443,6 +444,93 @@ type DetailItem = {
   hrefLabel?: string;
   accentLine?: string;
   isActive?: boolean;
+  tone?: Tone;
+};
+
+const toneStyles: Record<Tone, {
+  text: string;
+  soft: string;
+  border: string;
+  hoverBorder: string;
+  ring: string;
+  bullet: string;
+  arrow: string;
+  button: string;
+  primary: string;
+  card: string;
+}> = {
+  cyan: {
+    text: "text-cyan-700 dark:text-cyan-300",
+    soft: "bg-cyan-600/10 dark:bg-cyan-400/10",
+    border: "border-cyan-600/30 dark:border-cyan-300/25",
+    hoverBorder: "hover:border-cyan-500/65",
+    ring: "focus-visible:ring-cyan-500/70",
+    bullet: "bg-cyan-500",
+    arrow: "group-hover:text-cyan-500 dark:group-hover:text-cyan-300",
+    button: "border-cyan-600/35 text-cyan-700 dark:border-cyan-300/35 dark:text-cyan-300",
+    primary: "bg-cyan-700 hover:bg-cyan-600",
+    card: "bg-white dark:bg-[#10202a]",
+  },
+  emerald: {
+    text: "text-emerald-700 dark:text-emerald-300",
+    soft: "bg-emerald-600/10 dark:bg-emerald-400/10",
+    border: "border-emerald-600/30 dark:border-emerald-300/25",
+    hoverBorder: "hover:border-emerald-500/65",
+    ring: "focus-visible:ring-emerald-500/70",
+    bullet: "bg-emerald-500",
+    arrow: "group-hover:text-emerald-500 dark:group-hover:text-emerald-300",
+    button: "border-emerald-600/35 text-emerald-700 dark:border-emerald-300/35 dark:text-emerald-300",
+    primary: "bg-emerald-700 hover:bg-emerald-600",
+    card: "bg-white dark:bg-[#10251e]",
+  },
+  violet: {
+    text: "text-violet-700 dark:text-violet-300",
+    soft: "bg-violet-600/10 dark:bg-violet-400/10",
+    border: "border-violet-600/30 dark:border-violet-300/25",
+    hoverBorder: "hover:border-violet-500/65",
+    ring: "focus-visible:ring-violet-500/70",
+    bullet: "bg-violet-500",
+    arrow: "group-hover:text-violet-500 dark:group-hover:text-violet-300",
+    button: "border-violet-600/35 text-violet-700 dark:border-violet-300/35 dark:text-violet-300",
+    primary: "bg-violet-700 hover:bg-violet-600",
+    card: "bg-white dark:bg-[#1d1730]",
+  },
+  amber: {
+    text: "text-amber-700 dark:text-amber-300",
+    soft: "bg-amber-600/10 dark:bg-amber-400/10",
+    border: "border-amber-600/30 dark:border-amber-300/25",
+    hoverBorder: "hover:border-amber-500/65",
+    ring: "focus-visible:ring-amber-500/70",
+    bullet: "bg-amber-500",
+    arrow: "group-hover:text-amber-500 dark:group-hover:text-amber-300",
+    button: "border-amber-600/35 text-amber-700 dark:border-amber-300/35 dark:text-amber-300",
+    primary: "bg-amber-700 hover:bg-amber-600",
+    card: "bg-white dark:bg-[#241c10]",
+  },
+  rose: {
+    text: "text-rose-700 dark:text-rose-300",
+    soft: "bg-rose-600/10 dark:bg-rose-400/10",
+    border: "border-rose-600/30 dark:border-rose-300/25",
+    hoverBorder: "hover:border-rose-500/65",
+    ring: "focus-visible:ring-rose-500/70",
+    bullet: "bg-rose-500",
+    arrow: "group-hover:text-rose-500 dark:group-hover:text-rose-300",
+    button: "border-rose-600/35 text-rose-700 dark:border-rose-300/35 dark:text-rose-300",
+    primary: "bg-rose-700 hover:bg-rose-600",
+    card: "bg-white dark:bg-[#281722]",
+  },
+  blue: {
+    text: "text-blue-700 dark:text-blue-300",
+    soft: "bg-blue-600/10 dark:bg-blue-400/10",
+    border: "border-blue-600/30 dark:border-blue-300/25",
+    hoverBorder: "hover:border-blue-500/65",
+    ring: "focus-visible:ring-blue-500/70",
+    bullet: "bg-blue-500",
+    arrow: "group-hover:text-blue-500 dark:group-hover:text-blue-300",
+    button: "border-blue-600/35 text-blue-700 dark:border-blue-300/35 dark:text-blue-300",
+    primary: "bg-blue-700 hover:bg-blue-600",
+    card: "bg-white dark:bg-[#111c32]",
+  },
 };
 
 const aboutColumns: AboutColumn[] = [
@@ -461,11 +549,11 @@ const aboutColumns: AboutColumn[] = [
 ];
 
 const aboutHighlights = [
-  { label: "Sandia National Labs", detail: "AI R&D tooling" },
-  { label: "Capital One", detail: "Previously SWE intern" },
-  { label: "UCI Digital Learning Lab", detail: "LLM evaluation research" },
-  { label: "Calit2", detail: "Physics-informed ML" },
-];
+  { label: "Sandia National Labs", detail: "AI R&D tooling", tone: "cyan" },
+  { label: "Capital One", detail: "Previously SWE intern", tone: "amber" },
+  { label: "UCI Digital Learning Lab", detail: "LLM evaluation research", tone: "violet" },
+  { label: "Calit2", detail: "Physics-informed ML", tone: "emerald" },
+] as const;
 
 const experienceRoles: RoleEntry[] = [
   {
@@ -827,11 +915,23 @@ const navLinks = [
 
 // ─── SectionHeader ─────────────────────────────────────────────────────────────
 
-function SectionHeader({ number, title, subtitle }: { number: string; title: string; subtitle?: string }) {
+function SectionHeader({
+  number,
+  title,
+  subtitle,
+  tone = "blue",
+}: {
+  number: string;
+  title: string;
+  subtitle?: string;
+  tone?: Tone;
+}) {
+  const toneClass = toneStyles[tone];
+
   return (
     <div className="mb-8">
       <div className="flex items-baseline gap-3">
-        <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">
+        <span className={`text-xs font-bold tracking-[0.2em] uppercase select-none ${toneClass.text}`}>
           {number}
         </span>
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">{title}</h2>
@@ -843,7 +943,7 @@ function SectionHeader({ number, title, subtitle }: { number: string; title: str
 
 // ─── Detail Cards ─────────────────────────────────────────────────────────────
 
-const roleToDetail = (entry: RoleEntry, section: string): DetailItem => {
+const roleToDetail = (entry: RoleEntry, section: string, tone: Tone): DetailItem => {
   const featured = entry.featured ? (Array.isArray(entry.featured) ? entry.featured : [entry.featured]) : [];
 
   return {
@@ -868,6 +968,7 @@ const roleToDetail = (entry: RoleEntry, section: string): DetailItem => {
     href: entry.companyLink,
     hrefLabel: "Open organization",
     isActive: entry.isActive,
+    tone,
   };
 };
 
@@ -893,6 +994,7 @@ const projectToDetail = (project: Project): DetailItem => ({
   href: project.demoUrl ?? (project.repoUrl !== "#" ? project.repoUrl : undefined),
   hrefLabel: project.demoUrl ? "Open demo" : "Open code",
   accentLine: project.accentLine,
+  tone: "violet",
 });
 
 const publicationToDetail = (pub: Publication): DetailItem => ({
@@ -915,6 +1017,7 @@ const publicationToDetail = (pub: Publication): DetailItem => ({
   tags: pub.tags,
   href: pub.url,
   hrefLabel: "Open paper",
+  tone: "amber",
 });
 
 const educationDetail: DetailItem = {
@@ -933,6 +1036,7 @@ const educationDetail: DetailItem = {
   ],
   highlights: coursework,
   tags: ["Machine Learning", "AI", "Data Structures", "C/C++", "Software Engineering"],
+  tone: "rose",
 };
 
 function DetailLogo({ item }: { item: DetailItem }) {
@@ -954,22 +1058,24 @@ function DetailLogo({ item }: { item: DetailItem }) {
 }
 
 function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailItem) => void }) {
+  const tone = toneStyles[item.tone ?? "blue"];
+
   return (
     <button
       type="button"
       onClick={() => onOpen(item)}
-      className="group relative min-h-[178px] w-full overflow-hidden rounded-lg border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 text-left shadow-sm shadow-slate-950/5 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-500/45 hover:shadow-lg hover:shadow-slate-950/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
+      className={`group relative min-h-[178px] w-full overflow-hidden rounded-lg border border-gray-200 p-5 text-left shadow-sm shadow-slate-950/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-950/10 focus:outline-none focus-visible:ring-2 ${tone.card} ${tone.border} ${tone.hoverBorder} ${tone.ring}`}
     >
       {item.accentLine && <div className={`absolute inset-x-0 top-0 h-0.5 ${item.accentLine}`} />}
       <div className="flex h-full flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
+              <p className={`font-mono text-[10px] uppercase tracking-[0.2em] ${tone.text}`}>
                 {item.period ?? item.eyebrow}
               </p>
               {item.isActive && (
-                <span className="rounded bg-blue-600/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.16em] text-blue-600 dark:text-blue-300">
+                <span className={`rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.16em] ${tone.soft} ${tone.text}`}>
                   Active
                 </span>
               )}
@@ -987,10 +1093,10 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
         <p className="text-sm leading-relaxed text-gray-600 dark:text-slate-300">{item.summary}</p>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-1">
-          <span className="rounded border border-blue-500/30 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-blue-700 opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100 dark:text-blue-300">
+          <span className={`rounded border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100 ${tone.button}`}>
             View details
           </span>
-          <ArrowRight className="h-4 w-4 text-gray-300 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-500 dark:text-slate-600 dark:group-hover:text-blue-300" />
+          <ArrowRight className={`h-4 w-4 text-gray-300 transition-all duration-200 group-hover:translate-x-1 dark:text-slate-500 ${tone.arrow}`} />
         </div>
       </div>
     </button>
@@ -1013,11 +1119,12 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
   }, [item, onClose]);
 
   if (!item) return null;
+  const tone = toneStyles[item.tone ?? "blue"];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-slate-950/65 px-4 py-6 backdrop-blur-sm md:py-10" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050710]/75 px-4 py-6 backdrop-blur-sm md:py-10" onClick={onClose}>
       <article
-        className="relative max-h-[calc(100vh-3rem)] w-full max-w-3xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-7 shadow-2xl shadow-slate-950/30 dark:border-slate-700 dark:bg-slate-950 md:max-h-[calc(100vh-5rem)] md:p-10"
+        className={`relative max-h-[calc(100vh-3rem)] w-full max-w-3xl overflow-y-auto rounded-lg border bg-white p-7 shadow-2xl shadow-slate-950/30 dark:bg-[#0b0d16] md:max-h-[calc(100vh-5rem)] md:p-10 ${tone.border}`}
         onClick={event => event.stopPropagation()}
       >
         <button
@@ -1030,7 +1137,7 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
         </button>
 
         <div className="pr-10">
-          <p className="font-mono text-xs uppercase tracking-[0.22em] text-blue-700 dark:text-blue-300">
+          <p className={`font-mono text-xs uppercase tracking-[0.22em] ${tone.text}`}>
             {item.period ?? item.eyebrow}
           </p>
           <div className="mt-4 flex items-start gap-4">
@@ -1050,7 +1157,7 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
         </div>
 
         {item.meta && item.meta.length > 0 && (
-          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-gray-500 dark:text-slate-400">
+          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-gray-600 dark:text-slate-300">
             {item.meta.map(meta => <span key={meta}>{meta}</span>)}
           </div>
         )}
@@ -1067,11 +1174,11 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
 
         {item.highlights.length > 0 && (
           <div className="mt-9">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">Highlights</p>
+            <p className={`font-mono text-xs uppercase tracking-[0.2em] ${tone.text}`}>Highlights</p>
             <ul className="mt-4 space-y-3">
               {item.highlights.map(highlight => (
                 <li key={highlight} className="flex gap-3 text-sm leading-7 text-gray-700 dark:text-slate-300">
-                  <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-sm bg-blue-500" />
+                  <span className={`mt-3 h-1.5 w-1.5 shrink-0 rounded-sm ${tone.bullet}`} />
                   <span>{highlight}</span>
                 </li>
               ))}
@@ -1081,10 +1188,10 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
 
         {item.tags.length > 0 && (
           <div className="mt-9">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">Stack</p>
+            <p className={`font-mono text-xs uppercase tracking-[0.2em] ${tone.text}`}>Stack</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {item.tags.map(tag => (
-                <span key={tag} className="rounded border border-gray-200 bg-gray-50 px-3 py-1.5 font-mono text-xs text-gray-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                <span key={tag} className={`rounded border bg-gray-50 px-3 py-1.5 font-mono text-xs text-gray-700 dark:bg-[#111827] dark:text-slate-200 ${tone.border}`}>
                   {tag}
                 </span>
               ))}
@@ -1097,7 +1204,7 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
             href={item.href}
             target="_blank"
             rel="noreferrer"
-            className="mt-9 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-500"
+            className={`mt-9 inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-colors ${tone.primary}`}
           >
             {item.hrefLabel ?? "Open link"}
             <ExternalLink className="h-4 w-4" />
@@ -1122,11 +1229,11 @@ function Navbar({
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur border-b border-gray-100 dark:border-slate-800">
+    <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#090a12]/95 backdrop-blur border-b border-gray-100 dark:border-[#22263a]">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <a href="#top" className="flex items-center gap-2.5 group">
-          <span className="h-8 w-8 rounded-lg bg-gray-900 dark:bg-blue-600 text-white text-sm font-bold grid place-items-center group-hover:bg-blue-600 dark:group-hover:bg-blue-500 transition-colors duration-200">
+          <span className="h-8 w-8 rounded-lg bg-gray-900 dark:bg-cyan-600 text-white text-sm font-bold grid place-items-center group-hover:bg-cyan-600 dark:group-hover:bg-cyan-500 transition-colors duration-200">
             JH
           </span>
           <span className="font-semibold text-gray-900 dark:text-white text-sm hidden sm:block">Jacob Horne</span>
@@ -1138,7 +1245,7 @@ function Navbar({
             <a
               key={l.label}
               href={l.href}
-              className="px-3 py-1.5 text-sm text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-800/60 rounded-md transition-all duration-150"
+              className="px-3 py-1.5 text-sm text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-cyan-400/10 rounded-md transition-all duration-150"
             >
               {l.label}
             </a>
@@ -1146,7 +1253,7 @@ function Navbar({
           {/* Dark/light toggle */}
           <button
             onClick={onToggleDark}
-            className="ml-1 p-2 rounded-lg text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-150"
+            className="ml-1 p-2 rounded-lg text-gray-500 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-amber-400/10 transition-all duration-150"
             aria-label="Toggle dark mode"
           >
             {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -1181,14 +1288,14 @@ function Navbar({
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-950">
+        <div className="md:hidden border-t border-gray-100 dark:border-[#22263a] bg-white dark:bg-[#090a12]">
           <div className="max-w-[1220px] mx-auto px-6 py-4 space-y-1">
             {navLinks.map(l => (
               <a
                 key={l.label}
                 href={l.href}
                 onClick={() => setMenuOpen(false)}
-                className="block px-3 py-2 text-sm text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-800/60 rounded-md"
+                className="block px-3 py-2 text-sm text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-cyan-400/10 rounded-md"
               >
                 {l.label}
               </a>
@@ -1273,9 +1380,9 @@ function LaptopVisual() {
             {/* Stats panel */}
             <div className="space-y-2">
               {([
-                { label: "Projects", value: "12+", pct: 75, color: "bg-blue-500" },
-                { label: "Papers", value: "3", pct: 35, color: "bg-purple-500" },
-                { label: "Students", value: "50+", pct: 85, color: "bg-green-500" },
+                { label: "Projects", value: "12+", pct: 75, color: "bg-cyan-400" },
+                { label: "Papers", value: "3", pct: 35, color: "bg-amber-400" },
+                { label: "Students", value: "50+", pct: 85, color: "bg-emerald-400" },
               ] as const).map(s => (
                 <div key={s.label} className="bg-slate-800/80 rounded-lg p-2.5 border border-slate-700/30">
                   <div className="flex items-baseline justify-between mb-2">
@@ -1304,12 +1411,12 @@ function LaptopVisual() {
 
 function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   return (
-    <section id="top" className="bg-slate-950 text-white">
+    <section id="top" className="bg-[#070914] text-white">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8 pt-24 pb-36 md:pt-28 md:pb-48">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Left */}
           <div className="space-y-7">
-            <p className="font-mono text-base text-blue-400 tracking-wide">&gt; Hello, I'm</p>
+            <p className="font-mono text-base text-cyan-300 tracking-wide">&gt; Hello, I'm</p>
             <div className="space-y-3">
               <h1 className="text-6xl md:text-7xl font-bold tracking-tight leading-none text-white">
                 Jacob Horne.
@@ -1328,7 +1435,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
                 href="/JacobHorneResume.pdf"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-500 px-5 py-2.5 text-sm font-medium transition-colors duration-150"
+                className="inline-flex items-center justify-center rounded-lg bg-cyan-600 hover:bg-cyan-500 px-5 py-2.5 text-sm font-medium transition-colors duration-150"
               >
                 View Resume
               </a>
@@ -1336,7 +1443,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
                 href="https://github.com/jacobhorne-jth"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 hover:border-slate-500 hover:bg-slate-800/50 px-5 py-2.5 text-sm text-slate-300 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-violet-300/20 hover:border-violet-300/55 hover:bg-violet-400/10 px-5 py-2.5 text-sm text-slate-200 transition-all duration-150"
               >
                 <GithubIcon className="h-4 w-4" /> GitHub
               </a>
@@ -1344,13 +1451,13 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
                 href="https://linkedin.com/in/jacobhornejth"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 hover:border-slate-500 hover:bg-slate-800/50 px-5 py-2.5 text-sm text-slate-300 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-amber-300/20 hover:border-amber-300/55 hover:bg-amber-400/10 px-5 py-2.5 text-sm text-slate-200 transition-all duration-150"
               >
                 <LinkedinIcon className="h-4 w-4" /> LinkedIn
               </a>
               <a
                 href="mailto:jacobhorne.jth@gmail.com"
-                className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 hover:border-slate-500 hover:bg-slate-800/50 px-5 py-2.5 text-sm text-slate-300 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-emerald-300/20 hover:border-emerald-300/55 hover:bg-emerald-400/10 px-5 py-2.5 text-sm text-slate-200 transition-all duration-150"
               >
                 <Mail className="h-4 w-4" /> Email
               </a>
@@ -1380,18 +1487,20 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
 // ─── About Me ─────────────────────────────────────────────────────────────────
 
 function AboutSection() {
+  const columnTones: Tone[] = ["cyan", "violet", "emerald"];
+
   return (
-    <section id="about" className="bg-gray-50 dark:bg-slate-950 pt-10 pb-28 scroll-mt-16">
+    <section id="about" className="bg-[#f7f1e8] dark:bg-[#10120f] pt-10 pb-28 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        <SectionHeader number="01" title="About Me" />
+        <SectionHeader number="01" title="About Me" tone="amber" />
         <div className="grid md:grid-cols-[340px_1fr] gap-12 lg:gap-16 items-start">
           {/* Photo */}
           <div className="relative shrink-0">
-            <div className="rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-800 aspect-[4/5] border border-gray-200 dark:border-slate-800 shadow-lg shadow-slate-950/10">
+            <div className="rounded-xl overflow-hidden bg-gray-100 dark:bg-[#191d18] aspect-[4/5] border border-amber-900/10 dark:border-amber-200/15 shadow-lg shadow-slate-950/10">
               <img src={pfp} alt="Jacob Horne" className="w-full h-full object-cover" />
             </div>
-            <div className="absolute bottom-3 right-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-lg shadow-slate-950/20 rounded-lg px-4 py-3 min-w-44 sm:-bottom-5 sm:-right-5">
-              <p className="text-[11px] font-mono text-blue-600 dark:text-blue-400">Current role</p>
+            <div className="absolute bottom-3 right-3 bg-white dark:bg-[#171b18] border border-gray-200 dark:border-emerald-200/20 shadow-lg shadow-slate-950/20 rounded-lg px-4 py-3 min-w-44 sm:-bottom-5 sm:-right-5">
+              <p className="text-[11px] font-mono text-emerald-700 dark:text-emerald-300">Current role</p>
               <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">SWE Intern</p>
               <p className="text-xs text-gray-500 dark:text-slate-400">@ Sandia National Labs</p>
             </div>
@@ -1410,21 +1519,24 @@ function AboutSection() {
             </p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {aboutHighlights.map(item => (
-                <div key={item.label} className="border-l-2 border-blue-500 bg-white dark:bg-slate-900 px-4 py-3 shadow-sm shadow-slate-950/5">
-                  <p className="text-[11px] font-mono text-blue-600 dark:text-blue-400">{item.label}</p>
+                <div key={item.label} className={`border-l-2 px-4 py-3 shadow-sm shadow-slate-950/5 ${toneStyles[item.tone].card} ${toneStyles[item.tone].border}`}>
+                  <p className={`text-[11px] font-mono ${toneStyles[item.tone].text}`}>{item.label}</p>
                   <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white leading-snug">{item.detail}</p>
                 </div>
               ))}
             </div>
             <div className="grid sm:grid-cols-3 gap-6 pt-2">
-              {aboutColumns.map((col, i) => (
-                <div key={i} className="border-t border-gray-200 dark:border-slate-800 pt-5">
-                  <div className="h-9 w-9 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mb-4">
-                    <col.Icon className="h-4.5 w-4.5 text-blue-600" strokeWidth={1.75} />
+              {aboutColumns.map((col, i) => {
+                const tone = toneStyles[columnTones[i]];
+                return (
+                <div key={i} className={`border-t pt-5 ${tone.border}`}>
+                  <div className={`h-9 w-9 rounded-lg flex items-center justify-center mb-4 ${tone.soft}`}>
+                    <col.Icon className={`h-4.5 w-4.5 ${tone.text}`} strokeWidth={1.75} />
                   </div>
                   <p className="text-sm text-gray-600 dark:text-slate-300 leading-relaxed">{col.text}</p>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -1437,12 +1549,12 @@ function AboutSection() {
 
 function ExperienceSection() {
   const [selected, setSelected] = useState<DetailItem | null>(null);
-  const items = experienceRoles.map(entry => roleToDetail(entry, "Experience"));
+  const items = experienceRoles.map(entry => roleToDetail(entry, "Experience", "emerald"));
 
   return (
-    <section id="experience" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+    <section id="experience" className="bg-[#eef7f2] dark:bg-[#071511] pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        <SectionHeader number="02" title="Experience" />
+        <SectionHeader number="02" title="Experience" tone="emerald" />
         <div className="grid sm:grid-cols-2 gap-5">
           {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
@@ -1459,17 +1571,17 @@ function ProjectsSection() {
   const items = projects.map(projectToDetail);
 
   return (
-    <section id="projects" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+    <section id="projects" className="bg-[#f4effb] dark:bg-[#120d1f] pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         {/* Header row */}
         <div className="flex items-baseline gap-4 mb-8">
-          <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">03</span>
+          <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">03</span>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Featured Projects</h2>
           <a
             href="https://github.com/jacobhorne-jth"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-500 font-medium transition-colors duration-150 pb-1"
+            className="flex items-center gap-1.5 text-sm text-violet-700 hover:text-violet-600 dark:text-violet-300 dark:hover:text-violet-200 font-medium transition-colors duration-150 pb-1"
           >
             View all <ArrowRight className="h-3.5 w-3.5" />
           </a>
@@ -1489,12 +1601,12 @@ function ProjectsSection() {
 
 function ResearchSection() {
   const [selected, setSelected] = useState<DetailItem | null>(null);
-  const items = researchRoles.map(entry => roleToDetail(entry, "Research"));
+  const items = researchRoles.map(entry => roleToDetail(entry, "Research", "cyan"));
 
   return (
-    <section id="research" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+    <section id="research" className="bg-[#eef8fb] dark:bg-[#071720] pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        <SectionHeader number="04" title="Research" />
+        <SectionHeader number="04" title="Research" tone="cyan" />
         <div className="grid sm:grid-cols-2 gap-5">
           {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
@@ -1511,12 +1623,13 @@ function PublicationsSection() {
   const items = publications.map(publicationToDetail);
 
   return (
-    <section id="publications" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+    <section id="publications" className="bg-[#fff5df] dark:bg-[#1d1508] pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader
           number="05"
           title="Publications"
           subtitle="LLM evaluation, confidence signals, and research systems I am helping turn into durable workflows."
+          tone="amber"
         />
         <div className="grid md:grid-cols-2 gap-5">
           {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
@@ -1531,12 +1644,12 @@ function PublicationsSection() {
 
 function TeachingSection() {
   const [selected, setSelected] = useState<DetailItem | null>(null);
-  const items = teachingRoles.map(entry => roleToDetail(entry, "Teaching"));
+  const items = teachingRoles.map(entry => roleToDetail(entry, "Teaching", "blue"));
 
   return (
-    <section id="teaching" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+    <section id="teaching" className="bg-[#eef4ff] dark:bg-[#0a1020] pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        <SectionHeader number="06" title="Teaching & Mentorship" />
+        <SectionHeader number="06" title="Teaching & Mentorship" tone="blue" />
         <div className="grid sm:grid-cols-2 gap-5">
           {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
@@ -1552,13 +1665,13 @@ function EducationContact() {
   const [selected, setSelected] = useState<DetailItem | null>(null);
 
   return (
-    <section id="education" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
+    <section id="education" className="bg-[#fbf0f5] dark:bg-[#1b0c15] pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="grid md:grid-cols-2 gap-16 items-start">
           {/* Education */}
           <div>
             <div className="flex items-baseline gap-3 mb-10">
-              <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">07</span>
+              <span className="text-xs font-bold tracking-[0.2em] text-rose-700 dark:text-rose-300 uppercase select-none">07</span>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Education</h2>
             </div>
             <DetailCard item={educationDetail} onOpen={setSelected} />
@@ -1567,7 +1680,7 @@ function EducationContact() {
           {/* Contact */}
           <div id="contact" className="scroll-mt-20">
             <div className="flex items-baseline gap-3 mb-10">
-              <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">08</span>
+              <span className="text-xs font-bold tracking-[0.2em] text-amber-700 dark:text-amber-300 uppercase select-none">08</span>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Let's Connect</h2>
             </div>
             <div className="space-y-5">
@@ -1576,9 +1689,9 @@ function EducationContact() {
                 Reach out anytime.
               </p>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs text-gray-500 dark:text-slate-400 font-mono shrink-0">Open to internships/opportunities:</span>
+                <span className="text-xs text-gray-500 dark:text-slate-300 font-mono shrink-0">Open to internships/opportunities:</span>
                 {["Winter 2027", "Summer 2027", "Fall 2027"].map(term => (
-                  <span key={term} className="rounded-full bg-green-500/10 border border-green-500/25 px-2.5 py-0.5 text-xs text-green-400 font-mono">
+                  <span key={term} className="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 text-xs text-emerald-700 dark:text-emerald-300 font-mono">
                     {term}
                   </span>
                 ))}
@@ -1603,7 +1716,7 @@ function EducationContact() {
                     href={link.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-3 text-sm text-gray-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-150"
+                    className="flex items-center gap-3 text-sm text-gray-700 dark:text-slate-200 hover:text-amber-700 dark:hover:text-amber-300 transition-colors duration-150"
                   >
                     <span className="h-9 w-9 rounded-lg border border-gray-200 dark:border-slate-700 flex items-center justify-center shrink-0">
                       <link.Icon className="h-4 w-4" strokeWidth={1.75} />
@@ -1617,7 +1730,7 @@ function EducationContact() {
                   href="mailto:jacobhorne.jth@gmail.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 text-sm font-medium transition-colors duration-150"
+                  className="inline-flex items-center gap-2 rounded-xl bg-rose-700 hover:bg-rose-600 text-white px-6 py-3 text-sm font-medium transition-colors duration-150"
                 >
                   Let's Build Something
                   <ArrowRight className="h-4 w-4" />
@@ -1635,9 +1748,10 @@ function EducationContact() {
 // ─── Now ──────────────────────────────────────────────────────────────────────
 
 function NowSection() {
-  const items = [
+  const items: Array<{ label: string; tone: Tone; entries: string[] }> = [
     {
       label: "Building",
+      tone: "emerald",
       entries: [
         "Full-stack AI R&D tooling at Sandia that makes research usable by real users",
         "A CUDA project to understand model execution closer to the hardware",
@@ -1647,6 +1761,7 @@ function NowSection() {
     },
     {
       label: "Researching",
+      tone: "cyan",
       entries: [
         "Text-to-SQL confidence, query execution, repair loops, and token log-probability signals",
         "Physics-informed ML for thermal storage prediction and fast surrogate modeling",
@@ -1656,6 +1771,7 @@ function NowSection() {
     },
     {
       label: "Learning",
+      tone: "amber",
       entries: [
         "System design, because I want to understand the production systems around me",
         "CUDA kernels, quantization, KV caching, and inference throughput",
@@ -1666,28 +1782,31 @@ function NowSection() {
   ];
 
   return (
-    <section id="now" className="bg-slate-950 border-t border-slate-800 pt-16 pb-20 scroll-mt-16">
+    <section id="now" className="bg-[#0d0a12] border-t border-violet-300/15 pt-16 pb-20 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="mb-10">
           <div className="flex items-baseline gap-3">
-            <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">Now</span>
+            <span className="text-xs font-bold tracking-[0.2em] text-violet-300 uppercase select-none">Now</span>
             <h2 className="text-3xl md:text-4xl font-bold text-white">What I'm up to</h2>
           </div>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
-          {items.map(col => (
-            <div key={col.label} className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-              <p className="text-xs font-bold tracking-[0.2em] text-blue-500 uppercase mb-4">{col.label}</p>
+          {items.map(col => {
+            const tone = toneStyles[col.tone];
+            return (
+            <div key={col.label} className={`rounded-2xl border p-6 ${tone.card} ${tone.border}`}>
+              <p className={`text-xs font-bold tracking-[0.2em] uppercase mb-4 ${tone.text}`}>{col.label}</p>
               <ul className="space-y-3">
                 {col.entries.map((e, i) => (
                   <li key={i} className="flex gap-2.5 text-sm text-slate-300 leading-relaxed">
-                    <span className="mt-[7px] h-1.5 w-1.5 rounded-sm bg-blue-500 shrink-0" />
+                    <span className={`mt-[7px] h-1.5 w-1.5 rounded-sm shrink-0 ${tone.bullet}`} />
                     {e}
                   </li>
                 ))}
               </ul>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -1700,9 +1819,9 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   const items = [
     {
       Icon: TerminalIcon,
-      iconClass: "text-green-400 group-hover:text-green-300",
-      borderClass: "border-green-500/30 group-hover:border-green-500/60 group-hover:shadow-sm group-hover:shadow-green-500/10",
-      arrowClass: "text-slate-600 group-hover:text-green-400",
+      iconClass: "text-emerald-400 group-hover:text-emerald-300",
+      borderClass: "border-emerald-500/30 group-hover:border-emerald-500/60 group-hover:shadow-sm group-hover:shadow-emerald-500/10",
+      arrowClass: "text-slate-500 group-hover:text-emerald-400",
       label: "Terminal Mode",
       sub: "Interactive CLI experience",
       action: onOpenTerminal,
@@ -1710,9 +1829,9 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
     },
     {
       Icon: Zap,
-      iconClass: "text-slate-400 group-hover:text-blue-400",
-      borderClass: "border-slate-700 group-hover:border-blue-500/50",
-      arrowClass: "text-slate-600 group-hover:text-blue-400",
+      iconClass: "text-slate-300 group-hover:text-violet-300",
+      borderClass: "border-violet-300/20 group-hover:border-violet-400/60",
+      arrowClass: "text-slate-500 group-hover:text-violet-300",
       label: "Now",
       sub: "What I'm building & learning",
       action: null as (() => void) | null,
@@ -1720,9 +1839,9 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
     },
     {
       Icon: BookOpen,
-      iconClass: "text-slate-400 group-hover:text-blue-400",
-      borderClass: "border-slate-700 group-hover:border-blue-500/50",
-      arrowClass: "text-slate-600 group-hover:text-blue-400",
+      iconClass: "text-slate-300 group-hover:text-amber-300",
+      borderClass: "border-amber-300/20 group-hover:border-amber-400/60",
+      arrowClass: "text-slate-500 group-hover:text-amber-300",
       label: "Publications",
       sub: "LLM evaluation and confidence",
       action: null,
@@ -1731,19 +1850,19 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   ];
 
   return (
-    <section id="explore" className="bg-slate-950 border-t border-slate-800">
+    <section id="explore" className="bg-[#080a10] border-t border-slate-700/40">
       <div className="max-w-[1220px] mx-auto">
-        <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-800">
+        <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-700/40">
           {items.map(item => {
             const inner = (
-              <div className="group flex items-center justify-between px-8 py-10 hover:bg-slate-900/60 transition-colors duration-200 cursor-pointer">
+              <div className="group flex items-center justify-between px-8 py-10 hover:bg-white/[0.04] transition-colors duration-200 cursor-pointer">
                 <div className="flex items-center gap-5">
                   <div className={`h-10 w-10 rounded-xl border flex items-center justify-center transition-all duration-200 ${item.borderClass}`}>
                     <item.Icon className={`h-4.5 w-4.5 transition-colors duration-200 ${item.iconClass}`} strokeWidth={1.75} />
                   </div>
                   <div>
                     <p className="font-semibold text-white text-base">{item.label}</p>
-                    <p className="text-sm text-slate-500 mt-0.5">{item.sub}</p>
+                    <p className="text-sm text-slate-400 mt-0.5">{item.sub}</p>
                   </div>
                 </div>
                 <ArrowRight className={`h-5 w-5 group-hover:translate-x-1 transition-all duration-200 shrink-0 ${item.arrowClass}`} />
