@@ -583,7 +583,7 @@ const experienceRoles: RoleEntry[] = [
     logo: "URP",
     logoImg: logoURP,
     company: "Underwater Robotics Project @ UCI",
-    role: "Perception Engineer — Autonomous Robotics",
+    role: "Perception Engineer",
     period: "Aug 2026 — Present",
     isActive: true,
     bullets: [
