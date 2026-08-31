@@ -880,12 +880,6 @@ const publications: Publication[] = [
     url: "https://aclanthology.org/2026.gem-main.60/",
     tags: ["LLMs", "Evaluation", "Debate"],
   },
-  {
-    venue: "UCI Digital Learning Lab",
-    title: "Multi-Turn Text-to-SQL Confidence and Repair",
-    detail: "Ongoing research on token log-probabilities, query execution, and repair behavior in text-to-SQL systems.",
-    tags: ["Text-to-SQL", "Uncertainty", "Research"],
-  },
 ];
 
 
