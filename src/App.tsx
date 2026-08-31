@@ -998,14 +998,14 @@ function Navbar({
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CURRENTLY_ITEMS = [
-  "Currently building a CUDA project to understand model execution closer to the hardware.",
-  "Currently building Lazarus to turn scattered context into usable workflows.",
-  "Currently researching text-to-SQL confidence through query execution and repair loops.",
-  "Currently researching physics-informed ML for fast thermal storage prediction.",
-  "Currently making Sandia AI research usable through full-stack tools for researchers.",
-  "Currently studying system design to better understand production systems.",
-  "Currently building a personal operating system across tools, notes, and automations.",
-  "Currently building underwater robotics perception systems for autonomous robot vision.",
+  "building a CUDA project to understand model execution closer to the hardware.",
+  "building Lazarus to turn scattered context into usable workflows.",
+  "researching text-to-SQL confidence through query execution and repair loops.",
+  "researching physics-informed ML for fast thermal storage prediction.",
+  "making Sandia AI research usable through full-stack tools for researchers.",
+  "studying system design to better understand production systems.",
+  "building a personal operating system across tools, notes, and automations.",
+  "building underwater robotics perception systems for autonomous robot vision.",
 ];
 
 function LaptopVisual() {
