@@ -46,8 +46,6 @@ import logoCaretech from "./assets/logos/caretechlogo.jpeg";
 import logoCTC from "./assets/logos/ctclogo.jpeg";
 import logoBlockchain from "./assets/logos/blockchainlogo.jpeg";
 import logoSENS from "./assets/logos/senslogo.jpeg";
-import logoCQ from "./assets/logos/cqlogo.png";
-import logoCARE from "./assets/logos/carelogo.png";
 import logoCOSMOS from "./assets/logos/cosmosLogo.jpeg";
 import logoRFA from "./assets/logos/rfalogo.jpeg";
 import logoSW from "./assets/logos/swlogo.jpeg";
@@ -412,7 +410,7 @@ type RoleEntry = {
   tags: string[];
 };
 type Project = {
-  name: string; monogram: string; desc: string; tech: string[];
+  name: string; monogram: string; desc: string; detail: string; tech: string[];
   accentLine: string; repoUrl: string; demoUrl?: string; imgUrl?: string;
   group?: string;
 };
@@ -558,7 +556,7 @@ const experienceRoles: RoleEntry[] = [
     logo: "SNL",
     logoImg: logoSandia,
     company: "Sandia National Laboratories",
-    role: "Software Engineering Intern — AI R&D Tooling",
+    role: "Software Engineer Intern",
     period: "Aug 2026 — Present",
     isActive: true,
     bullets: [
@@ -571,7 +569,7 @@ const experienceRoles: RoleEntry[] = [
     logo: "Capit",
     logoImg: logoC1,
     company: "Capital One",
-    role: "Software Engineering Intern",
+    role: "Software Engineer Intern",
     period: "Jun 2026 — Aug 2026",
     bullets: [
       "Built ML recommender infrastructure for customer-message experiences.",
@@ -595,6 +593,20 @@ const experienceRoles: RoleEntry[] = [
       "Learning ROS-style publish-subscribe architectures, embedded deployment constraints, and Dockerized robotics workflows.",
     ],
     tags: ["Computer Vision", "Robotics", "Perception", "Autonomy", "Docker"],
+  },
+  {
+    logo: "Block",
+    logoImg: logoBlockchain,
+    company: "Blockchain @ UCI",
+    role: "Technical Developer",
+    period: "Oct 2025 — Present",
+    isActive: true,
+    bullets: [
+      "Developing the backend agent system for Agonus, an AI-powered crypto trading tournament platform.",
+      "Building full-stack infrastructure for autonomous trading agents to execute strategies and compete on-chain in real time.",
+      "Powering real-time agent performance tracking and strategy update broadcasts.",
+    ],
+    tags: ["Python", "FastAPI", "TypeScript", "Blockchain", "AI Agents"],
   },
   {
     logo: "CareT",
@@ -623,19 +635,6 @@ const experienceRoles: RoleEntry[] = [
     tags: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Chakra UI"],
   },
   {
-    logo: "Block",
-    logoImg: logoBlockchain,
-    company: "Blockchain @ UCI",
-    role: "Technical Developer",
-    period: "Oct 2025 — Apr 2026",
-    bullets: [
-      "Developing the backend agent system for Agonus, an AI-powered crypto trading tournament platform.",
-      "Building full-stack infrastructure for autonomous trading agents to execute strategies and compete on-chain in real time.",
-      "Powering real-time agent performance tracking and strategy update broadcasts.",
-    ],
-    tags: ["Python", "FastAPI", "TypeScript", "Blockchain", "AI Agents"],
-  },
-  {
     logo: "SENS",
     logoImg: logoSENS,
     company: "SENS Psychology",
@@ -647,32 +646,6 @@ const experienceRoles: RoleEntry[] = [
       "Cut manual email work 60% with Microsoft Azure notifications; modeled task lifecycle in Prisma/Zenstack for scalable workflow automation.",
     ],
     tags: ["Next.js", "Node.js", "TypeScript", "PostgreSQL", "Prisma", "Azure"],
-  },
-  {
-    logo: "Crowd",
-    logoImg: logoCQ,
-    company: "CrowdQuant",
-    role: "Software Engineering Intern",
-    period: "Jun 2025 — Aug 2025",
-    bullets: [
-      "Built a crowdsourced stock prediction platform with FastAPI and React, integrating Supabase and JWT auth with role-based access control for 100+ test users.",
-      "Developed PyTorch training pipelines for ResNet18 and MobileNetV2, improving forecasting accuracy by 20%.",
-      "Scaled GPU workloads using Runpod, reducing training time by 40% through optimized distributed training workflows.",
-    ],
-    tags: ["Python", "FastAPI", "React", "PyTorch", "Supabase", "Runpod", "JWT"],
-  },
-  {
-    logo: "CARE",
-    logoImg: logoCARE,
-    company: "CARE Initiative",
-    role: "Software Lead",
-    period: "Sep 2021 — Aug 2024",
-    bullets: [
-      "Led development of a wrist-worn embedded systems device for bilateral stimulation therapy.",
-      "Built a React Native companion app with real-time Bluetooth device communication.",
-      "Designed hardware and software systems to support users experiencing panic attacks.",
-    ],
-    tags: ["Embedded C", "C++", "React Native", "Hardware", "BLE"],
   },
 ];
 
@@ -791,7 +764,8 @@ const projects: Project[] = [
   {
     name: "Agonus",
     monogram: "AGN",
-    desc: "Decentralized AI trading platform where autonomous agents compete in crypto tournaments with on-chain betting, real-time leaderboards, and tokenized rewards.",
+    desc: "A trading arena where automated competitors face off and viewers can follow the action live.",
+    detail: "Decentralized AI trading platform where autonomous agents compete in crypto tournaments with on-chain betting, real-time leaderboards, and tokenized rewards.",
     tech: ["LangChain", "FastAPI", "Next.js", "Solidity", "PostgreSQL"],
     accentLine: "bg-yellow-500",
     repoUrl: "#",
@@ -802,7 +776,8 @@ const projects: Project[] = [
   {
     name: "TCS Banking AI Capstone",
     monogram: "TCS",
-    desc: "React/FastAPI banking chatbot with DeBERTa ethics checks, PDF/OCR document ingestion, OpenAI embeddings, and PostgreSQL/pgvector retrieval to ground customer guidance in banking data.",
+    desc: "A banking assistant that helps answer customer questions using trusted internal documents.",
+    detail: "React/FastAPI banking chatbot with DeBERTa ethics checks, PDF/OCR document ingestion, OpenAI embeddings, and PostgreSQL/pgvector retrieval to ground customer guidance in banking data.",
     tech: ["FastAPI", "PostgreSQL", "pgvector", "OpenAI", "DeBERTa"],
     accentLine: "bg-sky-500",
     repoUrl: "#",
@@ -812,7 +787,8 @@ const projects: Project[] = [
   {
     name: "Prop.Intel",
     monogram: "PRP",
-    desc: "AI property risk platform generating real-time reports using ATTOM ownership data, FEMA National Risk Index datasets, and a ridge regression model across 3,100+ counties.",
+    desc: "A property research tool that turns ownership and risk data into readable reports.",
+    detail: "AI property risk platform generating real-time reports using ATTOM ownership data, FEMA National Risk Index datasets, and a ridge regression model across 3,100+ counties.",
     tech: ["Next.js", "TypeScript", "Python", "Ridge Regression"],
     accentLine: "bg-orange-500",
     repoUrl: "https://github.com/jacobhorne-jth/prop-intel",
@@ -821,7 +797,8 @@ const projects: Project[] = [
   {
     name: "SF Crime Mapper",
     monogram: "SCM",
-    desc: "Full-stack interactive web app that forecasts San Francisco neighborhood-level incident risk and visualizes it on a Mapbox choropleth.",
+    desc: "An interactive map for exploring where neighborhood safety risks may be changing.",
+    detail: "Full-stack interactive web app that forecasts San Francisco neighborhood-level incident risk and visualizes it on a Mapbox choropleth.",
     tech: ["FastAPI", "Prophet", "XGBoost", "React", "Vite"],
     accentLine: "bg-amber-500",
     repoUrl: "https://github.com/jacobhorne-jth/sf-crime-mapper",
@@ -830,7 +807,8 @@ const projects: Project[] = [
   {
     name: "GitHub Onboarding Agent",
     monogram: "GOA",
-    desc: "AI-powered GitHub onboarding agent that ingests any repository and provides code-aware summaries, repo exploration, and RAG-driven Q&A.",
+    desc: "A guide that helps someone understand an unfamiliar code project faster.",
+    detail: "AI-powered GitHub onboarding agent that ingests any repository and provides code-aware summaries, repo exploration, and RAG-driven Q&A.",
     tech: ["Python", "FastAPI", "LangChain", "LangGraph", "Pinecone"],
     accentLine: "bg-purple-500",
     repoUrl: "https://github.com/jacobhorne-jth/github-onboarding-agent",
@@ -839,7 +817,8 @@ const projects: Project[] = [
   {
     name: "SMS Spam Detector",
     monogram: "SMS",
-    desc: "FastAPI app that detects SMS spam with Logistic Regression, combining TF-IDF text analysis and engineered features like phone number detection and spam keywords.",
+    desc: "A simple message checker that flags likely spam before someone trusts it.",
+    detail: "FastAPI app that detects SMS spam with Logistic Regression, combining TF-IDF text analysis and engineered features like phone number detection and spam keywords.",
     tech: ["Python", "FastAPI", "Logistic Regression", "TF-IDF"],
     accentLine: "bg-rose-500",
     repoUrl: "https://github.com/jacobhorne-jth/sms-spam-detector",
@@ -848,7 +827,8 @@ const projects: Project[] = [
   {
     name: "Portfolio Website",
     monogram: "JH",
-    desc: "This portfolio — built with React, TypeScript, and Tailwind CSS. Features focused storytelling, dark/light mode, and an interactive terminal Easter egg.",
+    desc: "A personal site for showing the work I care about without making it feel static.",
+    detail: "This portfolio is built with React, TypeScript, and Tailwind CSS. It features focused storytelling, dark/light mode, detailed project modals, and an interactive terminal Easter egg.",
     tech: ["React", "TypeScript", "Tailwind CSS", "Vite"],
     accentLine: "bg-blue-500",
     repoUrl: "https://github.com/jacobhorne-jth/jacobhorne-jth.github.io",
@@ -975,7 +955,7 @@ const projectToDetail = (project: Project): DetailItem => ({
   imageAlt: project.name,
   meta: project.group ? [`Group — ${project.group}`] : ["Independent build"],
   paragraphs: [
-    project.desc,
+    project.detail,
     "I built this as a practical system, with attention to the product surface, backend behavior, and the technical constraints behind the demo.",
   ],
   highlights: [
@@ -1356,7 +1336,7 @@ function LaptopVisual() {
             <div className="font-mono text-xs leading-[1.65] text-slate-300 overflow-hidden">
               <div><span className="text-purple-400">const</span> <span className="text-blue-300">jacob</span> = {"{"}</div>
               <div className="pl-4"><span className="text-slate-400">name:</span>{"      "}<span className="text-amber-300">"Jacob Horne"</span>,</div>
-              <div className="pl-4"><span className="text-slate-400">role:</span>{"      "}<span className="text-amber-300">"SWE Intern @ Sandia National Labs"</span>,</div>
+              <div className="pl-4"><span className="text-slate-400">role:</span>{"      "}<span className="text-amber-300">"Software Engineer Intern @ Sandia"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">previous:</span>{"  "}<span className="text-amber-300">"Capital One"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">studying:</span>{"  "}<span className="text-amber-300">"CS @ UCI"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">gpa:</span>{"       "}<span className="text-cyan-400">3.92</span>,</div>
@@ -1491,7 +1471,7 @@ function AboutSection() {
             </div>
             <div className="absolute bottom-3 right-3 bg-white dark:bg-[#171b18] border border-gray-200 dark:border-emerald-200/20 shadow-lg shadow-slate-950/20 rounded-lg px-4 py-3 min-w-44 sm:-bottom-5 sm:-right-5">
               <p className="text-[11px] font-mono text-emerald-700 dark:text-emerald-300">Current role</p>
-              <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">SWE Intern</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">Software Engineer Intern</p>
               <p className="text-xs text-gray-500 dark:text-slate-400">@ Sandia National Labs</p>
             </div>
           </div>
@@ -1504,7 +1484,7 @@ function AboutSection() {
             <div className="max-w-3xl space-y-4 text-sm md:text-base text-gray-600 dark:text-slate-300 leading-relaxed">
               <p>
                 I am a CS student at UCI working on AI R&D tooling at Sandia National Labs, after building
-                recommender infrastructure as a Capital One SWE intern.
+                recommender infrastructure as a Software Engineer Intern at Capital One.
               </p>
               <p>
                 Most of my work sits in one lane: taking messy research, ML, robotics, or systems ideas and
