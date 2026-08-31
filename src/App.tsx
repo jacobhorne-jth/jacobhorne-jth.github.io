@@ -424,6 +424,26 @@ type Publication = {
   url?: string;
   tags: string[];
 };
+type DetailItem = {
+  id: string;
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  summary: string;
+  period?: string;
+  logo?: string;
+  logoImg?: string;
+  image?: string;
+  imageAlt?: string;
+  meta?: string[];
+  paragraphs: string[];
+  highlights: string[];
+  tags: string[];
+  href?: string;
+  hrefLabel?: string;
+  accentLine?: string;
+  isActive?: boolean;
+};
 
 const aboutColumns: AboutColumn[] = [
   {
@@ -821,78 +841,264 @@ function SectionHeader({ number, title, subtitle }: { number: string; title: str
   );
 }
 
-// ─── RoleCard ──────────────────────────────────────────────────────────────────
+// ─── Detail Cards ─────────────────────────────────────────────────────────────
 
-function RoleCard({ entry }: { entry: RoleEntry }) {
+const roleToDetail = (entry: RoleEntry, section: string): DetailItem => {
+  const featured = entry.featured ? (Array.isArray(entry.featured) ? entry.featured : [entry.featured]) : [];
+
+  return {
+    id: `${section}-${entry.company}-${entry.role}`,
+    eyebrow: section,
+    title: entry.company,
+    subtitle: entry.role,
+    summary: entry.bullets[0] ?? entry.role,
+    period: entry.period,
+    logo: entry.logo,
+    logoImg: entry.logoImg,
+    meta: [`Role — ${entry.role}`],
+    paragraphs: [
+      entry.bullets[0] ?? entry.role,
+      "I focused on turning ambiguous technical work into software with clear users, constraints, and outcomes.",
+    ],
+    highlights: [
+      ...entry.bullets.slice(1),
+      ...featured.map(f => f.text),
+    ],
+    tags: entry.tags,
+    href: entry.companyLink,
+    hrefLabel: "Open organization",
+    isActive: entry.isActive,
+  };
+};
+
+const projectToDetail = (project: Project): DetailItem => ({
+  id: `project-${project.name}`,
+  eyebrow: project.group ?? "Project",
+  title: project.name,
+  subtitle: project.tech.slice(0, 3).join(" / "),
+  summary: project.desc,
+  logo: project.monogram,
+  image: project.imgUrl,
+  imageAlt: project.name,
+  meta: project.group ? [`Group — ${project.group}`] : ["Independent build"],
+  paragraphs: [
+    project.desc,
+    "I built this as a practical system, with attention to the product surface, backend behavior, and the technical constraints behind the demo.",
+  ],
+  highlights: [
+    `Built with ${project.tech.slice(0, 4).join(", ")}.`,
+    project.demoUrl ? "Includes a live demo surface for trying the system." : "Designed as a code-first project with implementation details in the repository.",
+  ],
+  tags: project.tech,
+  href: project.demoUrl ?? (project.repoUrl !== "#" ? project.repoUrl : undefined),
+  hrefLabel: project.demoUrl ? "Open demo" : "Open code",
+  accentLine: project.accentLine,
+});
+
+const publicationToDetail = (pub: Publication): DetailItem => ({
+  id: `publication-${pub.title}`,
+  eyebrow: pub.venue,
+  title: pub.title,
+  subtitle: "Publication",
+  summary: pub.detail,
+  logo: "PDF",
+  period: pub.venue,
+  meta: [`Venue — ${pub.venue}`],
+  paragraphs: [
+    pub.detail,
+    "This work sits in the part of research I care about most: measuring model behavior carefully enough that evaluation becomes useful for real systems.",
+  ],
+  highlights: [
+    "Focuses on confidence, reasoning quality, and evaluation signals.",
+    "Connects empirical analysis to practical LLM evaluation workflows.",
+  ],
+  tags: pub.tags,
+  href: pub.url,
+  hrefLabel: "Open paper",
+});
+
+const educationDetail: DetailItem = {
+  id: "education-uci",
+  eyebrow: "Education",
+  title: "University of California, Irvine",
+  subtitle: "B.S. Computer Science",
+  summary: "Studying computer science in UCI's Campuswide Honors Collegium with a 3.92 GPA.",
+  period: "Expected Jun 2028",
+  logo: "UCI",
+  logoImg: logoUCI,
+  meta: ["GPA — 3.92", "Program — Campuswide Honors Collegium"],
+  paragraphs: [
+    "I am studying computer science at UCI while building across AI tooling, ML systems, robotics perception, and software for real users.",
+    "The coursework that has mattered most to me lives at the intersection of machine learning, systems, data structures, and software engineering.",
+  ],
+  highlights: coursework,
+  tags: ["Machine Learning", "AI", "Data Structures", "C/C++", "Software Engineering"],
+};
+
+function DetailLogo({ item }: { item: DetailItem }) {
+  if (item.image) {
+    return (
+      <div className="h-16 w-20 rounded-md bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 overflow-hidden shrink-0">
+        <img src={item.image} alt={item.imageAlt ?? item.title} className="h-full w-full object-cover object-top" />
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 flex flex-col gap-4">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="h-10 w-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0 overflow-hidden">
-            {entry.logoImg
-              ? <img src={entry.logoImg} alt={entry.company} className="h-full w-full object-cover" />
-              : <span className="text-[9px] font-bold text-slate-300 leading-none text-center px-0.5">{entry.logo}</span>}
-          </div>
+    <div className="h-16 w-16 rounded-md bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+      {item.logoImg
+        ? <img src={item.logoImg} alt={item.title} className="h-full w-full object-cover" />
+        : <span className="text-[10px] font-bold tracking-wide text-gray-500 dark:text-slate-300">{item.logo}</span>}
+    </div>
+  );
+}
+
+function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailItem) => void }) {
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(item)}
+      className="group relative min-h-[178px] w-full overflow-hidden rounded-lg border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 text-left shadow-sm shadow-slate-950/5 transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-500/45 hover:shadow-lg hover:shadow-slate-950/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
+    >
+      {item.accentLine && <div className={`absolute inset-x-0 top-0 h-0.5 ${item.accentLine}`} />}
+      <div className="flex h-full flex-col gap-4">
+        <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-gray-900 dark:text-white text-sm leading-snug">{entry.role}</span>
-              {entry.isActive && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/15 px-2 py-0.5 text-[10px] font-medium text-blue-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-blue-400 shrink-0" />
+            <div className="flex items-center gap-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
+                {item.period ?? item.eyebrow}
+              </p>
+              {item.isActive && (
+                <span className="rounded bg-blue-600/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.16em] text-blue-600 dark:text-blue-300">
                   Active
                 </span>
               )}
             </div>
-            <div className="text-xs text-slate-400 dark:text-slate-300 mt-0.5">
-              {entry.companyLink ? (
-                <a href={entry.companyLink} target="_blank" rel="noreferrer" className="hover:text-blue-400 transition-colors inline-flex items-center gap-1">
-                  {entry.company} <ExternalLink className="h-2.5 w-2.5" />
-                </a>
-              ) : entry.company}
+            <h3 className="mt-3 text-xl font-bold leading-snug text-gray-900 dark:text-white">
+              {item.title}
+            </h3>
+            {item.subtitle && (
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">{item.subtitle}</p>
+            )}
+          </div>
+          <DetailLogo item={item} />
+        </div>
+
+        <p className="text-sm leading-relaxed text-gray-600 dark:text-slate-300">{item.summary}</p>
+
+        <div className="mt-auto flex items-center justify-between gap-3 pt-1">
+          <span className="rounded border border-blue-500/30 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-blue-700 opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100 dark:text-blue-300">
+            View details
+          </span>
+          <ArrowRight className="h-4 w-4 text-gray-300 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-500 dark:text-slate-600 dark:group-hover:text-blue-300" />
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () => void }) {
+  useEffect(() => {
+    if (!item) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [item, onClose]);
+
+  if (!item) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/65 px-4 py-6 backdrop-blur-sm md:py-10" onClick={onClose}>
+      <article
+        className="relative w-full max-w-3xl rounded-lg border border-gray-200 bg-white p-7 shadow-2xl shadow-slate-950/30 dark:border-slate-700 dark:bg-slate-950 md:p-10"
+        onClick={event => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-full border border-gray-200 p-2 text-gray-500 transition-colors hover:border-gray-300 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white"
+          aria-label="Close details"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        <div className="pr-10">
+          <p className="font-mono text-xs uppercase tracking-[0.22em] text-blue-700 dark:text-blue-300">
+            {item.period ?? item.eyebrow}
+          </p>
+          <div className="mt-4 flex items-start gap-4">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-3xl font-bold leading-tight text-gray-950 dark:text-white md:text-5xl">
+                {item.title}
+                {item.subtitle && (
+                  <span className="text-gray-500 dark:text-slate-400 md:text-3xl"> · {item.subtitle}</span>
+                )}
+              </h3>
+              <p className="mt-4 text-base italic leading-relaxed text-gray-700 dark:text-slate-300">
+                {item.summary}
+              </p>
             </div>
+            <DetailLogo item={item} />
           </div>
         </div>
-        <span className="text-[11px] font-mono text-gray-500 dark:text-slate-300 shrink-0 pt-0.5">{entry.period}</span>
-      </div>
 
-      {/* Bullets */}
-      {entry.bullets.length > 0 && (
-        <ul className="space-y-1.5">
-          {entry.bullets.map((b, i) => (
-            <li key={i} className="flex gap-2 text-sm text-gray-600 dark:text-slate-300 leading-relaxed">
-              <span className="mt-[7px] h-1.5 w-1.5 rounded-sm bg-blue-500 shrink-0" />
-              {b}
-            </li>
-          ))}
-        </ul>
-      )}
+        {item.meta && item.meta.length > 0 && (
+          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-gray-500 dark:text-slate-400">
+            {item.meta.map(meta => <span key={meta}>{meta}</span>)}
+          </div>
+        )}
 
-      {/* Featured callout */}
-      {entry.featured && (Array.isArray(entry.featured) ? entry.featured : [entry.featured]).map((f, i) => (
-        <a
-          key={i}
-          href={f.url ?? "#"}
-          target="_blank"
-          rel="noreferrer"
-          className="flex items-start gap-2 rounded-xl bg-blue-500/10 border border-blue-500/20 px-4 py-3 text-xs text-blue-300 hover:bg-blue-500/15 transition-colors"
-        >
-          <span className="text-yellow-400 shrink-0 mt-px">★</span>
-          <span className="flex-1 leading-relaxed">{f.text}</span>
-          {f.url && <ExternalLink className="h-3 w-3 shrink-0 mt-px text-blue-400" />}
-        </a>
-      ))}
-
-      {/* Tags */}
-      {entry.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {entry.tags.map(t => (
-            <span key={t} className="text-[11px] rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-2.5 py-0.5 text-gray-500 dark:text-slate-400">
-              {t}
-            </span>
-          ))}
+        <div className="mt-8 border-t border-gray-200 pt-8 dark:border-slate-800">
+          <div className="space-y-5">
+            {item.paragraphs.map(paragraph => (
+              <p key={paragraph} className="text-base leading-8 text-gray-700 dark:text-slate-300">
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </div>
-      )}
+
+        {item.highlights.length > 0 && (
+          <div className="mt-9">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">Highlights</p>
+            <ul className="mt-4 space-y-3">
+              {item.highlights.map(highlight => (
+                <li key={highlight} className="flex gap-3 text-sm leading-7 text-gray-700 dark:text-slate-300">
+                  <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-sm bg-blue-500" />
+                  <span>{highlight}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {item.tags.length > 0 && (
+          <div className="mt-9">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">Stack</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {item.tags.map(tag => (
+                <span key={tag} className="rounded border border-gray-200 bg-gray-50 px-3 py-1.5 font-mono text-xs text-gray-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {item.href && (
+          <a
+            href={item.href}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-9 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-500"
+          >
+            {item.hrefLabel ?? "Open link"}
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        )}
+      </article>
     </div>
   );
 }
@@ -1112,12 +1318,12 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
               evaluation systems, perception pipelines, and the occasional low-level detour into CUDA and systems design.
             </p>
             {/* Buttons */}
-            <div className="flex flex-wrap gap-3 pt-1">
+            <div className="grid grid-cols-2 gap-3 pt-1 sm:flex sm:flex-wrap">
               <a
                 href="/JacobHorneResume.pdf"
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-lg bg-blue-600 hover:bg-blue-500 px-5 py-2.5 text-sm font-medium transition-colors duration-150"
+                className="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-500 px-5 py-2.5 text-sm font-medium transition-colors duration-150"
               >
                 View Resume
               </a>
@@ -1125,7 +1331,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
                 href="https://github.com/jacobhorne-jth"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 rounded-lg border border-slate-700 hover:border-slate-500 hover:bg-slate-800/50 px-5 py-2.5 text-sm text-slate-300 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 hover:border-slate-500 hover:bg-slate-800/50 px-5 py-2.5 text-sm text-slate-300 transition-all duration-150"
               >
                 <GithubIcon className="h-4 w-4" /> GitHub
               </a>
@@ -1133,13 +1339,13 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
                 href="https://linkedin.com/in/jacobhornejth"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 rounded-lg border border-slate-700 hover:border-slate-500 hover:bg-slate-800/50 px-5 py-2.5 text-sm text-slate-300 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 hover:border-slate-500 hover:bg-slate-800/50 px-5 py-2.5 text-sm text-slate-300 transition-all duration-150"
               >
                 <LinkedinIcon className="h-4 w-4" /> LinkedIn
               </a>
               <a
                 href="mailto:jacobhorne.jth@gmail.com"
-                className="flex items-center gap-2 rounded-lg border border-slate-700 hover:border-slate-500 hover:bg-slate-800/50 px-5 py-2.5 text-sm text-slate-300 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-slate-700 hover:border-slate-500 hover:bg-slate-800/50 px-5 py-2.5 text-sm text-slate-300 transition-all duration-150"
               >
                 <Mail className="h-4 w-4" /> Email
               </a>
@@ -1179,7 +1385,7 @@ function AboutSection() {
             <div className="rounded-xl overflow-hidden bg-gray-100 dark:bg-slate-800 aspect-[4/5] border border-gray-200 dark:border-slate-800 shadow-lg shadow-slate-950/10">
               <img src={pfp} alt="Jacob Horne" className="w-full h-full object-cover" />
             </div>
-            <div className="absolute -bottom-5 -right-5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-lg shadow-slate-950/20 rounded-lg px-4 py-3 min-w-44">
+            <div className="absolute bottom-3 right-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 shadow-lg shadow-slate-950/20 rounded-lg px-4 py-3 min-w-44 sm:-bottom-5 sm:-right-5">
               <p className="text-[11px] font-mono text-blue-600 dark:text-blue-400">Current role</p>
               <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">SWE Intern</p>
               <p className="text-xs text-gray-500 dark:text-slate-400">@ Sandia National Labs</p>
@@ -1225,14 +1431,18 @@ function AboutSection() {
 // ─── Experience ───────────────────────────────────────────────────────────────
 
 function ExperienceSection() {
+  const [selected, setSelected] = useState<DetailItem | null>(null);
+  const items = experienceRoles.map(entry => roleToDetail(entry, "Experience"));
+
   return (
     <section id="experience" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="02" title="Experience" />
         <div className="grid sm:grid-cols-2 gap-5">
-          {experienceRoles.map(e => <RoleCard key={e.company + e.role} entry={e} />)}
+          {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
       </div>
+      <DetailModal item={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
@@ -1240,6 +1450,9 @@ function ExperienceSection() {
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
 function ProjectsSection() {
+  const [selected, setSelected] = useState<DetailItem | null>(null);
+  const items = projects.map(projectToDetail);
+
   return (
     <section id="projects" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
@@ -1258,71 +1471,11 @@ function ProjectsSection() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {projects.map(p => (
-            <div
-              key={p.name}
-              className="group rounded-2xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-md hover:border-gray-300 dark:hover:border-slate-600 transition-all duration-200 overflow-hidden flex flex-col"
-            >
-              {/* Header area */}
-              <div className="relative bg-slate-900 aspect-[16/9] flex items-center justify-center overflow-hidden">
-                <div className={`absolute top-0 left-0 right-0 h-0.5 z-10 ${p.accentLine}`} />
-                {p.imgUrl ? (
-                  <img src={p.imgUrl} alt={p.name} className="w-full h-full object-cover object-top" />
-                ) : (
-                  <span className="text-5xl font-black font-mono text-slate-700/60 select-none tracking-tighter">
-                    {p.monogram}
-                  </span>
-                )}
-                <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/10 transition-colors duration-300" />
-              </div>
-              {/* Body */}
-              <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-semibold text-gray-900 dark:text-white leading-tight">{p.name}</h3>
-                <p className="mt-1.5 text-sm text-gray-600 dark:text-slate-300 leading-relaxed flex-1">{p.desc}</p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {p.tech.map(t => (
-                    <span
-                      key={t}
-                      className="rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800/80 px-2.5 py-0.5 text-xs text-gray-600 dark:text-slate-400"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              {/* Footer links */}
-              <div className="px-5 pb-4 flex items-center gap-3 flex-wrap">
-                {p.repoUrl !== "#" && (
-                  <a
-                    href={p.repoUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-150"
-                  >
-                    <GithubIcon className="h-3.5 w-3.5" /> Code
-                  </a>
-                )}
-                {p.demoUrl && (
-                  <a
-                    href={p.demoUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-150"
-                  >
-                    <ExternalLink className="h-3.5 w-3.5" /> Demo
-                  </a>
-                )}
-                {p.group && (
-                  <span className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-300 ml-auto">
-                    <Users className="h-3 w-3 shrink-0" /> {p.group}
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
+          {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
 
       </div>
+      <DetailModal item={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
@@ -1330,14 +1483,18 @@ function ProjectsSection() {
 // ─── Research ─────────────────────────────────────────────────────────────────
 
 function ResearchSection() {
+  const [selected, setSelected] = useState<DetailItem | null>(null);
+  const items = researchRoles.map(entry => roleToDetail(entry, "Research"));
+
   return (
     <section id="research" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="04" title="Research" />
         <div className="grid sm:grid-cols-2 gap-5">
-          {researchRoles.map(e => <RoleCard key={e.company + e.role} entry={e} />)}
+          {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
       </div>
+      <DetailModal item={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
@@ -1345,6 +1502,9 @@ function ResearchSection() {
 // ─── Publications ─────────────────────────────────────────────────────────────
 
 function PublicationsSection() {
+  const [selected, setSelected] = useState<DetailItem | null>(null);
+  const items = publications.map(publicationToDetail);
+
   return (
     <section id="publications" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
@@ -1354,37 +1514,10 @@ function PublicationsSection() {
           subtitle="LLM evaluation, confidence signals, and research systems I am helping turn into durable workflows."
         />
         <div className="grid md:grid-cols-2 gap-5">
-          {publications.map(pub => (
-            <a
-              key={pub.title}
-              href={pub.url ?? "#research"}
-              target={pub.url ? "_blank" : undefined}
-              rel={pub.url ? "noreferrer" : undefined}
-              className="group rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 transition-all duration-200 hover:border-blue-400/50 hover:shadow-md hover:shadow-slate-950/10"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-bold tracking-[0.16em] uppercase text-blue-600 dark:text-blue-400">
-                    {pub.venue}
-                  </p>
-                  <h3 className="mt-3 text-lg font-semibold leading-snug text-gray-900 dark:text-white">
-                    {pub.title}
-                  </h3>
-                </div>
-                {pub.url && <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-gray-400 transition-colors group-hover:text-blue-500" />}
-              </div>
-              <p className="mt-3 text-sm leading-relaxed text-gray-600 dark:text-slate-300">{pub.detail}</p>
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {pub.tags.map(tag => (
-                  <span key={tag} className="rounded-full border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-2.5 py-0.5 text-xs text-gray-600 dark:text-slate-400">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </a>
-          ))}
+          {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
       </div>
+      <DetailModal item={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
@@ -1392,14 +1525,18 @@ function PublicationsSection() {
 // ─── Teaching & Mentorship ────────────────────────────────────────────────────
 
 function TeachingSection() {
+  const [selected, setSelected] = useState<DetailItem | null>(null);
+  const items = teachingRoles.map(entry => roleToDetail(entry, "Teaching"));
+
   return (
     <section id="teaching" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="06" title="Teaching & Mentorship" />
         <div className="grid sm:grid-cols-2 gap-5">
-          {teachingRoles.map(e => <RoleCard key={e.company + e.role} entry={e} />)}
+          {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
       </div>
+      <DetailModal item={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
@@ -1407,6 +1544,8 @@ function TeachingSection() {
 // ─── Education + Contact ──────────────────────────────────────────────────────
 
 function EducationContact() {
+  const [selected, setSelected] = useState<DetailItem | null>(null);
+
   return (
     <section id="education" className="bg-gray-50 dark:bg-slate-950 pt-8 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
@@ -1417,29 +1556,7 @@ function EducationContact() {
               <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase select-none">07</span>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Education</h2>
             </div>
-            <div className="rounded-2xl border border-gray-200 dark:border-slate-700 p-8">
-              <img src={logoUCI} alt="UCI" className="h-16 w-16 rounded-xl object-cover mb-5" />
-              <div className="space-y-1">
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">University of California, Irvine</p>
-                <p className="text-sm text-gray-600 dark:text-slate-300">B.S. Computer Science</p>
-                <p className="text-sm text-blue-400">Campuswide Honors Collegium</p>
-                <p className="text-sm font-medium text-gray-800 dark:text-slate-100 pt-1">GPA: 3.92</p>
-                <p className="text-xs text-gray-400 dark:text-slate-500 font-mono">Expected Graduation: Jun 2028</p>
-              </div>
-              <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-800">
-                <p className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-3">
-                  Relevant Coursework
-                </p>
-                <ul className="space-y-1.5">
-                  {coursework.map(c => (
-                    <li key={c} className="flex items-center gap-2 text-sm text-gray-700 dark:text-slate-200">
-                      <span className="h-1 w-1 rounded-full bg-blue-400 shrink-0" />
-                      {c}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <DetailCard item={educationDetail} onOpen={setSelected} />
           </div>
 
           {/* Contact */}
@@ -1505,6 +1622,7 @@ function EducationContact() {
           </div>
         </div>
       </div>
+      <DetailModal item={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }
