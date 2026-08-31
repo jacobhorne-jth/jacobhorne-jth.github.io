@@ -399,7 +399,6 @@ function Terminal({ onClose }: { onClose: () => void }) {
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-type AboutColumn = { Icon: LucideIcon; text: string };
 type RoleEntry = {
   logo: string;
   logoImg?: string;
@@ -533,27 +532,26 @@ const toneStyles: Record<Tone, {
   },
 };
 
-const aboutColumns: AboutColumn[] = [
+const aboutFocus: Array<{ Icon: LucideIcon; label: string; detail: string; tone: Tone }> = [
   {
     Icon: Code2,
-    text: "I like turning research ideas into usable systems: interfaces, data pipelines, evaluation loops, and the glue between them.",
+    label: "Research tooling",
+    detail: "Turning AI research workflows into usable full-stack systems",
+    tone: "cyan",
   },
   {
     Icon: Cpu,
-    text: "I enjoy the lower levels too: CUDA, model execution, systems design, and the constraints that make software feel real.",
+    label: "Systems depth",
+    detail: "Learning CUDA, inference behavior, and production architecture",
+    tone: "violet",
   },
   {
     Icon: Users,
-    text: "The work I care about sits between people and hard technical systems: AI tooling, robotics perception, and learning infrastructure.",
+    label: "Human-facing ML",
+    detail: "Building around researchers, students, robot operators, and users",
+    tone: "emerald",
   },
 ];
-
-const aboutHighlights = [
-  { label: "Sandia National Labs", detail: "AI R&D tooling", tone: "cyan" },
-  { label: "Capital One", detail: "Previously SWE intern", tone: "amber" },
-  { label: "UCI Digital Learning Lab", detail: "LLM evaluation research", tone: "violet" },
-  { label: "Calit2", detail: "Physics-informed ML", tone: "emerald" },
-] as const;
 
 const experienceRoles: RoleEntry[] = [
   {
@@ -1405,21 +1403,21 @@ function LaptopVisual() {
 
 function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   return (
-    <section id="top" className="bg-[#070914] text-white">
+    <section id="top" className="bg-[#f8fbff] text-gray-950 dark:bg-[#070914] dark:text-white">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8 pt-24 pb-36 md:pt-28 md:pb-48">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           {/* Left */}
           <div className="space-y-7">
-            <p className="font-mono text-base text-cyan-300 tracking-wide">&gt; Hello, I'm</p>
+            <p className="font-mono text-base text-cyan-700 dark:text-cyan-300 tracking-wide">&gt; Hello, I'm</p>
             <div className="space-y-3">
-              <h1 className="text-6xl md:text-7xl font-bold tracking-tight leading-none text-white">
+              <h1 className="text-6xl md:text-7xl font-bold tracking-tight leading-none text-gray-950 dark:text-white">
                 Jacob Horne.
               </h1>
-              <p className="text-2xl md:text-3xl text-slate-300 font-medium">
+              <p className="text-2xl md:text-3xl text-gray-700 dark:text-slate-300 font-medium">
                 Software Engineer. Researcher.<br />Builder. Teacher. Learner.
               </p>
             </div>
-            <p className="text-base text-slate-400 leading-relaxed max-w-lg">
+            <p className="text-base text-gray-600 dark:text-slate-400 leading-relaxed max-w-lg">
               I like building the connective tissue between research and real users: full-stack AI tooling,
               evaluation systems, perception pipelines, and the occasional low-level detour into CUDA and systems design.
             </p>
@@ -1437,7 +1435,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
                 href="https://github.com/jacobhorne-jth"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 rounded-lg border border-violet-300/20 hover:border-violet-300/55 hover:bg-violet-400/10 px-5 py-2.5 text-sm text-slate-200 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-violet-300/50 text-gray-700 hover:border-violet-500/70 hover:bg-violet-500/10 dark:border-violet-300/20 dark:hover:border-violet-300/55 dark:hover:bg-violet-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
               >
                 <GithubIcon className="h-4 w-4" /> GitHub
               </a>
@@ -1445,13 +1443,13 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
                 href="https://linkedin.com/in/jacobhornejth"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 rounded-lg border border-amber-300/20 hover:border-amber-300/55 hover:bg-amber-400/10 px-5 py-2.5 text-sm text-slate-200 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-amber-300/60 text-gray-700 hover:border-amber-500/75 hover:bg-amber-500/10 dark:border-amber-300/20 dark:hover:border-amber-300/55 dark:hover:bg-amber-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
               >
                 <LinkedinIcon className="h-4 w-4" /> LinkedIn
               </a>
               <a
                 href="mailto:jacobhorne.jth@gmail.com"
-                className="flex items-center justify-center gap-2 rounded-lg border border-emerald-300/20 hover:border-emerald-300/55 hover:bg-emerald-400/10 px-5 py-2.5 text-sm text-slate-200 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-emerald-300/60 text-gray-700 hover:border-emerald-500/75 hover:bg-emerald-500/10 dark:border-emerald-300/20 dark:hover:border-emerald-300/55 dark:hover:bg-emerald-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
               >
                 <Mail className="h-4 w-4" /> Email
               </a>
@@ -1464,7 +1462,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
               >
                 &gt;_ open terminal
               </button>
-              <span className="text-xs text-slate-500 font-mono">← try terminal mode</span>
+              <span className="text-xs text-gray-500 dark:text-slate-500 font-mono">← try terminal mode</span>
             </div>
           </div>
 
@@ -1481,10 +1479,8 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
 // ─── About Me ─────────────────────────────────────────────────────────────────
 
 function AboutSection() {
-  const columnTones: Tone[] = ["cyan", "violet", "emerald"];
-
   return (
-    <section id="about" className="bg-[#f7f1e8] dark:bg-[#10120f] pt-10 pb-28 scroll-mt-16">
+    <section id="about" className="bg-[#f7f1e8] dark:bg-[#10120f] pt-12 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="01" title="About Me" tone="amber" />
         <div className="grid md:grid-cols-[340px_1fr] gap-12 lg:gap-16 items-start">
@@ -1501,33 +1497,32 @@ function AboutSection() {
           </div>
 
           {/* Text */}
-          <div className="space-y-7">
+          <div className="space-y-8">
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight max-w-3xl">
               Building ML systems<br className="hidden sm:block" /> from research to production.
             </h3>
-            <p className="max-w-3xl text-sm md:text-base text-gray-600 dark:text-slate-300 leading-relaxed">
-              I am a CS student at UCI working on AI R&D tooling at Sandia National Labs, after previously
-              building production recommender infrastructure as a Capital One SWE intern. I also work on LLM
-              evaluation research, physics-informed modeling, and robotics perception. I care about the path from idea to shipped
-              system: data, constraints, interfaces, reliability, and the people who use the work.
-            </p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {aboutHighlights.map(item => (
-                <div key={item.label} className={`border-l-2 px-4 py-3 shadow-sm shadow-slate-950/5 ${toneStyles[item.tone].card} ${toneStyles[item.tone].border}`}>
-                  <p className={`text-[11px] font-mono ${toneStyles[item.tone].text}`}>{item.label}</p>
-                  <p className="mt-1 text-sm font-medium text-gray-900 dark:text-white leading-snug">{item.detail}</p>
-                </div>
-              ))}
+            <div className="max-w-3xl space-y-4 text-sm md:text-base text-gray-600 dark:text-slate-300 leading-relaxed">
+              <p>
+                I am a CS student at UCI working on AI R&D tooling at Sandia National Labs, after building
+                recommender infrastructure as a Capital One SWE intern.
+              </p>
+              <p>
+                Most of my work sits in one lane: taking messy research, ML, robotics, or systems ideas and
+                turning them into software people can actually use.
+              </p>
             </div>
-            <div className="grid sm:grid-cols-3 gap-6 pt-2">
-              {aboutColumns.map((col, i) => {
-                const tone = toneStyles[columnTones[i]];
+            <div className="grid gap-3 max-w-3xl">
+              {aboutFocus.map(item => {
+                const tone = toneStyles[item.tone];
                 return (
-                <div key={i} className={`border-t pt-5 ${tone.border}`}>
-                  <div className={`h-9 w-9 rounded-lg flex items-center justify-center mb-4 ${tone.soft}`}>
-                    <col.Icon className={`h-4.5 w-4.5 ${tone.text}`} strokeWidth={1.75} />
+                <div key={item.label} className={`flex items-start gap-4 rounded-lg border border-l-4 px-4 py-3 shadow-sm shadow-slate-950/5 ${tone.card} ${tone.border}`}>
+                  <div className={`mt-0.5 h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${tone.soft}`}>
+                    <item.Icon className={`h-4.5 w-4.5 ${tone.text}`} strokeWidth={1.75} />
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-slate-300 leading-relaxed">{col.text}</p>
+                  <div>
+                    <p className={`text-[11px] font-mono uppercase tracking-[0.16em] ${tone.text}`}>{item.label}</p>
+                    <p className="mt-1 text-sm text-gray-700 dark:text-slate-200 leading-relaxed">{item.detail}</p>
+                  </div>
                 </div>
                 );
               })}
@@ -1776,12 +1771,12 @@ function NowSection() {
   ];
 
   return (
-    <section id="now" className="bg-[#0d0a12] border-t border-violet-300/15 pt-16 pb-20 scroll-mt-16">
+    <section id="now" className="bg-[#f8f5ff] dark:bg-[#0d0a12] border-t border-violet-200 dark:border-violet-300/15 pt-16 pb-20 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="mb-10">
           <div className="flex items-baseline gap-3">
-            <span className="text-xs font-bold tracking-[0.2em] text-violet-300 uppercase select-none">Now</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">What I'm up to</h2>
+            <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">Now</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-950 dark:text-white">What I'm up to</h2>
           </div>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
@@ -1792,7 +1787,7 @@ function NowSection() {
               <p className={`text-xs font-bold tracking-[0.2em] uppercase mb-4 ${tone.text}`}>{col.label}</p>
               <ul className="space-y-3">
                 {col.entries.map((e, i) => (
-                  <li key={i} className="flex gap-2.5 text-sm text-slate-300 leading-relaxed">
+                  <li key={i} className="flex gap-2.5 text-sm text-gray-700 dark:text-slate-300 leading-relaxed">
                     <span className={`mt-[7px] h-1.5 w-1.5 rounded-sm shrink-0 ${tone.bullet}`} />
                     {e}
                   </li>
@@ -1813,9 +1808,9 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   const items = [
     {
       Icon: TerminalIcon,
-      iconClass: "text-emerald-400 group-hover:text-emerald-300",
-      borderClass: "border-emerald-500/30 group-hover:border-emerald-500/60 group-hover:shadow-sm group-hover:shadow-emerald-500/10",
-      arrowClass: "text-slate-500 group-hover:text-emerald-400",
+      iconClass: "text-emerald-700 dark:text-emerald-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-300",
+      borderClass: "border-emerald-500/35 group-hover:border-emerald-500/70 group-hover:shadow-sm group-hover:shadow-emerald-500/10",
+      arrowClass: "text-gray-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400",
       label: "Terminal Mode",
       sub: "Interactive CLI experience",
       action: onOpenTerminal,
@@ -1823,9 +1818,9 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
     },
     {
       Icon: Zap,
-      iconClass: "text-slate-300 group-hover:text-violet-300",
-      borderClass: "border-violet-300/20 group-hover:border-violet-400/60",
-      arrowClass: "text-slate-500 group-hover:text-violet-300",
+      iconClass: "text-violet-700 dark:text-slate-300 group-hover:text-violet-600 dark:group-hover:text-violet-300",
+      borderClass: "border-violet-500/30 dark:border-violet-300/20 group-hover:border-violet-500/70 dark:group-hover:border-violet-400/60",
+      arrowClass: "text-gray-400 dark:text-slate-500 group-hover:text-violet-600 dark:group-hover:text-violet-300",
       label: "Now",
       sub: "What I'm building & learning",
       action: null as (() => void) | null,
@@ -1833,9 +1828,9 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
     },
     {
       Icon: BookOpen,
-      iconClass: "text-slate-300 group-hover:text-amber-300",
-      borderClass: "border-amber-300/20 group-hover:border-amber-400/60",
-      arrowClass: "text-slate-500 group-hover:text-amber-300",
+      iconClass: "text-amber-700 dark:text-slate-300 group-hover:text-amber-600 dark:group-hover:text-amber-300",
+      borderClass: "border-amber-500/35 dark:border-amber-300/20 group-hover:border-amber-500/75 dark:group-hover:border-amber-400/60",
+      arrowClass: "text-gray-400 dark:text-slate-500 group-hover:text-amber-600 dark:group-hover:text-amber-300",
       label: "Publications",
       sub: "LLM evaluation and confidence",
       action: null,
@@ -1844,19 +1839,19 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   ];
 
   return (
-    <section id="explore" className="bg-[#080a10] border-t border-slate-700/40">
+    <section id="explore" className="bg-white dark:bg-[#080a10] border-t border-gray-200 dark:border-slate-700/40">
       <div className="max-w-[1220px] mx-auto">
-        <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-700/40">
+        <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-slate-700/40">
           {items.map(item => {
             const inner = (
-              <div className="group flex items-center justify-between px-8 py-10 hover:bg-white/[0.04] transition-colors duration-200 cursor-pointer">
+              <div className="group flex items-center justify-between px-8 py-10 hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-colors duration-200 cursor-pointer">
                 <div className="flex items-center gap-5">
                   <div className={`h-10 w-10 rounded-xl border flex items-center justify-center transition-all duration-200 ${item.borderClass}`}>
                     <item.Icon className={`h-4.5 w-4.5 transition-colors duration-200 ${item.iconClass}`} strokeWidth={1.75} />
                   </div>
                   <div>
-                    <p className="font-semibold text-white text-base">{item.label}</p>
-                    <p className="text-sm text-slate-400 mt-0.5">{item.sub}</p>
+                    <p className="font-semibold text-gray-950 dark:text-white text-base">{item.label}</p>
+                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">{item.sub}</p>
                   </div>
                 </div>
                 <ArrowRight className={`h-5 w-5 group-hover:translate-x-1 transition-all duration-200 shrink-0 ${item.arrowClass}`} />
