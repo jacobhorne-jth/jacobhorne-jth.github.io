@@ -1000,19 +1000,24 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
 function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () => void }) {
   useEffect(() => {
     if (!item) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, [item, onClose]);
 
   if (!item) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/65 px-4 py-6 backdrop-blur-sm md:py-10" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-slate-950/65 px-4 py-6 backdrop-blur-sm md:py-10" onClick={onClose}>
       <article
-        className="relative w-full max-w-3xl rounded-lg border border-gray-200 bg-white p-7 shadow-2xl shadow-slate-950/30 dark:border-slate-700 dark:bg-slate-950 md:p-10"
+        className="relative max-h-[calc(100vh-3rem)] w-full max-w-3xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-7 shadow-2xl shadow-slate-950/30 dark:border-slate-700 dark:bg-slate-950 md:max-h-[calc(100vh-5rem)] md:p-10"
         onClick={event => event.stopPropagation()}
       >
         <button
@@ -1204,14 +1209,14 @@ function Navbar({
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CURRENTLY_ITEMS = [
-  "Building a CUDA project to understand model execution closer to the hardware.",
-  "Building Lazarus to turn scattered context into usable workflows.",
-  "Researching text-to-SQL confidence through query execution and repair loops.",
-  "Researching physics-informed ML for fast thermal storage prediction.",
-  "Making Sandia AI research usable through full-stack tools for researchers.",
-  "Studying system design to better understand production systems.",
-  "Building a personal operating system across tools, notes, and automations.",
-  "Building underwater robotics perception systems for autonomous robot vision.",
+  "Building a CUDA project to understand model execution closer to the hardware",
+  "Building Lazarus to turn scattered context into usable workflows",
+  "Researching text-to-SQL confidence through query execution and repair loops",
+  "Researching physics-informed ML for fast thermal storage prediction",
+  "Making Sandia AI research usable through full-stack tools for researchers",
+  "Studying system design to better understand production systems",
+  "Building a personal operating system across tools, notes, and automations",
+  "Building underwater robotics perception systems for autonomous robot vision",
 ];
 
 function LaptopVisual() {
