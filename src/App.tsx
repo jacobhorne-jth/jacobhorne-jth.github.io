@@ -998,14 +998,14 @@ function Navbar({
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CURRENTLY_ITEMS = [
-  "I am building a CUDA project to understand model execution closer to the hardware.",
-  "I am building Lazarus to turn scattered context into usable workflows.",
-  "I am researching text-to-SQL confidence through query execution and repair loops.",
-  "I am researching physics-informed ML for fast thermal storage prediction.",
-  "I am making Sandia AI research usable through full-stack tools for researchers.",
-  "I am studying system design to better understand production systems.",
-  "I am building a personal operating system across tools, notes, and automations.",
-  "I am building underwater robotics perception systems for autonomous robot vision.",
+  "Currently building a CUDA project to understand model execution closer to the hardware.",
+  "Currently building Lazarus to turn scattered context into usable workflows.",
+  "Currently researching text-to-SQL confidence through query execution and repair loops.",
+  "Currently researching physics-informed ML for fast thermal storage prediction.",
+  "Currently making Sandia AI research usable through full-stack tools for researchers.",
+  "Currently studying system design to better understand production systems.",
+  "Currently building a personal operating system across tools, notes, and automations.",
+  "Currently building underwater robotics perception systems for autonomous robot vision.",
 ];
 
 function LaptopVisual() {
@@ -1083,7 +1083,7 @@ function LaptopVisual() {
             <span className="text-green-400">❯</span>
             <span className="text-slate-400">npm run build</span>
             <span className="text-slate-600 mx-1">·</span>
-            <span className="text-green-400">✓ built in 618ms</span>
+            <span className="text-green-400">✓ built in 607ms</span>
           </div>
         </div>
       </div>
