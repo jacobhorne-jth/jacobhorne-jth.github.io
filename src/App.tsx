@@ -998,14 +998,14 @@ function Navbar({
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CURRENTLY_ITEMS = [
-  "building a CUDA project to understand model execution closer to the hardware.",
-  "building Lazarus to turn scattered context into usable workflows.",
-  "researching text-to-SQL confidence through query execution and repair loops.",
-  "researching physics-informed ML for fast thermal storage prediction.",
-  "making Sandia AI research usable through full-stack tools for researchers.",
-  "studying system design to better understand production systems.",
-  "building a personal operating system across tools, notes, and automations.",
-  "building underwater robotics perception systems for autonomous robot vision.",
+  "Building a CUDA project to understand model execution closer to the hardware.",
+  "Building Lazarus to turn scattered context into usable workflows.",
+  "Researching text-to-SQL confidence through query execution and repair loops.",
+  "Researching physics-informed ML for fast thermal storage prediction.",
+  "Making Sandia AI research usable through full-stack tools for researchers.",
+  "Studying system design to better understand production systems.",
+  "Building a personal operating system across tools, notes, and automations.",
+  "Building underwater robotics perception systems for autonomous robot vision.",
 ];
 
 function LaptopVisual() {
@@ -1062,9 +1062,9 @@ function LaptopVisual() {
             {/* Stats panel */}
             <div className="space-y-2">
               {([
-                { label: "Lab Tools", value: "Sandia", pct: 82, color: "bg-blue-500" },
+                { label: "Projects", value: "12+", pct: 75, color: "bg-blue-500" },
                 { label: "Papers", value: "3", pct: 35, color: "bg-purple-500" },
-                { label: "Robot Eyes", value: "Perception", pct: 65, color: "bg-green-500" },
+                { label: "Students", value: "50+", pct: 85, color: "bg-green-500" },
               ] as const).map(s => (
                 <div key={s.label} className="bg-slate-800/80 rounded-lg p-2.5 border border-slate-700/30">
                   <div className="flex items-baseline justify-between mb-2">
