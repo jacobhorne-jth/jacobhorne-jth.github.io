@@ -998,14 +998,14 @@ function Navbar({
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CURRENTLY_ITEMS = [
-  "Building a CUDA project to understand model execution closer to the hardware",
-  "Building Lazarus to revive scattered context into usable workflows",
-  "Researching text-to-SQL confidence through query execution and repair loops",
-  "Researching physics-informed ML for fast thermal storage prediction",
-  "Sandia full-stack work making AI research usable by users",
-  "Studying system design to better understand production systems",
-  "Building a personal operating system across tools, notes, and automations",
-  "Building underwater robotics perception systems for autonomous robot vision",
+  "I am building a CUDA project to understand model execution closer to the hardware.",
+  "I am building Lazarus to turn scattered context into usable workflows.",
+  "I am researching text-to-SQL confidence through query execution and repair loops.",
+  "I am researching physics-informed ML for fast thermal storage prediction.",
+  "I am making Sandia AI research usable through full-stack tools for researchers.",
+  "I am studying system design to better understand production systems.",
+  "I am building a personal operating system across tools, notes, and automations.",
+  "I am building underwater robotics perception systems for autonomous robot vision.",
 ];
 
 function LaptopVisual() {
@@ -1047,7 +1047,7 @@ function LaptopVisual() {
               <div><span className="text-purple-400">const</span> <span className="text-blue-300">jacob</span> = {"{"}</div>
               <div className="pl-4"><span className="text-slate-400">name:</span>{"      "}<span className="text-amber-300">"Jacob Horne"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">role:</span>{"      "}<span className="text-amber-300">"SWE Intern @ Sandia National Labs"</span>,</div>
-              <div className="pl-4"><span className="text-slate-400">previous:</span>{"  "}<span className="text-amber-300">"SWE Intern @ Capital One"</span>,</div>
+              <div className="pl-4"><span className="text-slate-400">previous:</span>{"  "}<span className="text-amber-300">"Capital One"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">studying:</span>{"  "}<span className="text-amber-300">"CS @ UCI"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">gpa:</span>{"       "}<span className="text-cyan-400">3.92</span>,</div>
               <div className="pl-4 min-h-[3.3em]">
