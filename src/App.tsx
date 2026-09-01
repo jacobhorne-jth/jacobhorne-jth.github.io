@@ -1248,15 +1248,73 @@ function Navbar({
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CURRENTLY_ITEMS = [
-  "Building a CUDA project to understand model execution closer to the hardware",
-  "Building Lazarus to turn scattered context into usable workflows",
-  "Researching text-to-SQL confidence through query execution and repair loops",
-  "Researching physics-informed ML for fast thermal storage prediction",
-  "Making Sandia AI research usable through full-stack tools for researchers",
-  "Studying system design to better understand production systems",
-  "Building a personal operating system across tools, notes, and automations",
-  "Building underwater robotics perception systems for autonomous robot vision",
+  "Building applied AI tools that make technical workflows easier to use",
+  "Learning how ML systems behave beyond notebook experiments",
+  "Exploring robotics perception, evaluation, and real-world constraints",
+  "Turning data pipelines into faster feedback loops",
+  "Studying system design through reliability, scale, and tradeoffs",
+  "Building full-stack tools around messy technical workflows",
+  "Teaching technical ideas by making them concrete and usable",
+  "Chasing performance from interface latency down to lower-level systems",
 ];
+
+const HERO_TOPICS = [
+  { label: "Applied AI", position: "left-[2%] top-[12%]", tone: "border-cyan-400/30 bg-cyan-200/20 text-cyan-950 dark:border-cyan-300/25 dark:bg-cyan-300/10 dark:text-cyan-100" },
+  { label: "ML Systems", position: "right-[8%] top-[4%]", tone: "border-blue-400/30 bg-blue-200/20 text-blue-950 dark:border-blue-300/25 dark:bg-blue-300/10 dark:text-blue-100" },
+  { label: "Robotics", position: "left-[0%] bottom-[30%]", tone: "border-emerald-400/30 bg-emerald-200/20 text-emerald-950 dark:border-emerald-300/25 dark:bg-emerald-300/10 dark:text-emerald-100" },
+  { label: "Data Pipelines", position: "right-[0%] bottom-[34%]", tone: "border-amber-400/35 bg-amber-200/20 text-amber-950 dark:border-amber-300/25 dark:bg-amber-300/10 dark:text-amber-100" },
+  { label: "Evaluation", position: "left-[22%] bottom-[2%]", tone: "border-violet-400/30 bg-violet-200/20 text-violet-950 dark:border-violet-300/25 dark:bg-violet-300/10 dark:text-violet-100" },
+  { label: "Developer Tools", position: "right-[18%] bottom-[6%]", tone: "border-rose-400/25 bg-rose-200/20 text-rose-950 dark:border-rose-300/25 dark:bg-rose-300/10 dark:text-rose-100" },
+  { label: "Performance", position: "left-[30%] top-[0%]", tone: "border-sky-400/30 bg-sky-200/20 text-sky-950 dark:border-sky-300/25 dark:bg-sky-300/10 dark:text-sky-100" },
+  { label: "Teaching", position: "right-[28%] top-[20%]", tone: "border-lime-500/25 bg-lime-200/20 text-lime-950 dark:border-lime-300/25 dark:bg-lime-300/10 dark:text-lime-100" },
+];
+
+function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
+  const activeTopic = activeIndex % HERO_TOPICS.length;
+
+  return (
+    <div className="pointer-events-none absolute -inset-x-12 -inset-y-10 hidden md:block" aria-hidden="true">
+      <svg
+        viewBox="0 0 560 430"
+        className="absolute inset-0 h-full w-full text-cyan-700/20 dark:text-cyan-200/15"
+        fill="none"
+      >
+        <path d="M80 92 C170 24 332 22 456 72 S536 232 464 324 228 402 110 306 8 168 80 92Z" stroke="currentColor" strokeWidth="1" />
+        <path d="M92 290 C162 188 282 128 456 146" stroke="currentColor" strokeWidth="1" strokeDasharray="5 10" />
+        <path d="M158 48 C214 166 326 254 456 328" stroke="currentColor" strokeWidth="1" strokeDasharray="4 12" />
+        <path d="M130 365 C214 286 312 154 506 248" stroke="currentColor" strokeWidth="1" strokeDasharray="6 10" />
+        <circle r="4" fill="currentColor" className="text-cyan-500/80 dark:text-cyan-200/80">
+          <animateMotion
+            dur="19s"
+            repeatCount="indefinite"
+            path="M80 92 C170 24 332 22 456 72 S536 232 464 324 228 402 110 306 8 168 80 92Z"
+          />
+        </circle>
+        <circle r="3" fill="currentColor" className="text-emerald-500/70 dark:text-emerald-200/70">
+          <animateMotion
+            dur="23s"
+            repeatCount="indefinite"
+            path="M92 290 C162 188 282 128 456 146"
+          />
+        </circle>
+      </svg>
+
+      {HERO_TOPICS.map((topic, index) => (
+        <span
+          key={topic.label}
+          className={`topic-node-float absolute rounded-md border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] shadow-sm backdrop-blur-sm transition-all duration-500 ${topic.position} ${topic.tone} ${
+            index === activeTopic
+              ? "opacity-90 ring-1 ring-cyan-400/35 dark:ring-cyan-200/30"
+              : "opacity-45"
+          }`}
+          style={{ animationDelay: `${index * 0.45}s` }}
+        >
+          {topic.label}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 function LaptopVisual() {
   const [idx, setIdx] = useState(0);
@@ -1275,8 +1333,9 @@ function LaptopVisual() {
   }, []);
 
   return (
-    <div className="relative w-full max-w-[520px]">
-      <div className="relative overflow-hidden rounded-xl border border-slate-700/60 shadow-2xl shadow-black/40">
+    <div className="relative w-full max-w-[540px]">
+      <HeroTopicGraph activeIndex={idx} />
+      <div className="relative z-10 overflow-hidden rounded-xl border border-slate-700/60 shadow-2xl shadow-black/40">
         {/* Browser chrome */}
         <div className="bg-slate-800 px-4 py-2.5 flex items-center gap-2 border-b border-slate-700/50">
           <div className="flex gap-1.5 shrink-0">
