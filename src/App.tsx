@@ -1094,7 +1094,7 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050710]/75 px-4 py-6 backdrop-blur-sm md:py-10" onClick={onClose}>
       <article
-        className={`relative max-h-[calc(100vh-3rem)] w-full max-w-3xl overflow-y-auto rounded-lg border bg-white p-7 shadow-2xl shadow-slate-950/30 dark:bg-[#0b0d16] md:max-h-[calc(100vh-5rem)] md:p-10 ${tone.border}`}
+        className={`relative max-h-[calc(100vh-3rem)] w-full max-w-3xl overflow-y-auto rounded-md border bg-[#fbfaf7] p-7 shadow-2xl shadow-slate-950/25 dark:bg-[#0b0d12] md:max-h-[calc(100vh-5rem)] md:p-10 ${tone.border}`}
         onClick={event => event.stopPropagation()}
       >
         <button
@@ -1112,13 +1112,13 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
           </p>
           <div className="mt-4 flex items-start gap-4">
             <div className="min-w-0 flex-1">
-              <h3 className="text-3xl font-bold leading-tight text-gray-950 dark:text-white md:text-5xl">
+              <h3 className="text-3xl font-semibold leading-tight text-gray-950 dark:text-white md:text-4xl">
                 {item.title}
                 {item.subtitle && (
-                  <span className="text-gray-500 dark:text-slate-400 md:text-3xl"> · {item.subtitle}</span>
+                  <span className="text-gray-500 dark:text-slate-400 md:text-2xl"> · {item.subtitle}</span>
                 )}
               </h3>
-              <p className="mt-4 text-base italic leading-relaxed text-gray-700 dark:text-slate-300">
+              <p className="mt-4 text-base leading-7 text-gray-700 dark:text-slate-300">
                 {item.summary}
               </p>
             </div>
@@ -1519,10 +1519,10 @@ function ExperienceSection() {
   const items = experienceRoles.map(entry => roleToDetail(entry, "Experience", "emerald"));
 
   return (
-    <section id="experience" className="bg-[#eef7f2] dark:bg-[#071511] pt-8 pb-24 scroll-mt-16">
+    <section id="experience" className="border-t border-black/5 bg-[#f7f6f1] pt-10 pb-24 scroll-mt-16 dark:border-white/10 dark:bg-[#0b100d]">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="02" title="Experience" tone="emerald" />
-        <div className="grid sm:grid-cols-2 gap-5">
+        <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
           {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
       </div>
@@ -1538,12 +1538,14 @@ function ProjectsSection() {
   const items = projects.map(projectToDetail);
 
   return (
-    <section id="projects" className="bg-[#f4effb] dark:bg-[#120d1f] pt-8 pb-24 scroll-mt-16">
+    <section id="projects" className="border-t border-black/5 bg-[#fbfaf7] pt-10 pb-24 scroll-mt-16 dark:border-white/10 dark:bg-[#0f0d14]">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         {/* Header row */}
-        <div className="flex items-baseline gap-4 mb-8">
-          <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">03</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Featured Projects</h2>
+        <div className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
+          <div className="flex items-baseline gap-3">
+            <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">03</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Featured Projects</h2>
+          </div>
           <a
             href="https://github.com/jacobhorne-jth"
             target="_blank"
@@ -1554,7 +1556,7 @@ function ProjectsSection() {
           </a>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-5">
           {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
 
@@ -1571,10 +1573,10 @@ function ResearchSection() {
   const items = researchRoles.map(entry => roleToDetail(entry, "Research", "cyan"));
 
   return (
-    <section id="research" className="bg-[#eef8fb] dark:bg-[#071720] pt-8 pb-24 scroll-mt-16">
+    <section id="research" className="border-t border-black/5 bg-[#f4f8f7] pt-10 pb-24 scroll-mt-16 dark:border-white/10 dark:bg-[#091214]">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="04" title="Research" tone="cyan" />
-        <div className="grid sm:grid-cols-2 gap-5">
+        <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
           {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
       </div>
@@ -1614,10 +1616,10 @@ function TeachingSection() {
   const items = teachingRoles.map(entry => roleToDetail(entry, "Teaching", "blue"));
 
   return (
-    <section id="teaching" className="bg-[#eef4ff] dark:bg-[#0a1020] pt-8 pb-24 scroll-mt-16">
+    <section id="teaching" className="border-t border-black/5 bg-[#f7f6f1] pt-10 pb-24 scroll-mt-16 dark:border-white/10 dark:bg-[#0b0f15]">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="06" title="Teaching & Mentorship" tone="blue" />
-        <div className="grid sm:grid-cols-2 gap-5">
+        <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
           {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
       </div>
