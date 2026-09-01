@@ -1,6 +1,5 @@
 import { useCallback, useState, useRef, useEffect } from "react";
 import {
-  Terminal as TerminalIcon,
   Mail,
   ExternalLink,
   ArrowRight,
@@ -9,7 +8,6 @@ import {
   Users,
   Menu,
   X,
-  Zap,
   Sun,
   Moon,
 } from "lucide-react";
@@ -839,7 +837,6 @@ const navLinks = [
   { label: "Teaching", href: "#teaching" },
   { label: "Education", href: "#education" },
   { label: "Now", href: "#now" },
-  { label: "Contact", href: "#contact" },
 ];
 
 // ─── SectionHeader ─────────────────────────────────────────────────────────────
@@ -1186,13 +1183,13 @@ function Navbar({
           >
             {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
-          {/* Terminal button */}
-          <button
-            onClick={onOpenTerminal}
-            className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-gray-800 transition-all duration-150 hover:border-gray-500 dark:border-green-500/35 dark:bg-green-500/10 dark:text-green-300 dark:hover:border-green-400/60"
+          {/* Contact button */}
+          <a
+            href="#contact"
+            className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-gray-800 transition-all duration-150 hover:border-gray-500 hover:bg-gray-50 dark:border-cyan-300/25 dark:bg-cyan-300/10 dark:text-cyan-200 dark:hover:border-cyan-300/55 dark:hover:bg-cyan-300/15"
           >
-            Terminal
-          </button>
+            Contact
+          </a>
         </div>
 
         {/* Mobile hamburger */}
@@ -1228,6 +1225,13 @@ function Navbar({
                 {l.label}
               </a>
             ))}
+            <a
+              href="#contact"
+              onClick={() => setMenuOpen(false)}
+              className="block px-3 py-2 text-sm text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-cyan-400/10 rounded-md"
+            >
+              Contact
+            </a>
             <button
               onClick={() => { setMenuOpen(false); onOpenTerminal(); }}
               className="flex items-center gap-2 px-3 py-2 text-sm font-mono text-gray-800 dark:text-green-400 hover:text-blue-600 dark:hover:text-green-300"
@@ -1325,17 +1329,8 @@ function LaptopVisual() {
 function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   return (
     <section id="top" className="relative overflow-hidden bg-[#fbfaf7] text-gray-950 dark:bg-[#070914] dark:text-white">
-      <div className="absolute inset-x-0 bottom-0 hidden h-28 items-end gap-3 px-8 opacity-40 sm:flex" aria-hidden="true">
-        {[34, 58, 42, 70, 28, 52, 80, 46, 64, 36, 74, 44, 60, 32, 68, 40, 76, 50, 66, 38, 72, 45, 62, 35].map((height, index) => (
-          <span
-            key={index}
-            className="flex-1 bg-gray-200/70 dark:bg-white/[0.05]"
-            style={{ height: `${height}%` }}
-          />
-        ))}
-      </div>
-      <div className="relative mx-auto flex min-h-[calc(100svh-4rem)] max-w-[1220px] px-6 py-16 md:px-8 lg:py-20">
-        <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16">
+      <div className="relative mx-auto flex min-h-[calc(100svh-4rem)] max-w-[1220px] px-6 py-12 md:px-8 lg:py-16">
+        <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-8 xl:-translate-y-10">
           {/* Left */}
           <div className="space-y-7">
             <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-700 dark:text-cyan-300">
@@ -1728,72 +1723,6 @@ function ContactSection() {
   );
 }
 
-// ─── Explore Bar ──────────────────────────────────────────────────────────────
-
-function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
-  const items = [
-    {
-      Icon: TerminalIcon,
-      iconClass: "text-emerald-700 dark:text-emerald-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-300",
-      borderClass: "border-emerald-500/35 group-hover:border-emerald-500/70 group-hover:shadow-sm group-hover:shadow-emerald-500/10",
-      arrowClass: "text-gray-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400",
-      label: "Terminal Mode",
-      sub: "Interactive CLI experience",
-      action: onOpenTerminal,
-      href: null as string | null,
-    },
-    {
-      Icon: Zap,
-      iconClass: "text-violet-700 dark:text-slate-300 group-hover:text-violet-600 dark:group-hover:text-violet-300",
-      borderClass: "border-violet-500/30 dark:border-violet-300/20 group-hover:border-violet-500/70 dark:group-hover:border-violet-400/60",
-      arrowClass: "text-gray-400 dark:text-slate-500 group-hover:text-violet-600 dark:group-hover:text-violet-300",
-      label: "Now",
-      sub: "What I'm building & learning",
-      action: null as (() => void) | null,
-      href: "#now",
-    },
-    {
-      Icon: Code2,
-      iconClass: "text-amber-700 dark:text-slate-300 group-hover:text-amber-600 dark:group-hover:text-amber-300",
-      borderClass: "border-amber-500/35 dark:border-amber-300/20 group-hover:border-amber-500/75 dark:group-hover:border-amber-400/60",
-      arrowClass: "text-gray-400 dark:text-slate-500 group-hover:text-amber-600 dark:group-hover:text-amber-300",
-      label: "Research",
-      sub: "Papers and model evaluation",
-      action: null,
-      href: "#research",
-    },
-  ];
-
-  return (
-    <section id="explore" className="bg-white dark:bg-[#080a10] border-t border-gray-200 dark:border-slate-700/40">
-      <div className="max-w-[1220px] mx-auto">
-        <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-slate-700/40">
-          {items.map(item => {
-            const inner = (
-              <div className="group flex items-center justify-between px-8 py-10 hover:bg-gray-50 dark:hover:bg-white/[0.04] transition-colors duration-200 cursor-pointer">
-                <div className="flex items-center gap-5">
-                  <div className={`h-10 w-10 rounded-xl border flex items-center justify-center transition-all duration-200 ${item.borderClass}`}>
-                    <item.Icon className={`h-4.5 w-4.5 transition-colors duration-200 ${item.iconClass}`} strokeWidth={1.75} />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-950 dark:text-white text-base">{item.label}</p>
-                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-0.5">{item.sub}</p>
-                  </div>
-                </div>
-                <ArrowRight className={`h-5 w-5 group-hover:translate-x-1 transition-all duration-200 shrink-0 ${item.arrowClass}`} />
-              </div>
-            );
-            if (item.action) {
-              return <button key={item.label} onClick={item.action} className="text-left w-full">{inner}</button>;
-            }
-            return <a key={item.label} href={item.href ?? "#"}>{inner}</a>;
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ─── App ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -1815,7 +1744,6 @@ export default function App() {
       <EducationSection />
       <NowSection />
       <ContactSection />
-      <ExploreBar onOpenTerminal={openTerminal} />
     </div>
   );
 }
