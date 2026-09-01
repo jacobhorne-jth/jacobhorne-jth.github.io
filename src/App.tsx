@@ -928,10 +928,7 @@ const roleToDetail = (entry: RoleEntry, section: string, tone: Tone): DetailItem
     logo: entry.logo,
     logoImg: entry.logoImg,
     meta: [`Role — ${entry.role}`],
-    paragraphs: [
-      entry.bullets[0] ?? entry.role,
-      "I focused on turning ambiguous technical work into software with clear users, constraints, and outcomes.",
-    ],
+    paragraphs: [entry.bullets[0] ?? entry.role],
     highlights: [
       ...entry.bullets.slice(1),
       ...featured.map(f => f.text),
@@ -954,10 +951,7 @@ const projectToDetail = (project: Project): DetailItem => ({
   image: project.imgUrl,
   imageAlt: project.name,
   meta: project.group ? [`Group — ${project.group}`] : ["Independent build"],
-  paragraphs: [
-    project.detail,
-    "I built this as a practical system, with attention to the product surface, backend behavior, and the technical constraints behind the demo.",
-  ],
+  paragraphs: [project.detail],
   highlights: [
     `Built with ${project.tech.slice(0, 4).join(", ")}.`,
     project.demoUrl ? "Includes a live demo surface for trying the system." : "Designed as a code-first project with implementation details in the repository.",
@@ -1011,20 +1005,23 @@ const educationDetail: DetailItem = {
   tone: "rose",
 };
 
-function DetailLogo({ item }: { item: DetailItem }) {
+function DetailLogo({ item, size = "card" }: { item: DetailItem; size?: "card" | "modal" }) {
+  const imageFrame = size === "modal" ? "h-20 w-28" : "h-12 w-16";
+  const logoFrame = size === "modal" ? "h-[4.5rem] w-[4.5rem]" : "h-12 w-12";
+
   if (item.image) {
     return (
-      <div className="h-16 w-20 rounded-md bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 overflow-hidden shrink-0">
+      <div className={`${imageFrame} rounded-md bg-white dark:bg-white/5 border border-gray-200/80 dark:border-white/10 overflow-hidden shrink-0`}>
         <img src={item.image} alt={item.imageAlt ?? item.title} className="h-full w-full object-cover object-top" />
       </div>
     );
   }
 
   return (
-    <div className="h-16 w-16 rounded-md bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+    <div className={`${logoFrame} rounded-md bg-white dark:bg-white/5 border border-gray-200/80 dark:border-white/10 flex items-center justify-center overflow-hidden shrink-0`}>
       {item.logoImg
         ? <img src={item.logoImg} alt={item.title} className="h-full w-full object-cover" />
-        : <span className="text-[10px] font-bold tracking-wide text-gray-500 dark:text-slate-300">{item.logo}</span>}
+        : <span className="text-[10px] font-semibold tracking-wide text-gray-500 dark:text-slate-300">{item.logo}</span>}
     </div>
   );
 }
@@ -1036,36 +1033,37 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
     <button
       type="button"
       onClick={() => onOpen(item)}
-      className={`group relative min-h-[178px] w-full overflow-hidden rounded-lg border border-gray-200 p-5 text-left shadow-sm shadow-slate-950/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-950/10 focus:outline-none focus-visible:ring-2 ${tone.card} ${tone.border} ${tone.hoverBorder} ${tone.ring}`}
+      className={`group relative min-h-[168px] w-full overflow-hidden rounded-md border border-gray-200/80 bg-white/90 p-5 text-left shadow-[0_1px_0_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-300 hover:bg-white hover:shadow-md hover:shadow-slate-950/10 focus:outline-none focus-visible:ring-2 dark:border-white/10 dark:bg-white/[0.035] dark:shadow-none dark:hover:border-white/20 dark:hover:bg-white/[0.06] ${tone.ring}`}
     >
       {item.accentLine && <div className={`absolute inset-x-0 top-0 h-0.5 ${item.accentLine}`} />}
       <div className="flex h-full flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <p className={`font-mono text-[10px] uppercase tracking-[0.2em] ${tone.text}`}>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500 dark:text-slate-400">
                 {item.period ?? item.eyebrow}
               </p>
               {item.isActive && (
-                <span className={`rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.16em] ${tone.soft} ${tone.text}`}>
+                <span className={`inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] ${tone.text}`}>
+                  <span className={`h-1.5 w-1.5 rounded-full ${tone.bullet}`} />
                   Active
                 </span>
               )}
             </div>
-            <h3 className="mt-3 text-xl font-bold leading-snug text-gray-900 dark:text-white">
+            <h3 className="mt-3 text-lg font-semibold leading-snug text-gray-950 dark:text-white">
               {item.title}
             </h3>
             {item.subtitle && (
-              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">{item.subtitle}</p>
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">{item.subtitle}</p>
             )}
           </div>
           <DetailLogo item={item} />
         </div>
 
-        <p className="text-sm leading-relaxed text-gray-600 dark:text-slate-300">{item.summary}</p>
+        <p className="text-sm leading-6 text-gray-600 dark:text-slate-300">{item.summary}</p>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-1">
-          <span className={`rounded border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100 ${tone.button}`}>
+          <span className={`font-mono text-[10px] uppercase tracking-[0.18em] opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100 ${tone.text}`}>
             View details
           </span>
           <ArrowRight className={`h-4 w-4 text-gray-300 transition-all duration-200 group-hover:translate-x-1 dark:text-slate-500 ${tone.arrow}`} />
@@ -1124,7 +1122,7 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
                 {item.summary}
               </p>
             </div>
-            <DetailLogo item={item} />
+            <DetailLogo item={item} size="modal" />
           </div>
         </div>
 
