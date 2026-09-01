@@ -7,7 +7,6 @@ import {
   Code2,
   Cpu,
   Users,
-  BookOpen,
   Menu,
   X,
   Zap,
@@ -70,7 +69,7 @@ const HELP_TEXT: TerminalLine[] = [
   { type: "cols", left: "  research   — research",         right: "  whoami     — info about Jacob" },
   { type: "cols", left: "  projects   — projects",         right: "  ls         — list all sections" },
   { type: "cols", left: "  contact    — contact",          right: "  flip       — flip the page" },
-  { type: "cols", left: "  game       — play snake",       right: "  publications — publications" },
+  { type: "cols", left: "  game       — play snake",       right: "  papers     — research papers" },
   { type: "cols", left: "  hack       — initiate hack",    right: "  joke       — random dev joke" },
   { type: "cols", left: "  fortune    — words of wisdom",  right: "  coffee     — ☕" },
   { type: "cols", left: "  skills     — tech stack",       right: "  ping       — ping jacob" },
@@ -222,7 +221,7 @@ function Terminal({ onClose }: { onClose: () => void }) {
       case "research": scrollTo("research"); return;
       case "projects": scrollTo("projects"); return;
       case "contact": scrollTo("contact"); return;
-      case "publications": scrollTo("publications"); return;
+      case "papers": scrollTo("research"); return;
       case "github":
         window.open("https://github.com/jacobhorne-jth", "_blank");
         out.push({ type: "output", text: "Opening GitHub..." }, { type: "blank" }); break;
@@ -243,7 +242,7 @@ function Terminal({ onClose }: { onClose: () => void }) {
         ); break;
       case "ls":
         out.push(
-          { type: "output", text: "about/  experience/  projects/  research/  publications/  teaching/  education/  now/  contact/" },
+          { type: "output", text: "about/  experience/  projects/  research/  teaching/  education/  now/  contact/" },
           { type: "blank" },
         ); break;
       case "clear":
@@ -411,7 +410,7 @@ type Project = {
   accentLine: string; repoUrl: string; demoUrl?: string; imgUrl?: string;
   group?: string;
 };
-type Publication = {
+type Paper = {
   venue: string;
   title: string;
   detail: string;
@@ -795,7 +794,7 @@ const projects: Project[] = [
   },
 ];
 
-const publications: Publication[] = [
+const papers: Paper[] = [
   {
     venue: "ICLR 2026 LLM Reasoning Workshop",
     title: "The First Tokens Matter: Early Confidence Signals for Evaluating LLM Reasoning",
@@ -837,7 +836,6 @@ const navLinks = [
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
   { label: "Research", href: "#research" },
-  { label: "Publications", href: "#publications" },
   { label: "Teaching", href: "#teaching" },
   { label: "Education", href: "#education" },
   { label: "Now", href: "#now" },
@@ -922,27 +920,28 @@ const projectToDetail = (project: Project): DetailItem => ({
   tone: "violet",
 });
 
-const publicationToDetail = (pub: Publication): DetailItem => ({
-  id: `publication-${pub.title}`,
-  eyebrow: pub.venue,
-  title: pub.title,
-  subtitle: "Publication",
-  summary: pub.detail,
+const paperToDetail = (paper: Paper): DetailItem => ({
+  id: `paper-${paper.title}`,
+  eyebrow: "UCI Digital Learning Lab",
+  title: paper.title,
+  subtitle: "Associated with UCI Digital Learning Lab",
+  summary: paper.detail,
   logo: "PDF",
-  period: pub.venue,
-  meta: [`Venue — ${pub.venue}`],
+  logoImg: logoDLL,
+  period: paper.venue,
+  meta: [`Venue — ${paper.venue}`, "Lab — UCI Digital Learning Lab"],
   paragraphs: [
-    pub.detail,
+    paper.detail,
     "This work reflects my interest in evaluating model behavior with signals that can be measured, compared, and improved.",
   ],
   highlights: [
     "Focuses on confidence, reasoning quality, and evaluation signals.",
     "Connects empirical analysis to practical LLM evaluation workflows.",
   ],
-  tags: pub.tags,
-  href: pub.url,
+  tags: paper.tags,
+  href: paper.url,
   hrefLabel: "Open paper",
-  tone: "amber",
+  tone: "cyan",
 });
 
 const educationDetail: DetailItem = {
@@ -1526,38 +1525,37 @@ function ProjectsSection() {
 
 function ResearchSection() {
   const [selected, setSelected] = useState<DetailItem | null>(null);
-  const items = researchRoles.map(entry => roleToDetail(entry, "Research", "cyan"));
+  const researchItems = researchRoles.map(entry => roleToDetail(entry, "Research", "cyan"));
+  const paperItems = papers.map(paperToDetail);
 
   return (
     <section id="research" className="border-t border-black/5 bg-[#f4f8f7] pt-10 pb-24 scroll-mt-16 dark:border-white/10 dark:bg-[#091214]">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="04" title="Research" tone="cyan" />
         <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
-          {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
+          {researchItems.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
-      </div>
-      <DetailModal item={selected} onClose={() => setSelected(null)} />
-    </section>
-  );
-}
 
-// ─── Publications ─────────────────────────────────────────────────────────────
-
-function PublicationsSection() {
-  const [selected, setSelected] = useState<DetailItem | null>(null);
-  const items = publications.map(publicationToDetail);
-
-  return (
-    <section id="publications" className="bg-[#fff5df] dark:bg-[#1d1508] pt-8 pb-24 scroll-mt-16">
-      <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        <SectionHeader
-          number="05"
-          title="Publications"
-          subtitle="Papers and research work around LLM evaluation, confidence signals, and model behavior."
-          tone="amber"
-        />
-        <div className="grid md:grid-cols-2 gap-5">
-          {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
+        <div className="mt-12 border-t border-cyan-700/10 pt-8 dark:border-cyan-300/15">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border border-cyan-700/20 bg-white dark:border-cyan-300/20 dark:bg-white/5">
+                <img src={logoDLL} alt="UCI Digital Learning Lab" className="h-full w-full object-cover" />
+              </div>
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-700 dark:text-cyan-300">
+                  UCI Digital Learning Lab
+                </p>
+                <h3 className="text-xl font-semibold text-gray-950 dark:text-white">Papers</h3>
+              </div>
+            </div>
+            <p className="max-w-md text-sm leading-6 text-gray-600 dark:text-slate-300">
+              Research outputs tied to my work with the Digital Learning Lab.
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3 md:gap-5">
+            {paperItems.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
+          </div>
         </div>
       </div>
       <DetailModal item={selected} onClose={() => setSelected(null)} />
@@ -1574,7 +1572,7 @@ function TeachingSection() {
   return (
     <section id="teaching" className="border-t border-black/5 bg-[#f7f6f1] pt-10 pb-24 scroll-mt-16 dark:border-white/10 dark:bg-[#0b0f15]">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        <SectionHeader number="06" title="Teaching & Mentorship" tone="blue" />
+        <SectionHeader number="05" title="Teaching & Mentorship" tone="blue" />
         <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
           {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
@@ -1594,7 +1592,7 @@ function EducationSection() {
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="max-w-xl">
           <div className="flex items-baseline gap-3 mb-10">
-            <span className="text-xs font-bold tracking-[0.2em] text-rose-700 dark:text-rose-300 uppercase select-none">07</span>
+            <span className="text-xs font-bold tracking-[0.2em] text-rose-700 dark:text-rose-300 uppercase select-none">06</span>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Education</h2>
           </div>
           <DetailCard item={educationDetail} onOpen={setSelected} />
@@ -1646,7 +1644,7 @@ function NowSection() {
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="mb-10">
           <div className="flex items-baseline gap-3">
-            <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">08</span>
+            <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">07</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-950 dark:text-white">What I'm up to</h2>
           </div>
         </div>
@@ -1682,7 +1680,7 @@ function ContactSection() {
         <div className="grid gap-10 md:grid-cols-[minmax(0,0.9fr)_minmax(360px,1fr)] md:items-start">
           <div>
             <div className="flex items-baseline gap-3">
-              <span className="text-xs font-bold tracking-[0.2em] text-amber-700 dark:text-amber-300 uppercase select-none">09</span>
+              <span className="text-xs font-bold tracking-[0.2em] text-amber-700 dark:text-amber-300 uppercase select-none">08</span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Let's Connect</h2>
             </div>
             <p className="mt-5 max-w-xl text-base leading-7 text-gray-600 dark:text-slate-300">
@@ -1760,14 +1758,14 @@ function ExploreBar({ onOpenTerminal }: { onOpenTerminal: () => void }) {
       href: "#now",
     },
     {
-      Icon: BookOpen,
+      Icon: Code2,
       iconClass: "text-amber-700 dark:text-slate-300 group-hover:text-amber-600 dark:group-hover:text-amber-300",
       borderClass: "border-amber-500/35 dark:border-amber-300/20 group-hover:border-amber-500/75 dark:group-hover:border-amber-400/60",
       arrowClass: "text-gray-400 dark:text-slate-500 group-hover:text-amber-600 dark:group-hover:text-amber-300",
-      label: "Publications",
-      sub: "LLM evaluation and confidence",
+      label: "Research",
+      sub: "Papers and model evaluation",
       action: null,
-      href: "#publications",
+      href: "#research",
     },
   ];
 
@@ -1818,7 +1816,6 @@ export default function App() {
       <ExperienceSection />
       <ProjectsSection />
       <ResearchSection />
-      <PublicationsSection />
       <TeachingSection />
       <EducationSection />
       <NowSection />
