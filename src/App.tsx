@@ -1584,85 +1584,20 @@ function TeachingSection() {
   );
 }
 
-// ─── Education + Contact ──────────────────────────────────────────────────────
+// ─── Education ────────────────────────────────────────────────────────────────
 
-function EducationContact() {
+function EducationSection() {
   const [selected, setSelected] = useState<DetailItem | null>(null);
 
   return (
-    <section id="education" className="bg-[#fbf0f5] dark:bg-[#1b0c15] pt-8 pb-24 scroll-mt-16">
+    <section id="education" className="bg-[#fbf0f5] dark:bg-[#1b0c15] pt-10 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        <div className="grid md:grid-cols-2 gap-16 items-start">
-          {/* Education */}
-          <div>
-            <div className="flex items-baseline gap-3 mb-10">
-              <span className="text-xs font-bold tracking-[0.2em] text-rose-700 dark:text-rose-300 uppercase select-none">07</span>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Education</h2>
-            </div>
-            <DetailCard item={educationDetail} onOpen={setSelected} />
+        <div className="max-w-xl">
+          <div className="flex items-baseline gap-3 mb-10">
+            <span className="text-xs font-bold tracking-[0.2em] text-rose-700 dark:text-rose-300 uppercase select-none">07</span>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Education</h2>
           </div>
-
-          {/* Contact */}
-          <div id="contact" className="scroll-mt-20">
-            <div className="flex items-baseline gap-3 mb-10">
-              <span className="text-xs font-bold tracking-[0.2em] text-amber-700 dark:text-amber-300 uppercase select-none">08</span>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Let's Connect</h2>
-            </div>
-            <div className="space-y-5">
-              <p className="text-gray-600 dark:text-slate-300 leading-relaxed">
-                I'm always open to new opportunities, research collaborations, and interesting conversations.
-                Reach out anytime.
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs text-gray-500 dark:text-slate-300 font-mono shrink-0">Open to internships/opportunities:</span>
-                {["Winter 2027", "Summer 2027", "Fall 2027"].map(term => (
-                  <span key={term} className="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 text-xs text-emerald-700 dark:text-emerald-300 font-mono">
-                    {term}
-                  </span>
-                ))}
-              </div>
-              <div className="space-y-3 pt-2">
-                {[
-                  {
-                    Icon: Mail, label: "jacobhorne.jth@gmail.com",
-                    href: "mailto:jacobhorne.jth@gmail.com",
-                  },
-                  {
-                    Icon: LinkedinIcon, label: "linkedin.com/in/jacobhornejth",
-                    href: "https://linkedin.com/in/jacobhornejth",
-                  },
-                  {
-                    Icon: GithubIcon, label: "github.com/jacobhorne-jth",
-                    href: "https://github.com/jacobhorne-jth",
-                  },
-                ].map(link => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-3 text-sm text-gray-700 dark:text-slate-200 hover:text-amber-700 dark:hover:text-amber-300 transition-colors duration-150"
-                  >
-                    <span className="h-9 w-9 rounded-lg border border-gray-200 dark:border-slate-700 flex items-center justify-center shrink-0">
-                      <link.Icon className="h-4 w-4" strokeWidth={1.75} />
-                    </span>
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-              <div className="pt-4">
-                <a
-                  href="mailto:jacobhorne.jth@gmail.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-rose-700 hover:bg-rose-600 text-white px-6 py-3 text-sm font-medium transition-colors duration-150"
-                >
-                  Let's Build Something
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-              </div>
-            </div>
-          </div>
+          <DetailCard item={educationDetail} onOpen={setSelected} />
         </div>
       </div>
       <DetailModal item={selected} onClose={() => setSelected(null)} />
@@ -1678,40 +1613,40 @@ function NowSection() {
       label: "Building",
       tone: "emerald",
       entries: [
-        "AI R&D tooling at Sandia for research workflows, interfaces, and internal systems",
-        "A CUDA project to understand model execution closer to the hardware",
-        "Lazarus, a project about bringing old workflows and scattered context back to life",
-        "A personal operating system that connects my tools, notes, automations, and daily decisions",
+        "AI R&D tooling at Sandia",
+        "CUDA model-execution experiments",
+        "Lazarus workflow tooling",
+        "A personal operating system",
       ],
     },
     {
       label: "Researching",
       tone: "cyan",
       entries: [
-        "Text-to-SQL confidence, query execution, repair loops, and token log-probability signals",
-        "Physics-informed ML for thermal storage prediction and fast surrogate modeling",
-        "Multi-agent LLM evaluation pipelines that reveal where reasoning systems fail",
-        "Underwater robotics perception: camera, sonar, detection, and autonomy constraints",
+        "Text-to-SQL confidence",
+        "Physics-informed thermal prediction",
+        "Multi-agent LLM evaluation",
+        "Underwater robotics perception",
       ],
     },
     {
       label: "Learning",
       tone: "amber",
       entries: [
-        "System design, because I want to understand the production systems around me",
-        "CUDA kernels, quantization, KV caching, and inference throughput",
-        "Robotics software architecture, Dockerized deployments, and publish-subscribe systems",
-        "How to make technical tools feel calm, legible, and useful under real constraints",
+        "System design",
+        "CUDA kernels and inference throughput",
+        "Robotics software architecture",
+        "Cleaner technical tools",
       ],
     },
   ];
 
   return (
-    <section id="now" className="bg-[#f8f5ff] dark:bg-[#0d0a12] border-t border-violet-200 dark:border-violet-300/15 pt-16 pb-20 scroll-mt-16">
+    <section id="now" className="bg-[#f8f5ff] dark:bg-[#0d0a12] border-t border-violet-200 dark:border-violet-300/15 pt-20 pb-24 scroll-mt-16">
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="mb-10">
           <div className="flex items-baseline gap-3">
-            <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">Now</span>
+            <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">08</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-950 dark:text-white">What I'm up to</h2>
           </div>
         </div>
@@ -1719,7 +1654,7 @@ function NowSection() {
           {items.map(col => {
             const tone = toneStyles[col.tone];
             return (
-            <div key={col.label} className={`rounded-2xl border p-6 ${tone.card} ${tone.border}`}>
+            <div key={col.label} className={`rounded-md border p-7 ${tone.card} ${tone.border}`}>
               <p className={`text-xs font-bold tracking-[0.2em] uppercase mb-4 ${tone.text}`}>{col.label}</p>
               <ul className="space-y-3">
                 {col.entries.map((e, i) => (
@@ -1732,6 +1667,68 @@ function NowSection() {
             </div>
             );
           })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Contact ──────────────────────────────────────────────────────────────────
+
+function ContactSection() {
+  return (
+    <section id="contact" className="bg-[#fff5df] dark:bg-[#1d1508] border-t border-amber-200 dark:border-amber-300/15 pt-16 pb-20 scroll-mt-16">
+      <div className="max-w-[1220px] mx-auto px-6 md:px-8">
+        <div className="grid gap-10 md:grid-cols-[minmax(0,0.9fr)_minmax(360px,1fr)] md:items-start">
+          <div>
+            <div className="flex items-baseline gap-3">
+              <span className="text-xs font-bold tracking-[0.2em] text-amber-700 dark:text-amber-300 uppercase select-none">09</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Let's Connect</h2>
+            </div>
+            <p className="mt-5 max-w-xl text-base leading-7 text-gray-600 dark:text-slate-300">
+              I'm open to internships, research collaborations, and thoughtful conversations about building useful technical systems.
+            </p>
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              {["Winter 2027", "Summer 2027", "Fall 2027"].map(term => (
+                <span key={term} className="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 text-xs text-emerald-700 dark:text-emerald-300 font-mono">
+                  {term}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-3">
+            {[
+              {
+                Icon: Mail, label: "jacobhorne.jth@gmail.com",
+                href: "mailto:jacobhorne.jth@gmail.com",
+              },
+              {
+                Icon: LinkedinIcon, label: "linkedin.com/in/jacobhornejth",
+                href: "https://linkedin.com/in/jacobhornejth",
+              },
+              {
+                Icon: GithubIcon, label: "github.com/jacobhorne-jth",
+                href: "https://github.com/jacobhorne-jth",
+              },
+            ].map(link => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center justify-between gap-4 rounded-md border border-amber-200/80 bg-white/70 px-4 py-4 text-sm text-gray-700 transition-all duration-150 hover:border-amber-500/60 hover:bg-white dark:border-amber-300/15 dark:bg-white/[0.035] dark:text-slate-200 dark:hover:border-amber-300/45 dark:hover:bg-white/[0.06]"
+              >
+                <span className="flex min-w-0 items-center gap-3">
+                  <span className="h-9 w-9 rounded-lg border border-gray-200 dark:border-slate-700 flex items-center justify-center shrink-0">
+                    <link.Icon className="h-4 w-4" strokeWidth={1.75} />
+                  </span>
+                  <span className="truncate">{link.label}</span>
+                </span>
+                <ArrowRight className="h-4 w-4 shrink-0 text-gray-400 transition-transform duration-150 group-hover:translate-x-1 dark:text-slate-500" />
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -1823,8 +1820,9 @@ export default function App() {
       <ResearchSection />
       <PublicationsSection />
       <TeachingSection />
-      <EducationContact />
+      <EducationSection />
       <NowSection />
+      <ContactSection />
       <ExploreBar onOpenTerminal={openTerminal} />
     </div>
   );
