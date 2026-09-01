@@ -46,7 +46,6 @@ import logoCaretech from "./assets/logos/caretechlogo.jpeg";
 import logoCTC from "./assets/logos/ctclogo.jpeg";
 import logoBlockchain from "./assets/logos/blockchainlogo.jpeg";
 import logoSENS from "./assets/logos/senslogo.jpeg";
-import logoCOSMOS from "./assets/logos/cosmosLogo.jpeg";
 import logoRFA from "./assets/logos/rfalogo.jpeg";
 import logoSW from "./assets/logos/swlogo.jpeg";
 import logoSL from "./assets/logos/sllogo.png";
@@ -691,19 +690,6 @@ const researchRoles: RoleEntry[] = [
       },
     ],
     tags: ["Python", "LangGraph", "NLP", "NumPy", "Pandas", "Matplotlib", "LLMs"],
-  },
-  {
-    logo: "UCSD",
-    logoImg: logoCOSMOS,
-    company: "UCSD COSMOS — Game AI Design",
-    role: "Student Researcher",
-    period: "Jul 2023 — Aug 2023",
-    bullets: [
-      "Researched AI-driven game design and computational modeling with a focus on simulation.",
-      "Implemented C# AI state machines and behavior trees in Unity.",
-      "Created original video games demonstrating learned AI and simulation principles.",
-    ],
-    tags: ["C#", "Unity", "AI/ML", "Game Design"],
   },
 ];
 
