@@ -833,10 +833,14 @@ const coursework = [
 ];
 
 const navLinks = [
-  { label: "Loop", href: "#build-loop" },
+  { label: "About", href: "#about" },
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
   { label: "Research", href: "#research" },
+  { label: "Publications", href: "#publications" },
+  { label: "Teaching", href: "#teaching" },
+  { label: "Education", href: "#education" },
+  { label: "Now", href: "#now" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -1152,7 +1156,7 @@ function Navbar({
 
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200/80 bg-[#fbfaf7]/95 backdrop-blur dark:border-white/10 dark:bg-[#080a10]/95">
-      <div className="h-16 w-full px-5 sm:px-8 lg:px-12 grid grid-cols-[1fr_auto_1fr] items-center">
+      <div className="h-16 w-full px-5 sm:px-8 lg:px-10 grid grid-cols-[auto_1fr_auto] items-center gap-4">
         {/* Logo */}
         <a href="#top" className="flex items-center gap-2.5 group">
           <span className="h-2 w-2 rounded-full bg-cyan-700 dark:bg-cyan-300" />
@@ -1162,19 +1166,19 @@ function Navbar({
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center justify-center gap-7">
+        <nav className="hidden lg:flex items-center justify-center gap-4 xl:gap-6">
           {navLinks.map(l => (
             <a
               key={l.label}
               href={l.href}
-              className="font-mono text-[11px] uppercase tracking-[0.18em] text-gray-500 transition-colors duration-150 hover:text-gray-950 dark:text-slate-400 dark:hover:text-white"
+              className="font-mono text-[10px] uppercase tracking-[0.14em] text-gray-500 transition-colors duration-150 hover:text-gray-950 dark:text-slate-400 dark:hover:text-white xl:text-[11px] xl:tracking-[0.18em]"
             >
               {l.label}
             </a>
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center justify-end gap-2">
+        <div className="hidden lg:flex items-center justify-end gap-2">
           {/* Dark/light toggle */}
           <button
             onClick={onToggleDark}
@@ -1193,7 +1197,7 @@ function Navbar({
         </div>
 
         {/* Mobile hamburger */}
-        <div className="md:hidden col-start-3 flex items-center justify-end gap-2">
+        <div className="lg:hidden col-start-3 flex items-center justify-end gap-2">
           <button
             onClick={onToggleDark}
             className="p-2 text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white"
@@ -1213,7 +1217,7 @@ function Navbar({
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-100 dark:border-[#22263a] bg-white dark:bg-[#090a12]">
+        <div className="lg:hidden border-t border-gray-100 dark:border-[#22263a] bg-white dark:bg-[#090a12]">
           <div className="max-w-[1220px] mx-auto px-6 py-4 space-y-1">
             {navLinks.map(l => (
               <a
@@ -1406,69 +1410,6 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   );
 }
 
-// ─── Build Loop ───────────────────────────────────────────────────────────────
-
-function BuildLoopSection() {
-  const loopItems: Array<{ label: string; title: string; detail: string; tone: Tone }> = [
-    {
-      label: "01",
-      title: "Start with a question",
-      detail: "I usually get pulled in by something I do not understand yet: a model behavior, a slow system, a robot constraint, or a workflow that feels harder than it should.",
-      tone: "cyan",
-    },
-    {
-      label: "02",
-      title: "Build the smallest real version",
-      detail: "I learn fastest when the idea has to run, break, accept inputs, show outputs, and answer to real constraints.",
-      tone: "violet",
-    },
-    {
-      label: "03",
-      title: "Make it clearer or faster",
-      detail: "Once it works, I care about whether it becomes easier to use, easier to reason about, or meaningfully more efficient.",
-      tone: "emerald",
-    },
-    {
-      label: "04",
-      title: "Bring someone else in",
-      detail: "The best projects eventually teach something, unblock someone, or make a complicated system less intimidating.",
-      tone: "amber",
-    },
-  ];
-
-  return (
-    <section id="build-loop" className="border-t border-black/5 bg-[#f4f8f7] py-20 scroll-mt-16 dark:border-white/10 dark:bg-[#081114]">
-      <div className="mx-auto max-w-[1220px] px-6 md:px-8">
-        <div className="mb-10 max-w-3xl">
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-700 dark:text-cyan-300">Build Loop</p>
-          <h2 className="mt-3 text-3xl font-semibold leading-tight text-gray-950 dark:text-white md:text-4xl">
-            The pattern behind the work.
-          </h2>
-          <p className="mt-4 text-base leading-7 text-gray-600 dark:text-slate-300">
-            I like solving problems by turning curiosity into a working thing, then improving it until it teaches me something useful or helps someone else move faster.
-          </p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-4">
-          {loopItems.map(item => {
-            const tone = toneStyles[item.tone];
-            return (
-              <div
-                key={item.label}
-                className="rounded-md border border-gray-200/80 bg-white/80 p-5 shadow-[0_1px_0_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-white/[0.035]"
-              >
-                <p className={`font-mono text-[10px] uppercase tracking-[0.2em] ${tone.text}`}>{item.label}</p>
-                <h3 className="mt-4 text-lg font-semibold leading-snug text-gray-950 dark:text-white">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-slate-300">{item.detail}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ─── About Me ─────────────────────────────────────────────────────────────────
 
 function AboutSection() {
@@ -1559,7 +1500,7 @@ function ProjectsSection() {
         <div className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
           <div className="flex items-baseline gap-3">
             <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">03</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Featured Projects</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Projects</h2>
           </div>
           <a
             href="https://github.com/jacobhorne-jth"
@@ -1876,7 +1817,6 @@ export default function App() {
       {terminalOpen && <Terminal onClose={closeTerminal} />}
       <Navbar onOpenTerminal={openTerminal} darkMode={darkMode} onToggleDark={() => setDarkMode(v => !v)} />
       <Hero onOpenTerminal={openTerminal} />
-      <BuildLoopSection />
       <AboutSection />
       <ExperienceSection />
       <ProjectsSection />
