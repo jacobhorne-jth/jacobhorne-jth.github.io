@@ -1406,6 +1406,69 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   );
 }
 
+// ─── Build Loop ───────────────────────────────────────────────────────────────
+
+function BuildLoopSection() {
+  const loopItems: Array<{ label: string; title: string; detail: string; tone: Tone }> = [
+    {
+      label: "01",
+      title: "Start with a question",
+      detail: "I usually get pulled in by something I do not understand yet: a model behavior, a slow system, a robot constraint, or a workflow that feels harder than it should.",
+      tone: "cyan",
+    },
+    {
+      label: "02",
+      title: "Build the smallest real version",
+      detail: "I learn fastest when the idea has to run, break, accept inputs, show outputs, and answer to real constraints.",
+      tone: "violet",
+    },
+    {
+      label: "03",
+      title: "Make it clearer or faster",
+      detail: "Once it works, I care about whether it becomes easier to use, easier to reason about, or meaningfully more efficient.",
+      tone: "emerald",
+    },
+    {
+      label: "04",
+      title: "Bring someone else in",
+      detail: "The best projects eventually teach something, unblock someone, or make a complicated system less intimidating.",
+      tone: "amber",
+    },
+  ];
+
+  return (
+    <section id="build-loop" className="border-t border-black/5 bg-[#f4f8f7] py-20 scroll-mt-16 dark:border-white/10 dark:bg-[#081114]">
+      <div className="mx-auto max-w-[1220px] px-6 md:px-8">
+        <div className="mb-10 max-w-3xl">
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-700 dark:text-cyan-300">Build Loop</p>
+          <h2 className="mt-3 text-3xl font-semibold leading-tight text-gray-950 dark:text-white md:text-4xl">
+            The pattern behind the work.
+          </h2>
+          <p className="mt-4 text-base leading-7 text-gray-600 dark:text-slate-300">
+            I like solving problems by turning curiosity into a working thing, then improving it until it teaches me something useful or helps someone else move faster.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-4">
+          {loopItems.map(item => {
+            const tone = toneStyles[item.tone];
+            return (
+              <div
+                key={item.label}
+                className="rounded-md border border-gray-200/80 bg-white/80 p-5 shadow-[0_1px_0_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-white/[0.035]"
+              >
+                <p className={`font-mono text-[10px] uppercase tracking-[0.2em] ${tone.text}`}>{item.label}</p>
+                <h3 className="mt-4 text-lg font-semibold leading-snug text-gray-950 dark:text-white">{item.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-gray-600 dark:text-slate-300">{item.detail}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── About Me ─────────────────────────────────────────────────────────────────
 
 function AboutSection() {
@@ -1813,6 +1876,7 @@ export default function App() {
       {terminalOpen && <Terminal onClose={closeTerminal} />}
       <Navbar onOpenTerminal={openTerminal} darkMode={darkMode} onToggleDark={() => setDarkMode(v => !v)} />
       <Hero onOpenTerminal={openTerminal} />
+      <BuildLoopSection />
       <AboutSection />
       <ExperienceSection />
       <ProjectsSection />
