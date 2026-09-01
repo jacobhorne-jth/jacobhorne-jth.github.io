@@ -1542,12 +1542,7 @@ function ResearchSection() {
               <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border border-cyan-700/20 bg-white dark:border-cyan-300/20 dark:bg-white/5">
                 <img src={logoDLL} alt="UCI Digital Learning Lab" className="h-full w-full object-cover" />
               </div>
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-700 dark:text-cyan-300">
-                  UCI Digital Learning Lab
-                </p>
-                <h3 className="text-xl font-semibold text-gray-950 dark:text-white">Papers</h3>
-              </div>
+              <h3 className="text-xl font-semibold text-gray-950 dark:text-white">Papers</h3>
             </div>
             <p className="max-w-md text-sm leading-6 text-gray-600 dark:text-slate-300">
               Research outputs tied to my work with the Digital Learning Lab.
