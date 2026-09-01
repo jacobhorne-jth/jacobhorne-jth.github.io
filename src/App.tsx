@@ -530,20 +530,20 @@ const toneStyles: Record<Tone, {
 const aboutFocus: Array<{ Icon: LucideIcon; label: string; detail: string; tone: Tone }> = [
   {
     Icon: Code2,
-    label: "Research tooling",
-    detail: "Turning AI research workflows into usable full-stack systems",
+    label: "Applied ML",
+    detail: "Working across models, data, and evaluation when problems need measurement",
     tone: "cyan",
   },
   {
     Icon: Cpu,
-    label: "Systems depth",
-    detail: "Learning CUDA, inference behavior, and production architecture",
+    label: "Systems curiosity",
+    detail: "Digging into CUDA, inference behavior, architecture, and the parts below the interface",
     tone: "violet",
   },
   {
     Icon: Users,
-    label: "Human-facing ML",
-    detail: "Building around researchers, students, robot operators, and users",
+    label: "Teaching and teams",
+    detail: "Learning by building with researchers, students, robot operators, and project teams",
     tone: "emerald",
   },
 ];
@@ -933,7 +933,7 @@ const publicationToDetail = (pub: Publication): DetailItem => ({
   meta: [`Venue — ${pub.venue}`],
   paragraphs: [
     pub.detail,
-    "This work sits in the part of research I care about most: measuring model behavior carefully enough that evaluation becomes useful for real systems.",
+    "This work reflects my interest in evaluating model behavior with signals that can be measured, compared, and improved.",
   ],
   highlights: [
     "Focuses on confidence, reasoning quality, and evaluation signals.",
@@ -1352,8 +1352,8 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
               </p>
             </div>
             <p className="text-base text-gray-600 dark:text-slate-400 leading-relaxed max-w-lg">
-              I like building the connective tissue between research and real users: full-stack AI tooling,
-              evaluation systems, perception pipelines, and the occasional low-level detour into CUDA and systems design.
+              I like learning by building things that make technical ideas concrete: ML infrastructure,
+              evaluation systems, robotics perception, CUDA experiments, and full-stack tools.
             </p>
             {/* Buttons */}
             <div className="grid grid-cols-2 gap-3 pt-1 sm:flex sm:flex-wrap">
@@ -1433,16 +1433,16 @@ function AboutSection() {
           {/* Text */}
           <div className="space-y-8">
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight max-w-3xl">
-              Building ML systems<br className="hidden sm:block" /> from research to production.
+              Learning across AI,<br className="hidden sm:block" /> systems, and robotics.
             </h3>
             <div className="max-w-3xl space-y-4 text-sm md:text-base text-gray-600 dark:text-slate-300 leading-relaxed">
               <p>
-                I am a CS student at UCI working on AI R&D tooling at Sandia National Labs, after building
-                recommender infrastructure as a Software Engineer Intern at Capital One.
+                I am a CS student at UCI and a Software Engineer Intern at Sandia National Labs.
+                Before that, I worked on recommender infrastructure at Capital One.
               </p>
               <p>
-                Most of my work sits in one lane: taking messy research, ML, robotics, or systems ideas and
-                turning them into software people can actually use.
+                I tend to follow questions until they become buildable: how models behave, how systems hold up,
+                how robots perceive, and how tools can make complicated work easier to reason about.
               </p>
             </div>
             <div className="grid gap-3 max-w-3xl">
@@ -1553,7 +1553,7 @@ function PublicationsSection() {
         <SectionHeader
           number="05"
           title="Publications"
-          subtitle="LLM evaluation, confidence signals, and research systems I am helping turn into durable workflows."
+          subtitle="Papers and research work around LLM evaluation, confidence signals, and model behavior."
           tone="amber"
         />
         <div className="grid md:grid-cols-2 gap-5">
@@ -1678,7 +1678,7 @@ function NowSection() {
       label: "Building",
       tone: "emerald",
       entries: [
-        "Full-stack AI R&D tooling at Sandia that makes research usable by real users",
+        "AI R&D tooling at Sandia for research workflows, interfaces, and internal systems",
         "A CUDA project to understand model execution closer to the hardware",
         "Lazarus, a project about bringing old workflows and scattered context back to life",
         "A personal operating system that connects my tools, notes, automations, and daily decisions",
@@ -1701,7 +1701,7 @@ function NowSection() {
         "System design, because I want to understand the production systems around me",
         "CUDA kernels, quantization, KV caching, and inference throughput",
         "Robotics software architecture, Dockerized deployments, and publish-subscribe systems",
-        "How to make research tools feel calm, legible, and useful under real constraints",
+        "How to make technical tools feel calm, legible, and useful under real constraints",
       ],
     },
   ];

@@ -1,10 +1,8 @@
 # Jacob Horne Portfolio
 
-Personal portfolio site for Jacob Horne, a CS student at UC Irvine building AI tooling, ML systems, robotics perception software, and LLM evaluation research workflows.
+Personal portfolio site for Jacob Horne, a CS student at UC Irvine building across AI, ML systems, robotics perception, software engineering, and teaching.
 
-The site highlights work making Sandia's AI research usable by researchers, engineers, and mission users.
-
-It also covers previous Software Engineering Internship work at Capital One on ML recommender infrastructure, publications, underwater robotics perception work, projects, teaching, and contact information.
+The site highlights internships, research, robotics work, projects, publications, teaching, education, and contact information.
 
 ## Development
 
