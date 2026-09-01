@@ -977,15 +977,12 @@ const educationDetail: DetailItem = {
   eyebrow: "Education",
   title: "University of California, Irvine",
   subtitle: "B.S. Computer Science",
-  summary: "Studying computer science in UCI's Campuswide Honors Collegium with a 3.92 GPA.",
+  summary: "3.92 GPA\nDean's List x 6\nCampuswide Honors Collegium",
   period: "Expected Jun 2028",
   logo: "UCI",
   logoImg: logoUCI,
-  meta: ["GPA — 3.92", "Program — Campuswide Honors Collegium"],
-  paragraphs: [
-    "I am studying computer science at UCI while building across AI tooling, ML systems, robotics perception, and software for real users.",
-    "The coursework that has mattered most to me lives at the intersection of machine learning, systems, data structures, and software engineering.",
-  ],
+  meta: ["GPA — 3.92", "Dean's List — 6x", "Campuswide Honors Collegium"],
+  paragraphs: ["3.92 GPA", "Dean's List x 6", "Campuswide Honors Collegium"],
   highlights: coursework,
   tags: ["Machine Learning", "AI", "Data Structures", "C/C++", "Software Engineering"],
   tone: "rose",
@@ -1046,7 +1043,7 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
           <DetailLogo item={item} />
         </div>
 
-        <p className="text-sm leading-6 text-gray-600 dark:text-slate-300">{item.summary}</p>
+        <p className="whitespace-pre-line text-sm leading-6 text-gray-600 dark:text-slate-300">{item.summary}</p>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-1">
           <span className={`font-mono text-[10px] uppercase tracking-[0.18em] opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100 ${tone.text}`}>
@@ -1104,7 +1101,7 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
                   <span className="text-gray-500 dark:text-slate-400 md:text-2xl"> · {item.subtitle}</span>
                 )}
               </h3>
-              <p className="mt-4 text-base leading-7 text-gray-700 dark:text-slate-300">
+              <p className="mt-4 whitespace-pre-line text-base leading-7 text-gray-700 dark:text-slate-300">
                 {item.summary}
               </p>
             </div>
