@@ -47,8 +47,6 @@ import logoCTC from "./assets/logos/ctclogo.jpeg";
 import logoBlockchain from "./assets/logos/blockchainlogo.jpeg";
 import logoSENS from "./assets/logos/senslogo.jpeg";
 import logoRFA from "./assets/logos/rfalogo.jpeg";
-import logoSW from "./assets/logos/swlogo.jpeg";
-import logoSL from "./assets/logos/sllogo.png";
 import logoCalit2 from "./assets/logos/calit2.png";
 import logoUCI from "./assets/logos/uci.jpeg";
 import logoDLL from "./assets/logos/dllreal.png";
@@ -718,31 +716,6 @@ const teachingRoles: RoleEntry[] = [
       "Improved digital literacy and online safety for vulnerable populations.",
     ],
     tags: ["Cybersecurity", "Workshop Design", "Community Education"],
-  },
-  {
-    logo: "Scho",
-    logoImg: logoSW,
-    company: "Schoolhouse.world",
-    role: "Tutor",
-    period: "Aug 2022 — Jun 2023",
-    bullets: [
-      "Led SAT bootcamps and one-on-one tutoring for 20+ students in CS, math, and physics.",
-      "Taught Python, Java, data structures, algebra through calculus, and mechanics.",
-      "Adapted instruction to individual learning styles and pacing needs.",
-    ],
-    tags: ["Python", "Java", "Mathematics", "Tutoring", "SAT Prep"],
-  },
-  {
-    logo: "STEM",
-    logoImg: logoSL,
-    company: "STEM League",
-    role: "Java & Python Mentor",
-    period: "Jun 2022 — Aug 2022",
-    bullets: [
-      "Mentored students through personalized Python and Java fundamentals instruction.",
-      "Built strong programming and problem-solving foundations for competitive learners.",
-    ],
-    tags: ["Python", "Java", "Mentoring"],
   },
 ];
 
