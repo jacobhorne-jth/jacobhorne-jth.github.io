@@ -833,14 +833,10 @@ const coursework = [
 ];
 
 const navLinks = [
-  { label: "About", href: "#about" },
+  { label: "Loop", href: "#build-loop" },
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
   { label: "Research", href: "#research" },
-  { label: "Publications", href: "#publications" },
-  { label: "Teaching", href: "#teaching" },
-  { label: "Education", href: "#education" },
-  { label: "Now", href: "#now" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -1155,31 +1151,34 @@ function Navbar({
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#090a12]/95 backdrop-blur border-b border-gray-100 dark:border-[#22263a]">
-      <div className="max-w-[1220px] mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-40 border-b border-gray-200/80 bg-[#fbfaf7]/95 backdrop-blur dark:border-white/10 dark:bg-[#080a10]/95">
+      <div className="h-16 w-full px-5 sm:px-8 lg:px-12 grid grid-cols-[1fr_auto_1fr] items-center">
         {/* Logo */}
         <a href="#top" className="flex items-center gap-2.5 group">
-          <span className="h-8 w-8 rounded-lg bg-gray-900 dark:bg-cyan-600 text-white text-sm font-bold grid place-items-center group-hover:bg-cyan-600 dark:group-hover:bg-cyan-500 transition-colors duration-200">
-            JH
+          <span className="h-2 w-2 rounded-full bg-cyan-700 dark:bg-cyan-300" />
+          <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-gray-800 dark:text-slate-200">
+            Jacob Horne
           </span>
-          <span className="font-semibold text-gray-900 dark:text-white text-sm hidden sm:block">Jacob Horne</span>
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center justify-center gap-7">
           {navLinks.map(l => (
             <a
               key={l.label}
               href={l.href}
-              className="px-3 py-1.5 text-sm text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-cyan-400/10 rounded-md transition-all duration-150"
+              className="font-mono text-[11px] uppercase tracking-[0.18em] text-gray-500 transition-colors duration-150 hover:text-gray-950 dark:text-slate-400 dark:hover:text-white"
             >
               {l.label}
             </a>
           ))}
+        </nav>
+
+        <div className="hidden md:flex items-center justify-end gap-2">
           {/* Dark/light toggle */}
           <button
             onClick={onToggleDark}
-            className="ml-1 p-2 rounded-lg text-gray-500 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-amber-400/10 transition-all duration-150"
+            className="p-2 rounded-lg text-gray-500 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-150"
             aria-label="Toggle dark mode"
           >
             {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -1187,14 +1186,14 @@ function Navbar({
           {/* Terminal button */}
           <button
             onClick={onOpenTerminal}
-            className="ml-1 flex items-center gap-1.5 rounded-lg border border-gray-800 dark:border-green-500/40 bg-gray-900 dark:bg-green-500/10 px-3 py-1.5 text-xs font-mono text-white dark:text-green-400 hover:bg-gray-700 dark:hover:bg-green-500/20 dark:hover:border-green-400/60 transition-all duration-150 shadow-sm"
+            className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-gray-800 transition-all duration-150 hover:border-gray-500 dark:border-green-500/35 dark:bg-green-500/10 dark:text-green-300 dark:hover:border-green-400/60"
           >
-            &gt;_
+            Terminal
           </button>
-        </nav>
+        </div>
 
         {/* Mobile hamburger */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="md:hidden col-start-3 flex items-center justify-end gap-2">
           <button
             onClick={onToggleDark}
             className="p-2 text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white"
@@ -1269,9 +1268,8 @@ function LaptopVisual() {
   }, []);
 
   return (
-    <div className="relative">
-      <div className="absolute -inset-4 bg-blue-500/8 rounded-3xl blur-2xl" />
-      <div className="relative rounded-2xl overflow-hidden border border-slate-700/60 shadow-2xl shadow-black/50">
+    <div className="relative w-full max-w-[520px]">
+      <div className="relative overflow-hidden rounded-xl border border-slate-700/60 shadow-2xl shadow-black/40">
         {/* Browser chrome */}
         <div className="bg-slate-800 px-4 py-2.5 flex items-center gap-2 border-b border-slate-700/50">
           <div className="flex gap-1.5 shrink-0">
@@ -1284,8 +1282,8 @@ function LaptopVisual() {
           </div>
         </div>
         {/* Content */}
-        <div className="bg-slate-900 p-5">
-          <div className="grid grid-cols-[1fr_148px] gap-4">
+        <div className="bg-slate-900 p-4 sm:p-5">
+          <div className="grid gap-4 sm:grid-cols-[1fr_136px]">
             {/* Code panel */}
             <div className="font-mono text-xs leading-[1.65] text-slate-300 overflow-hidden">
               <div><span className="text-purple-400">const</span> <span className="text-blue-300">jacob</span> = {"{"}</div>
@@ -1303,23 +1301,9 @@ function LaptopVisual() {
               </div>
               <div>{"}"}</div>
             </div>
-            {/* Stats panel */}
-            <div className="space-y-2">
-              {([
-                { label: "Projects", value: "12+", pct: 75, color: "bg-cyan-400" },
-                { label: "Papers", value: "3", pct: 35, color: "bg-amber-400" },
-                { label: "Students", value: "50+", pct: 85, color: "bg-emerald-400" },
-              ] as const).map(s => (
-                <div key={s.label} className="bg-slate-800/80 rounded-lg p-2.5 border border-slate-700/30">
-                  <div className="flex items-baseline justify-between mb-2">
-                    <span className="text-[10px] text-slate-400">{s.label}</span>
-                    <span className="text-sm font-bold text-white">{s.value}</span>
-                  </div>
-                  <div className="h-0.5 rounded-full bg-slate-700">
-                    <div className={`h-0.5 rounded-full ${s.color}`} style={{ width: `${s.pct}%` }} />
-                  </div>
-                </div>
-              ))}
+            {/* Portrait panel */}
+            <div className="h-44 overflow-hidden rounded-lg border border-slate-700/50 bg-slate-800/60 shadow-lg shadow-black/20 sm:h-auto">
+              <img src={pfp} alt="Jacob Horne" className="h-full min-h-[178px] w-full object-cover object-top" />
             </div>
           </div>
           {/* Terminal line */}
@@ -1337,18 +1321,30 @@ function LaptopVisual() {
 
 function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   return (
-    <section id="top" className="bg-[#f8fbff] text-gray-950 dark:bg-[#070914] dark:text-white">
-      <div className="max-w-[1220px] mx-auto px-6 md:px-8 pt-24 pb-36 md:pt-28 md:pb-48">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+    <section id="top" className="relative overflow-hidden bg-[#fbfaf7] text-gray-950 dark:bg-[#070914] dark:text-white">
+      <div className="absolute inset-x-0 bottom-0 hidden h-28 items-end gap-3 px-8 opacity-40 sm:flex" aria-hidden="true">
+        {[34, 58, 42, 70, 28, 52, 80, 46, 64, 36, 74, 44, 60, 32, 68, 40, 76, 50, 66, 38, 72, 45, 62, 35].map((height, index) => (
+          <span
+            key={index}
+            className="flex-1 bg-gray-200/70 dark:bg-white/[0.05]"
+            style={{ height: `${height}%` }}
+          />
+        ))}
+      </div>
+      <div className="relative mx-auto flex min-h-[calc(100svh-4rem)] max-w-[1220px] px-6 py-16 md:px-8 lg:py-20">
+        <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16">
           {/* Left */}
           <div className="space-y-7">
-            <p className="font-mono text-base text-cyan-700 dark:text-cyan-300 tracking-wide">&gt; Hello, I'm</p>
+            <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-700 dark:text-cyan-300">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              Building to learn
+            </p>
             <div className="space-y-3">
-              <h1 className="text-6xl md:text-7xl font-bold tracking-tight leading-none text-gray-950 dark:text-white">
+              <h1 className="text-5xl font-semibold tracking-tight leading-none text-gray-950 dark:text-white sm:text-6xl md:text-7xl">
                 Jacob Horne.
               </h1>
-              <p className="text-2xl md:text-3xl text-gray-700 dark:text-slate-300 font-medium">
-                Software Engineer. Researcher.<br />Builder. Teacher. Learner.
+              <p className="max-w-xl text-2xl font-medium text-gray-700 dark:text-slate-300 md:text-3xl">
+                I build things to understand them, then make them clearer, faster, or more useful.
               </p>
             </div>
             <p className="text-base text-gray-600 dark:text-slate-400 leading-relaxed max-w-lg">
@@ -1401,7 +1397,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
           </div>
 
           {/* Right: visual */}
-          <div className="hidden md:block">
+          <div className="flex justify-center lg:justify-end">
             <LaptopVisual />
           </div>
         </div>
