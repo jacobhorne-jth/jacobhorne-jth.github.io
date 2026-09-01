@@ -1532,16 +1532,8 @@ function ResearchSection() {
         </div>
 
         <div className="mt-12 border-t border-cyan-700/10 pt-8 dark:border-cyan-300/15">
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border border-cyan-700/20 bg-white dark:border-cyan-300/20 dark:bg-white/5">
-                <img src={logoDLL} alt="UCI Digital Learning Lab" className="h-full w-full object-cover" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-950 dark:text-white">Papers</h3>
-            </div>
-            <p className="max-w-md text-sm leading-6 text-gray-600 dark:text-slate-300">
-              Research outputs tied to my work with the Digital Learning Lab.
-            </p>
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold text-gray-950 dark:text-white">Papers</h3>
           </div>
           <div className="grid gap-4 md:grid-cols-3 md:gap-5">
             {paperItems.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
