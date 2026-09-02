@@ -1259,43 +1259,43 @@ const CURRENTLY_ITEMS = [
 ];
 
 const HERO_TOPICS = [
-  { label: "Applied AI", position: "left-[8%] top-[24%]", tone: "border-cyan-400/25 bg-cyan-200/15 text-cyan-950 dark:border-cyan-300/20 dark:bg-cyan-300/10 dark:text-cyan-100" },
-  { label: "ML Systems", position: "right-[9%] top-[20%]", tone: "border-blue-400/25 bg-blue-200/15 text-blue-950 dark:border-blue-300/20 dark:bg-blue-300/10 dark:text-blue-100" },
-  { label: "Robotics", position: "left-[12%] bottom-[21%]", tone: "border-emerald-400/25 bg-emerald-200/15 text-emerald-950 dark:border-emerald-300/20 dark:bg-emerald-300/10 dark:text-emerald-100" },
-  { label: "Data Pipelines", position: "right-[18%] bottom-[19%]", tone: "border-amber-400/30 bg-amber-200/15 text-amber-950 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100" },
-  { label: "Evaluation", position: "left-[43%] bottom-[14%]", tone: "border-violet-400/25 bg-violet-200/15 text-violet-950 dark:border-violet-300/20 dark:bg-violet-300/10 dark:text-violet-100" },
-  { label: "Developer Tools", position: "right-[6%] bottom-[37%]", tone: "border-rose-400/25 bg-rose-200/15 text-rose-950 dark:border-rose-300/20 dark:bg-rose-300/10 dark:text-rose-100" },
-  { label: "Performance", position: "left-[45%] top-[16%]", tone: "border-sky-400/25 bg-sky-200/15 text-sky-950 dark:border-sky-300/20 dark:bg-sky-300/10 dark:text-sky-100" },
-  { label: "Teaching", position: "left-[30%] bottom-[29%]", tone: "border-lime-500/20 bg-lime-200/15 text-lime-950 dark:border-lime-300/20 dark:bg-lime-300/10 dark:text-lime-100" },
+  { label: "Practical AI", position: "left-[14%] top-[8%]", tone: "border-cyan-400/25 bg-cyan-200/15 text-cyan-950 dark:border-cyan-300/20 dark:bg-cyan-300/10 dark:text-cyan-100" },
+  { label: "Model Behavior", position: "left-[45%] top-[10%]", tone: "border-blue-400/25 bg-blue-200/15 text-blue-950 dark:border-blue-300/20 dark:bg-blue-300/10 dark:text-blue-100" },
+  { label: "Research Interfaces", position: "right-[8%] top-[44%]", tone: "border-amber-400/30 bg-amber-200/15 text-amber-950 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100" },
+  { label: "Robot Perception", position: "left-[7%] bottom-[23%]", tone: "border-emerald-400/25 bg-emerald-200/15 text-emerald-950 dark:border-emerald-300/20 dark:bg-emerald-300/10 dark:text-emerald-100" },
+  { label: "Feedback Loops", position: "right-[15%] bottom-[13%]", tone: "border-violet-400/25 bg-violet-200/15 text-violet-950 dark:border-violet-300/20 dark:bg-violet-300/10 dark:text-violet-100" },
+  { label: "Systems Design", position: "left-[45%] bottom-[8%]", tone: "border-sky-400/25 bg-sky-200/15 text-sky-950 dark:border-sky-300/20 dark:bg-sky-300/10 dark:text-sky-100" },
+  { label: "Useful Tools", position: "right-[22%] top-[8%]", tone: "border-rose-400/25 bg-rose-200/15 text-rose-950 dark:border-rose-300/20 dark:bg-rose-300/10 dark:text-rose-100" },
+  { label: "Teaching", position: "left-[31%] bottom-[23%]", tone: "border-lime-500/20 bg-lime-200/15 text-lime-950 dark:border-lime-300/20 dark:bg-lime-300/10 dark:text-lime-100" },
 ];
 
 function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
   const activeTopic = activeIndex % HERO_TOPICS.length;
 
   return (
-    <div className="pointer-events-none absolute inset-0 hidden overflow-hidden md:block" aria-hidden="true">
+    <div className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-95 md:block" aria-hidden="true">
       <svg
-        viewBox="0 0 1220 720"
+        viewBox="0 0 1440 760"
         preserveAspectRatio="none"
         className="absolute inset-0 h-full w-full text-cyan-700/15 dark:text-cyan-200/10"
         fill="none"
       >
-        <path d="M66 190 C246 78 520 96 754 230 S1056 448 1174 190" stroke="currentColor" strokeWidth="1" />
-        <path d="M72 560 C306 410 594 510 800 356 S1018 226 1162 500" stroke="currentColor" strokeWidth="1" strokeDasharray="7 13" />
-        <path d="M164 296 C370 142 628 660 1084 316" stroke="currentColor" strokeWidth="1" strokeDasharray="5 14" />
-        <path d="M18 398 C238 292 472 286 700 380 S1000 590 1220 414" stroke="currentColor" strokeWidth="1" strokeDasharray="8 12" />
+        <path d="M70 180 C290 54 612 108 826 248 S1134 420 1370 164" stroke="currentColor" strokeWidth="1" />
+        <path d="M44 598 C282 426 608 512 844 366 S1130 228 1404 532" stroke="currentColor" strokeWidth="1" strokeDasharray="7 13" />
+        <path d="M132 348 C396 176 664 658 1320 326" stroke="currentColor" strokeWidth="1" strokeDasharray="5 14" />
+        <path d="M0 452 C244 314 520 306 772 408 S1120 628 1440 412" stroke="currentColor" strokeWidth="1" strokeDasharray="8 12" />
         <circle r="4" fill="currentColor" className="text-cyan-500/65 dark:text-cyan-200/65">
           <animateMotion
             dur="24s"
             repeatCount="indefinite"
-            path="M66 190 C246 78 520 96 754 230 S1056 448 1174 190"
+            path="M70 180 C290 54 612 108 826 248 S1134 420 1370 164"
           />
         </circle>
         <circle r="3" fill="currentColor" className="text-emerald-500/55 dark:text-emerald-200/55">
           <animateMotion
             dur="29s"
             repeatCount="indefinite"
-            path="M72 560 C306 410 594 510 800 356 S1018 226 1162 500"
+            path="M44 598 C282 426 608 512 844 366 S1130 228 1404 532"
           />
         </circle>
       </svg>
@@ -1303,10 +1303,10 @@ function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
       {HERO_TOPICS.map((topic, index) => (
         <span
           key={topic.label}
-          className={`topic-node-float absolute rounded-md border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] shadow-sm backdrop-blur-sm transition-all duration-500 ${topic.position} ${topic.tone} ${
+          className={`topic-node-float absolute rounded-md border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] shadow-sm backdrop-blur-sm transition-all duration-500 ${topic.position} ${topic.tone} ${
             index === activeTopic
-              ? "opacity-65 ring-1 ring-cyan-400/25 dark:ring-cyan-200/20"
-              : "opacity-25"
+              ? "opacity-60 ring-1 ring-cyan-400/20 dark:ring-cyan-200/20"
+              : "opacity-20"
           }`}
           style={{ animationDelay: `${index * 0.45}s` }}
         >
@@ -1338,7 +1338,7 @@ function useCurrentlyRotation() {
 
 function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
   return (
-    <div className="relative w-full max-w-[540px]">
+    <div className="relative min-w-0 w-full max-w-80 sm:max-w-xl md:max-w-[540px]">
       <div className="relative z-10 overflow-hidden rounded-xl border border-slate-700/60 shadow-2xl shadow-black/40">
         {/* Browser chrome */}
         <div className="bg-slate-800 px-4 py-2.5 flex items-center gap-2 border-b border-slate-700/50">
@@ -1353,9 +1353,9 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
         </div>
         {/* Content */}
         <div className="bg-slate-900 p-4 sm:p-5">
-          <div className="grid gap-4 sm:grid-cols-[1fr_136px]">
+          <div className="grid min-w-0 gap-4 sm:grid-cols-[minmax(0,1fr)_136px]">
             {/* Code panel */}
-            <div className="font-mono text-xs leading-[1.65] text-slate-300 overflow-hidden">
+            <div className="min-w-0 overflow-hidden break-words font-mono text-[11px] leading-[1.65] text-slate-300 sm:text-xs">
               <div><span className="text-purple-400">const</span> <span className="text-blue-300">jacob</span> = {"{"}</div>
               <div className="pl-4"><span className="text-slate-400">name:</span>{"      "}<span className="text-amber-300">"Jacob Horne"</span>,</div>
               <div className="pl-4"><span className="text-slate-400">role:</span>{"      "}<span className="text-amber-300">"Software Engineer Intern @ Sandia"</span>,</div>
@@ -1377,7 +1377,7 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
             </div>
           </div>
           {/* Terminal line */}
-          <div className="mt-4 bg-slate-800/60 rounded-lg px-3 py-2 font-mono text-[11px] flex items-center gap-2 border border-slate-700/30">
+          <div className="mt-4 bg-slate-800/60 rounded-lg px-3 py-2 font-mono text-[10px] flex items-center gap-2 border border-slate-700/30 sm:text-[11px]">
             <span className="text-green-400">❯</span>
             <span className="text-slate-400">npm run build</span>
             <span className="text-slate-600 mx-1">·</span>
@@ -1395,28 +1395,28 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   return (
     <section id="top" className="relative overflow-hidden bg-[#fbfaf7] text-gray-950 dark:bg-[#070914] dark:text-white">
       <HeroTopicGraph activeIndex={idx} />
-      <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] max-w-[1220px] px-6 py-12 md:px-8 lg:py-16">
-        <div className="grid w-full items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-8 xl:-translate-y-10">
+      <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1220px] px-6 py-12 md:px-8 lg:py-16">
+        <div className="grid min-w-0 w-full grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-8 xl:-translate-y-10">
           {/* Left */}
-          <div className="space-y-7">
+          <div className="min-w-0 w-full max-w-80 space-y-7 sm:max-w-xl lg:max-w-none">
             <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-700 dark:text-cyan-300">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
               Building to learn
             </p>
             <div className="space-y-3">
-              <h1 className="text-5xl font-semibold tracking-tight leading-none text-gray-950 dark:text-white sm:text-6xl md:text-7xl">
+              <h1 className="text-4xl font-semibold tracking-tight leading-none text-gray-950 dark:text-white sm:text-6xl md:text-7xl">
                 Jacob Horne.
               </h1>
-              <p className="max-w-xl text-2xl font-medium text-gray-700 dark:text-slate-300 md:text-3xl">
+              <p className="max-w-xl text-xl font-medium text-gray-700 dark:text-slate-300 sm:text-2xl md:text-3xl">
                 I build things to understand them, then make them clearer, faster, or more useful.
               </p>
             </div>
-            <p className="text-base text-gray-600 dark:text-slate-400 leading-relaxed max-w-lg">
+            <p className="text-sm text-gray-600 dark:text-slate-400 leading-relaxed max-w-lg sm:text-base">
               I like learning by building things that make technical ideas concrete: ML infrastructure,
               evaluation systems, robotics perception, CUDA experiments, and full-stack tools.
             </p>
             {/* Buttons */}
-            <div className="grid grid-cols-2 gap-3 pt-1 sm:flex sm:flex-wrap">
+            <div className="grid w-full max-w-80 grid-cols-1 gap-3 pt-1 sm:max-w-xl sm:flex sm:flex-wrap lg:max-w-none">
               <a
                 href="/JacobHorneResume.pdf"
                 target="_blank"
@@ -1456,12 +1456,12 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
               >
                 &gt;_ open terminal
               </button>
-              <span className="text-xs text-gray-500 dark:text-slate-500 font-mono">← try terminal mode</span>
+              <span className="hidden text-xs text-gray-500 dark:text-slate-500 font-mono sm:inline">← try terminal mode</span>
             </div>
           </div>
 
           {/* Right: visual */}
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex min-w-0 justify-start sm:justify-center lg:justify-end">
             <LaptopVisual idx={idx} visible={visible} />
           </div>
         </div>
