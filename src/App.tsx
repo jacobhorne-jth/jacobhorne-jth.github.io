@@ -1259,60 +1259,110 @@ const CURRENTLY_ITEMS = [
 ];
 
 const HERO_TOPICS = [
-  { label: "Practical AI", position: "left-[14%] top-[8%]", tone: "border-cyan-400/25 bg-cyan-200/15 text-cyan-950 dark:border-cyan-300/20 dark:bg-cyan-300/10 dark:text-cyan-100" },
-  { label: "Model Behavior", position: "left-[45%] top-[10%]", tone: "border-blue-400/25 bg-blue-200/15 text-blue-950 dark:border-blue-300/20 dark:bg-blue-300/10 dark:text-blue-100" },
-  { label: "Research Interfaces", position: "right-[8%] top-[44%]", tone: "border-amber-400/30 bg-amber-200/15 text-amber-950 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100" },
-  { label: "Robot Perception", position: "left-[7%] bottom-[23%]", tone: "border-emerald-400/25 bg-emerald-200/15 text-emerald-950 dark:border-emerald-300/20 dark:bg-emerald-300/10 dark:text-emerald-100" },
-  { label: "Feedback Loops", position: "right-[15%] bottom-[13%]", tone: "border-violet-400/25 bg-violet-200/15 text-violet-950 dark:border-violet-300/20 dark:bg-violet-300/10 dark:text-violet-100" },
-  { label: "Systems Design", position: "left-[45%] bottom-[8%]", tone: "border-sky-400/25 bg-sky-200/15 text-sky-950 dark:border-sky-300/20 dark:bg-sky-300/10 dark:text-sky-100" },
-  { label: "Useful Tools", position: "right-[22%] top-[8%]", tone: "border-rose-400/25 bg-rose-200/15 text-rose-950 dark:border-rose-300/20 dark:bg-rose-300/10 dark:text-rose-100" },
-  { label: "Teaching", position: "left-[31%] bottom-[23%]", tone: "border-lime-500/20 bg-lime-200/15 text-lime-950 dark:border-lime-300/20 dark:bg-lime-300/10 dark:text-lime-100" },
+  { label: "Applied AI", x: 7, y: 13, width: 10.8, stroke: "stroke-cyan-300/35", fill: "fill-cyan-300/12", text: "fill-cyan-100" },
+  { label: "ML Systems", x: 43, y: 11, width: 11.6, stroke: "stroke-blue-300/32", fill: "fill-blue-300/11", text: "fill-blue-100" },
+  { label: "Interfaces", x: 74, y: 13, width: 11.4, stroke: "stroke-rose-300/30", fill: "fill-rose-300/11", text: "fill-rose-100" },
+  { label: "Latency", x: 94, y: 39, width: 8.8, stroke: "stroke-amber-300/32", fill: "fill-amber-300/12", text: "fill-amber-100" },
+  { label: "Evaluation", x: 87, y: 76, width: 11.8, stroke: "stroke-violet-300/32", fill: "fill-violet-300/11", text: "fill-violet-100" },
+  { label: "Data Pipelines", x: 58, y: 88, width: 15.6, stroke: "stroke-sky-300/32", fill: "fill-sky-300/11", text: "fill-sky-100" },
+  { label: "Teaching", x: 31, y: 76, width: 9.6, stroke: "stroke-lime-300/28", fill: "fill-lime-300/11", text: "fill-lime-100" },
+  { label: "Robotics", x: 4.8, y: 64, width: 8.8, stroke: "stroke-emerald-300/32", fill: "fill-emerald-300/12", text: "fill-emerald-100" },
 ];
 
 function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
   const activeTopic = activeIndex % HERO_TOPICS.length;
+  const nodeHeight = 4.2;
+  const center = (index: number) => ({ x: HERO_TOPICS[index].x, y: HERO_TOPICS[index].y });
+  const curve = (from: number, to: number, bend = 0) => {
+    const start = center(from);
+    const end = center(to);
+    const midX = (start.x + end.x) / 2;
+    const midY = (start.y + end.y) / 2 + bend;
+    return `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`;
+  };
+  const connections = [
+    [0, 1, -3],
+    [1, 2, -2],
+    [2, 3, 4],
+    [3, 4, 5],
+    [4, 5, 3],
+    [5, 6, -2],
+    [6, 7, 2],
+    [7, 0, -5],
+  ];
+  const motionRoute = connections
+    .map(([from, to, bend], index) => {
+      const start = center(from);
+      const end = center(to);
+      const midX = (start.x + end.x) / 2;
+      const midY = (start.y + end.y) / 2 + bend;
+      return `${index === 0 ? `M ${start.x} ${start.y}` : ""} Q ${midX} ${midY} ${end.x} ${end.y}`;
+    })
+    .join(" ");
 
   return (
     <div className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-95 md:block" aria-hidden="true">
       <svg
-        viewBox="0 0 1440 760"
+        viewBox="0 0 100 100"
         preserveAspectRatio="none"
-        className="absolute inset-0 h-full w-full text-cyan-700/15 dark:text-cyan-200/10"
+        className="absolute inset-0 h-full w-full"
         fill="none"
       >
-        <path d="M70 180 C290 54 612 108 826 248 S1134 420 1370 164" stroke="currentColor" strokeWidth="1" />
-        <path d="M44 598 C282 426 608 512 844 366 S1130 228 1404 532" stroke="currentColor" strokeWidth="1" strokeDasharray="7 13" />
-        <path d="M132 348 C396 176 664 658 1320 326" stroke="currentColor" strokeWidth="1" strokeDasharray="5 14" />
-        <path d="M0 452 C244 314 520 306 772 408 S1120 628 1440 412" stroke="currentColor" strokeWidth="1" strokeDasharray="8 12" />
-        <circle r="4" fill="currentColor" className="text-cyan-500/65 dark:text-cyan-200/65">
+        {connections.map(([from, to, bend], index) => (
+          <path
+            key={`${from}-${to}`}
+            d={curve(from, to, bend)}
+            className={index % 2 === 0 ? "stroke-cyan-300/20" : "stroke-slate-300/16"}
+            strokeWidth="0.2"
+            strokeDasharray={index % 3 === 0 ? "3 7" : undefined}
+          />
+        ))}
+        <circle r="0.55" className="fill-cyan-300/70">
           <animateMotion
-            dur="24s"
+            dur="30s"
             repeatCount="indefinite"
-            path="M70 180 C290 54 612 108 826 248 S1134 420 1370 164"
+            path={motionRoute}
           />
         </circle>
-        <circle r="3" fill="currentColor" className="text-emerald-500/55 dark:text-emerald-200/55">
+        <circle r="0.42" className="fill-emerald-300/55">
           <animateMotion
-            dur="29s"
+            dur="34s"
             repeatCount="indefinite"
-            path="M44 598 C282 426 608 512 844 366 S1130 228 1404 532"
+            path={motionRoute}
+            keyPoints="0.5;1;0.5;0"
+            keyTimes="0;0.45;0.55;1"
           />
         </circle>
+        {HERO_TOPICS.map((topic, index) => (
+          <g
+            key={topic.label}
+            className={`transition-opacity duration-500 ${
+              index === activeTopic ? "opacity-80" : "opacity-40"
+            }`}
+            transform={`translate(${topic.x} ${topic.y})`}
+          >
+            <rect
+              x={-topic.width / 2}
+              y={-nodeHeight / 2}
+              width={topic.width}
+              height={nodeHeight}
+              rx="0.9"
+              className={`${topic.fill} ${topic.stroke}`}
+              strokeWidth="0.18"
+            />
+            <text
+              x="0"
+              y="0.75"
+              fontSize="1.15"
+              letterSpacing="0.12em"
+              textAnchor="middle"
+              className={`${topic.text} font-mono uppercase`}
+            >
+              {topic.label}
+            </text>
+          </g>
+        ))}
       </svg>
-
-      {HERO_TOPICS.map((topic, index) => (
-        <span
-          key={topic.label}
-          className={`topic-node-float absolute rounded-md border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] shadow-sm backdrop-blur-sm transition-all duration-500 ${topic.position} ${topic.tone} ${
-            index === activeTopic
-              ? "opacity-60 ring-1 ring-cyan-400/20 dark:ring-cyan-200/20"
-              : "opacity-20"
-          }`}
-          style={{ animationDelay: `${index * 0.45}s` }}
-        >
-          {topic.label}
-        </span>
-      ))}
     </div>
   );
 }
@@ -1398,11 +1448,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
       <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1220px] px-6 py-12 md:px-8 lg:py-16">
         <div className="grid min-w-0 w-full grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-8 xl:-translate-y-10">
           {/* Left */}
-          <div className="min-w-0 w-full max-w-80 space-y-7 sm:max-w-xl lg:max-w-none">
-            <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-700 dark:text-cyan-300">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              Building to learn
-            </p>
+          <div className="min-w-0 w-full max-w-80 space-y-7 pt-6 sm:max-w-xl lg:max-w-none lg:pt-0">
             <div className="space-y-3">
               <h1 className="text-4xl font-semibold tracking-tight leading-none text-gray-950 dark:text-white sm:text-6xl md:text-7xl">
                 Jacob Horne.

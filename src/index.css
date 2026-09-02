@@ -5,12 +5,3 @@ html { scroll-behavior: smooth; }
 section { scroll-margin-top: 80px; }
 html, body, #root { overflow-x: hidden; }
 body { transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
-
-@keyframes topic-float {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(0, -7px, 0); }
-}
-
-.topic-node-float {
-  animation: topic-float 8s ease-in-out infinite;
-}
