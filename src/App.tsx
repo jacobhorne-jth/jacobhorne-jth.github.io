@@ -1259,47 +1259,34 @@ const CURRENTLY_ITEMS = [
 ];
 
 const HERO_TOPICS = [
-  { label: "Applied AI", x: 14, y: 10, dx: 1.4, dy: -1.8, width: 10.8, stroke: "stroke-cyan-300/35", fill: "fill-cyan-300/12", text: "fill-cyan-100", dot: "fill-cyan-300/75" },
-  { label: "ML Systems", x: 41, y: 10, dx: 1.4, dy: -1.8, width: 11.6, stroke: "stroke-blue-300/32", fill: "fill-blue-300/11", text: "fill-blue-100", dot: "fill-blue-300/70" },
-  { label: "Interfaces", x: 71, y: 12, dx: 1.4, dy: -1.8, width: 11.4, stroke: "stroke-rose-300/30", fill: "fill-rose-300/11", text: "fill-rose-100", dot: "fill-rose-300/70" },
-  { label: "Latency", x: 88, y: 34, dx: 1.4, dy: -1.8, width: 8, stroke: "stroke-amber-300/32", fill: "fill-amber-300/12", text: "fill-amber-100", dot: "fill-amber-300/70" },
-  { label: "Evaluation", x: 83, y: 72, dx: 1.4, dy: -1.8, width: 11.8, stroke: "stroke-violet-300/32", fill: "fill-violet-300/11", text: "fill-violet-100", dot: "fill-violet-300/70" },
-  { label: "Data Pipelines", x: 55, y: 84, dx: -16.8, dy: -1.8, width: 15.6, stroke: "stroke-sky-300/32", fill: "fill-sky-300/11", text: "fill-sky-100", dot: "fill-sky-300/70" },
-  { label: "Teaching", x: 31, y: 72, dx: -11.2, dy: -1.8, width: 9.6, stroke: "stroke-lime-300/28", fill: "fill-lime-300/11", text: "fill-lime-100", dot: "fill-lime-300/65" },
-  { label: "Robotics", x: 11, y: 72, dx: 1.4, dy: -1.8, width: 8.8, stroke: "stroke-emerald-300/32", fill: "fill-emerald-300/12", text: "fill-emerald-100", dot: "fill-emerald-300/70" },
+  { label: "Applied AI", x: 8, y: 12, labelX: 16, labelY: 12, stroke: "stroke-cyan-300/24", dot: "bg-cyan-300/75", tone: "border-cyan-300/35 bg-cyan-300/10 text-cyan-100" },
+  { label: "ML Systems", x: 42, y: 12, labelX: 49, labelY: 12, stroke: "stroke-blue-300/20", dot: "bg-blue-300/65", tone: "border-blue-300/30 bg-blue-300/10 text-blue-100" },
+  { label: "Interfaces", x: 69, y: 15, labelX: 77, labelY: 15, stroke: "stroke-rose-300/20", dot: "bg-rose-300/65", tone: "border-rose-300/30 bg-rose-300/10 text-rose-100" },
+  { label: "Latency", x: 86, y: 34, labelX: 92, labelY: 34, stroke: "stroke-amber-300/20", dot: "bg-amber-300/65", tone: "border-amber-300/30 bg-amber-300/10 text-amber-100" },
+  { label: "Evaluation", x: 82, y: 65, labelX: 89, labelY: 65, stroke: "stroke-violet-300/20", dot: "bg-violet-300/65", tone: "border-violet-300/30 bg-violet-300/10 text-violet-100" },
+  { label: "Data Pipelines", x: 57, y: 75, labelX: 48, labelY: 77, stroke: "stroke-sky-300/20", dot: "bg-sky-300/65", tone: "border-sky-300/30 bg-sky-300/10 text-sky-100" },
+  { label: "Teaching", x: 34, y: 72, labelX: 31, labelY: 77, stroke: "stroke-lime-300/20", dot: "bg-lime-300/60", tone: "border-lime-300/30 bg-lime-300/10 text-lime-100" },
+  { label: "Robotics", x: 8, y: 72, labelX: 15, labelY: 72, stroke: "stroke-emerald-300/20", dot: "bg-emerald-300/65", tone: "border-emerald-300/30 bg-emerald-300/10 text-emerald-100" },
 ];
 
 function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
   const activeTopic = activeIndex % HERO_TOPICS.length;
-  const nodeHeight = 3.6;
   const center = (index: number) => ({ x: HERO_TOPICS[index].x, y: HERO_TOPICS[index].y });
-  const curve = (from: number, to: number, bend = 0) => {
+  const line = (from: number, to: number) => {
     const start = center(from);
     const end = center(to);
-    const midX = (start.x + end.x) / 2;
-    const midY = (start.y + end.y) / 2 + bend;
-    return `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`;
+    return `M ${start.x} ${start.y} L ${end.x} ${end.y}`;
   };
   const connections = [
-    [0, 1, -3],
-    [1, 2, -2],
-    [2, 3, 4],
-    [3, 4, 5],
-    [4, 5, 3],
-    [5, 6, -2],
-    [6, 7, 2],
-    [7, 0, -5],
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 4],
+    [4, 5],
+    [5, 6],
+    [6, 7],
+    [7, 0],
   ];
-  const motionRoute = connections
-    .map(([from, to, bend], index) => {
-      const start = center(from);
-      const end = center(to);
-      const midX = (start.x + end.x) / 2;
-      const midY = (start.y + end.y) / 2 + bend;
-      return `${index === 0 ? `M ${start.x} ${start.y}` : ""} Q ${midX} ${midY} ${end.x} ${end.y}`;
-    })
-    .join(" ");
-
   return (
     <div className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-95 md:block" aria-hidden="true">
       <svg
@@ -1308,62 +1295,36 @@ function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
         className="absolute inset-0 h-full w-full"
         fill="none"
       >
-        {connections.map(([from, to, bend], index) => (
+        {connections.map(([from, to], index) => (
           <path
             key={`${from}-${to}`}
-            d={curve(from, to, bend)}
-            className={index % 2 === 0 ? "stroke-cyan-300/20" : "stroke-slate-300/16"}
-            strokeWidth="0.2"
-            strokeDasharray={index % 3 === 0 ? "3 7" : undefined}
+            d={line(from, to)}
+            className={HERO_TOPICS[from].stroke}
+            strokeWidth="0.24"
+            strokeDasharray={index % 3 === 0 ? "2.5 7" : undefined}
           />
-        ))}
-        <circle r="0.55" className="fill-cyan-300/70">
-          <animateMotion
-            dur="30s"
-            repeatCount="indefinite"
-            path={motionRoute}
-          />
-        </circle>
-        <circle r="0.42" className="fill-emerald-300/55">
-          <animateMotion
-            dur="34s"
-            repeatCount="indefinite"
-            path={motionRoute}
-            keyPoints="0.5;1;0.5;0"
-            keyTimes="0;0.45;0.55;1"
-          />
-        </circle>
-        {HERO_TOPICS.map((topic, index) => (
-          <g
-            key={topic.label}
-            className={`transition-opacity duration-500 ${
-              index === activeTopic ? "opacity-80" : "opacity-40"
-            }`}
-            transform={`translate(${topic.x} ${topic.y})`}
-          >
-            <circle r={index === activeTopic ? 0.55 : 0.4} className={topic.dot} />
-            <rect
-              x={topic.dx}
-              y={topic.dy}
-              width={topic.width}
-              height={nodeHeight}
-              rx="0.9"
-              className={`${topic.fill} ${topic.stroke}`}
-              strokeWidth="0.18"
-            />
-            <text
-              x={topic.dx + topic.width / 2}
-              y={topic.dy + 2.35}
-              fontSize="1"
-              letterSpacing="0.12em"
-              textAnchor="middle"
-              className={`${topic.text} font-mono uppercase`}
-            >
-              {topic.label}
-            </text>
-          </g>
         ))}
       </svg>
+      <span className="hero-graph-orb absolute h-2 w-2 rounded-full bg-cyan-300/85 shadow-[0_0_18px_rgba(103,232,249,0.45)]" />
+      <span className="hero-graph-orb hero-graph-orb-delayed absolute h-2 w-2 rounded-full bg-cyan-300/85 shadow-[0_0_18px_rgba(103,232,249,0.45)]" />
+      {HERO_TOPICS.map((topic, index) => (
+        <div key={topic.label}>
+          <span
+            className={`absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full ${topic.dot} ${
+              index === activeTopic ? "opacity-100" : "opacity-55"
+            }`}
+            style={{ left: `${topic.x}%`, top: `${topic.y}%` }}
+          />
+          <span
+            className={`absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-md border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em] shadow-sm backdrop-blur-md transition-opacity duration-500 ${topic.tone} ${
+              index === activeTopic ? "opacity-90" : "opacity-65"
+            }`}
+            style={{ left: `${topic.labelX}%`, top: `${topic.labelY}%` }}
+          >
+            {topic.label}
+          </span>
+        </div>
+      ))}
     </div>
   );
 }

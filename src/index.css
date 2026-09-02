@@ -5,3 +5,24 @@ html { scroll-behavior: smooth; }
 section { scroll-margin-top: 80px; }
 html, body, #root { overflow-x: hidden; }
 body { transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
+
+@keyframes hero-graph-orbit {
+  0% { left: 8%; top: 12%; }
+  12.5% { left: 42%; top: 12%; }
+  25% { left: 69%; top: 15%; }
+  37.5% { left: 86%; top: 34%; }
+  50% { left: 82%; top: 65%; }
+  62.5% { left: 57%; top: 75%; }
+  75% { left: 34%; top: 72%; }
+  87.5% { left: 8%; top: 72%; }
+  100% { left: 8%; top: 12%; }
+}
+
+.hero-graph-orb {
+  animation: hero-graph-orbit 32s linear infinite;
+  transform: translate(-50%, -50%);
+}
+
+.hero-graph-orb-delayed {
+  animation-delay: -16s;
+}
