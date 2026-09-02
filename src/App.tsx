@@ -1259,33 +1259,39 @@ const CURRENTLY_ITEMS = [
 ];
 
 const HERO_TOPICS = [
-  { label: "Applied AI", x: 8, y: 12, labelX: 16, labelY: 12, stroke: "stroke-cyan-300/24", dot: "bg-cyan-300/75", tone: "border-cyan-300/35 bg-cyan-300/10 text-cyan-100" },
-  { label: "ML Systems", x: 42, y: 12, labelX: 49, labelY: 12, stroke: "stroke-blue-300/20", dot: "bg-blue-300/65", tone: "border-blue-300/30 bg-blue-300/10 text-blue-100" },
-  { label: "Interfaces", x: 69, y: 15, labelX: 77, labelY: 15, stroke: "stroke-rose-300/20", dot: "bg-rose-300/65", tone: "border-rose-300/30 bg-rose-300/10 text-rose-100" },
-  { label: "Latency", x: 86, y: 34, labelX: 92, labelY: 34, stroke: "stroke-amber-300/20", dot: "bg-amber-300/65", tone: "border-amber-300/30 bg-amber-300/10 text-amber-100" },
-  { label: "Evaluation", x: 82, y: 65, labelX: 89, labelY: 65, stroke: "stroke-violet-300/20", dot: "bg-violet-300/65", tone: "border-violet-300/30 bg-violet-300/10 text-violet-100" },
-  { label: "Data Pipelines", x: 57, y: 75, labelX: 48, labelY: 77, stroke: "stroke-sky-300/20", dot: "bg-sky-300/65", tone: "border-sky-300/30 bg-sky-300/10 text-sky-100" },
-  { label: "Teaching", x: 34, y: 72, labelX: 31, labelY: 77, stroke: "stroke-lime-300/20", dot: "bg-lime-300/60", tone: "border-lime-300/30 bg-lime-300/10 text-lime-100" },
-  { label: "Robotics", x: 8, y: 72, labelX: 15, labelY: 72, stroke: "stroke-emerald-300/20", dot: "bg-emerald-300/65", tone: "border-emerald-300/30 bg-emerald-300/10 text-emerald-100" },
+  { label: "Applied AI", x: 6, y: 12, labelX: 14, labelY: 12, stroke: "stroke-cyan-300/24", dot: "bg-cyan-300/75", tone: "border-cyan-300/35 bg-cyan-300/10 text-cyan-100" },
+  { label: "ML Systems", x: 38, y: 8, labelX: 46, labelY: 8, stroke: "stroke-blue-300/20", dot: "bg-blue-300/65", tone: "border-blue-300/30 bg-blue-300/10 text-blue-100" },
+  { label: "Interfaces", x: 72, y: 10, labelX: 80, labelY: 10, stroke: "stroke-rose-300/20", dot: "bg-rose-300/65", tone: "border-rose-300/30 bg-rose-300/10 text-rose-100" },
+  { label: "Latency", x: 95, y: 34, labelX: 95, labelY: 28, stroke: "stroke-amber-300/20", dot: "bg-amber-300/65", tone: "border-amber-300/30 bg-amber-300/10 text-amber-100" },
+  { label: "Evaluation", x: 95, y: 72, labelX: 95, labelY: 78, stroke: "stroke-violet-300/20", dot: "bg-violet-300/65", tone: "border-violet-300/30 bg-violet-300/10 text-violet-100" },
+  { label: "Data Pipelines", x: 60, y: 88, labelX: 51, labelY: 88, stroke: "stroke-sky-300/20", dot: "bg-sky-300/65", tone: "border-sky-300/30 bg-sky-300/10 text-sky-100" },
+  { label: "Teaching", x: 30, y: 88, labelX: 24, labelY: 88, stroke: "stroke-lime-300/20", dot: "bg-lime-300/60", tone: "border-lime-300/30 bg-lime-300/10 text-lime-100" },
+  { label: "Robotics", x: 6, y: 74, labelX: 13, labelY: 74, stroke: "stroke-emerald-300/20", dot: "bg-emerald-300/65", tone: "border-emerald-300/30 bg-emerald-300/10 text-emerald-100" },
 ];
 
 function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
   const activeTopic = activeIndex % HERO_TOPICS.length;
   const center = (index: number) => ({ x: HERO_TOPICS[index].x, y: HERO_TOPICS[index].y });
-  const line = (from: number, to: number) => {
+  const elbow = (from: number, to: number, via?: { x?: number; y?: number }) => {
     const start = center(from);
     const end = center(to);
+    if (via?.x !== undefined) {
+      return `M ${start.x} ${start.y} L ${via.x} ${start.y} L ${via.x} ${end.y} L ${end.x} ${end.y}`;
+    }
+    if (via?.y !== undefined) {
+      return `M ${start.x} ${start.y} L ${start.x} ${via.y} L ${end.x} ${via.y} L ${end.x} ${end.y}`;
+    }
     return `M ${start.x} ${start.y} L ${end.x} ${end.y}`;
   };
   const connections = [
-    [0, 1],
-    [1, 2],
-    [2, 3],
-    [3, 4],
-    [4, 5],
-    [5, 6],
-    [6, 7],
-    [7, 0],
+    { from: 0, to: 1, via: { y: 8 } },
+    { from: 1, to: 2, via: { y: 8 } },
+    { from: 2, to: 3, via: { x: 95 } },
+    { from: 3, to: 4, via: { x: 97 } },
+    { from: 4, to: 5, via: { y: 88 } },
+    { from: 5, to: 6, via: { y: 91 } },
+    { from: 6, to: 7, via: { y: 88 } },
+    { from: 7, to: 0, via: { x: 4 } },
   ];
   return (
     <div className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-95 md:block" aria-hidden="true">
@@ -1295,13 +1301,15 @@ function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
         className="absolute inset-0 h-full w-full"
         fill="none"
       >
-        {connections.map(([from, to], index) => (
+        {connections.map(({ from, to, via }, index) => (
           <path
             key={`${from}-${to}`}
-            d={line(from, to)}
+            d={elbow(from, to, via)}
             className={HERO_TOPICS[from].stroke}
-            strokeWidth="0.24"
-            strokeDasharray={index % 3 === 0 ? "2.5 7" : undefined}
+            strokeWidth="0.18"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeDasharray={index % 3 === 0 ? "2 6" : undefined}
           />
         ))}
       </svg>

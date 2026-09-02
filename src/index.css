@@ -7,15 +7,26 @@ html, body, #root { overflow-x: hidden; }
 body { transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
 
 @keyframes hero-graph-orbit {
-  0% { left: 8%; top: 12%; }
-  12.5% { left: 42%; top: 12%; }
-  25% { left: 69%; top: 15%; }
-  37.5% { left: 86%; top: 34%; }
-  50% { left: 82%; top: 65%; }
-  62.5% { left: 57%; top: 75%; }
-  75% { left: 34%; top: 72%; }
-  87.5% { left: 8%; top: 72%; }
-  100% { left: 8%; top: 12%; }
+  0% { left: 6%; top: 12%; }
+  4% { left: 6%; top: 8%; }
+  12.5% { left: 38%; top: 8%; }
+  21% { left: 72%; top: 8%; }
+  25% { left: 72%; top: 10%; }
+  31% { left: 95%; top: 10%; }
+  37.5% { left: 95%; top: 34%; }
+  43% { left: 97%; top: 34%; }
+  50% { left: 97%; top: 72%; }
+  53% { left: 95%; top: 72%; }
+  57% { left: 95%; top: 88%; }
+  62.5% { left: 60%; top: 88%; }
+  66% { left: 60%; top: 91%; }
+  71% { left: 30%; top: 91%; }
+  75% { left: 30%; top: 88%; }
+  82% { left: 8%; top: 88%; }
+  87.5% { left: 8%; top: 74%; }
+  93% { left: 4%; top: 74%; }
+  98% { left: 4%; top: 12%; }
+  100% { left: 6%; top: 12%; }
 }
 
 .hero-graph-orb {
