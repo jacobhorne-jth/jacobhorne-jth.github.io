@@ -1259,19 +1259,19 @@ const CURRENTLY_ITEMS = [
 ];
 
 const HERO_TOPICS = [
-  { label: "Applied AI", x: 7, y: 13, width: 10.8, stroke: "stroke-cyan-300/35", fill: "fill-cyan-300/12", text: "fill-cyan-100" },
-  { label: "ML Systems", x: 43, y: 11, width: 11.6, stroke: "stroke-blue-300/32", fill: "fill-blue-300/11", text: "fill-blue-100" },
-  { label: "Interfaces", x: 74, y: 13, width: 11.4, stroke: "stroke-rose-300/30", fill: "fill-rose-300/11", text: "fill-rose-100" },
-  { label: "Latency", x: 94, y: 39, width: 8.8, stroke: "stroke-amber-300/32", fill: "fill-amber-300/12", text: "fill-amber-100" },
-  { label: "Evaluation", x: 87, y: 76, width: 11.8, stroke: "stroke-violet-300/32", fill: "fill-violet-300/11", text: "fill-violet-100" },
-  { label: "Data Pipelines", x: 58, y: 88, width: 15.6, stroke: "stroke-sky-300/32", fill: "fill-sky-300/11", text: "fill-sky-100" },
-  { label: "Teaching", x: 31, y: 76, width: 9.6, stroke: "stroke-lime-300/28", fill: "fill-lime-300/11", text: "fill-lime-100" },
-  { label: "Robotics", x: 4.8, y: 64, width: 8.8, stroke: "stroke-emerald-300/32", fill: "fill-emerald-300/12", text: "fill-emerald-100" },
+  { label: "Applied AI", x: 14, y: 10, dx: 1.4, dy: -1.8, width: 10.8, stroke: "stroke-cyan-300/35", fill: "fill-cyan-300/12", text: "fill-cyan-100", dot: "fill-cyan-300/75" },
+  { label: "ML Systems", x: 41, y: 10, dx: 1.4, dy: -1.8, width: 11.6, stroke: "stroke-blue-300/32", fill: "fill-blue-300/11", text: "fill-blue-100", dot: "fill-blue-300/70" },
+  { label: "Interfaces", x: 71, y: 12, dx: 1.4, dy: -1.8, width: 11.4, stroke: "stroke-rose-300/30", fill: "fill-rose-300/11", text: "fill-rose-100", dot: "fill-rose-300/70" },
+  { label: "Latency", x: 88, y: 34, dx: 1.4, dy: -1.8, width: 8, stroke: "stroke-amber-300/32", fill: "fill-amber-300/12", text: "fill-amber-100", dot: "fill-amber-300/70" },
+  { label: "Evaluation", x: 83, y: 72, dx: 1.4, dy: -1.8, width: 11.8, stroke: "stroke-violet-300/32", fill: "fill-violet-300/11", text: "fill-violet-100", dot: "fill-violet-300/70" },
+  { label: "Data Pipelines", x: 55, y: 84, dx: -16.8, dy: -1.8, width: 15.6, stroke: "stroke-sky-300/32", fill: "fill-sky-300/11", text: "fill-sky-100", dot: "fill-sky-300/70" },
+  { label: "Teaching", x: 31, y: 72, dx: -11.2, dy: -1.8, width: 9.6, stroke: "stroke-lime-300/28", fill: "fill-lime-300/11", text: "fill-lime-100", dot: "fill-lime-300/65" },
+  { label: "Robotics", x: 11, y: 72, dx: 1.4, dy: -1.8, width: 8.8, stroke: "stroke-emerald-300/32", fill: "fill-emerald-300/12", text: "fill-emerald-100", dot: "fill-emerald-300/70" },
 ];
 
 function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
   const activeTopic = activeIndex % HERO_TOPICS.length;
-  const nodeHeight = 4.2;
+  const nodeHeight = 3.6;
   const center = (index: number) => ({ x: HERO_TOPICS[index].x, y: HERO_TOPICS[index].y });
   const curve = (from: number, to: number, bend = 0) => {
     const start = center(from);
@@ -1341,9 +1341,10 @@ function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
             }`}
             transform={`translate(${topic.x} ${topic.y})`}
           >
+            <circle r={index === activeTopic ? 0.55 : 0.4} className={topic.dot} />
             <rect
-              x={-topic.width / 2}
-              y={-nodeHeight / 2}
+              x={topic.dx}
+              y={topic.dy}
               width={topic.width}
               height={nodeHeight}
               rx="0.9"
@@ -1351,9 +1352,9 @@ function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
               strokeWidth="0.18"
             />
             <text
-              x="0"
-              y="0.75"
-              fontSize="1.15"
+              x={topic.dx + topic.width / 2}
+              y={topic.dy + 2.35}
+              fontSize="1"
               letterSpacing="0.12em"
               textAnchor="middle"
               className={`${topic.text} font-mono uppercase`}
