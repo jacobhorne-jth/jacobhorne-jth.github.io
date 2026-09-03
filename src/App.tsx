@@ -1259,99 +1259,189 @@ const CURRENTLY_ITEMS = [
 ];
 
 const HERO_TOPIC_NODES = [
-  { id: "applied", label: "Applied AI", x: 120, y: 116, labelX: 156, labelY: 94, width: 98, stroke: "stroke-cyan-300/42", fill: "fill-cyan-300/12", text: "fill-cyan-100" },
-  { id: "ml", label: "ML Systems", x: 650, y: 90, labelX: 690, labelY: 76, width: 114, stroke: "stroke-blue-300/34", fill: "fill-blue-300/10", text: "fill-blue-100" },
-  { id: "interfaces", label: "Interfaces", x: 1320, y: 98, labelX: 1362, labelY: 82, width: 112, stroke: "stroke-rose-300/34", fill: "fill-rose-300/10", text: "fill-rose-100" },
-  { id: "latency", label: "Latency", x: 1710, y: 316, labelX: 1608, labelY: 282, width: 84, stroke: "stroke-amber-300/34", fill: "fill-amber-300/10", text: "fill-amber-100" },
-  { id: "evaluation", label: "Evaluation", x: 1660, y: 676, labelX: 1546, labelY: 710, width: 110, stroke: "stroke-violet-300/34", fill: "fill-violet-300/10", text: "fill-violet-100" },
-  { id: "data", label: "Data Pipelines", x: 1060, y: 744, labelX: 902, labelY: 756, width: 138, stroke: "stroke-sky-300/34", fill: "fill-sky-300/10", text: "fill-sky-100" },
-  { id: "teaching", label: "Teaching", x: 520, y: 716, labelX: 388, labelY: 742, width: 94, stroke: "stroke-lime-300/32", fill: "fill-lime-300/10", text: "fill-lime-100" },
-  { id: "robotics", label: "Robotics", x: 96, y: 622, labelX: 132, labelY: 654, width: 92, stroke: "stroke-emerald-300/34", fill: "fill-emerald-300/10", text: "fill-emerald-100" },
+  { id: "applied", label: "Applied AI", x: 150, y: 92, labelX: 190, labelY: 70, width: 98, stroke: "stroke-cyan-300/40", fill: "fill-cyan-300/10", text: "fill-cyan-100" },
+  { id: "ml", label: "ML Systems", x: 655, y: 74, labelX: 696, labelY: 52, width: 114, stroke: "stroke-blue-300/30", fill: "fill-blue-300/10", text: "fill-blue-100" },
+  { id: "interfaces", label: "Interfaces", x: 1328, y: 82, labelX: 1372, labelY: 60, width: 112, stroke: "stroke-rose-300/30", fill: "fill-rose-300/10", text: "fill-rose-100" },
+  { id: "latency", label: "Latency", x: 1718, y: 318, labelX: 1658, labelY: 284, width: 84, stroke: "stroke-amber-300/30", fill: "fill-amber-300/10", text: "fill-amber-100" },
+  { id: "evaluation", label: "Evaluation", x: 1638, y: 698, labelX: 1506, labelY: 716, width: 110, stroke: "stroke-violet-300/30", fill: "fill-violet-300/10", text: "fill-violet-100" },
+  { id: "data", label: "Data Pipelines", x: 1042, y: 760, labelX: 878, labelY: 764, width: 138, stroke: "stroke-sky-300/30", fill: "fill-sky-300/10", text: "fill-sky-100" },
+  { id: "teaching", label: "Teaching", x: 472, y: 738, labelX: 342, labelY: 758, width: 94, stroke: "stroke-lime-300/30", fill: "fill-lime-300/10", text: "fill-lime-100" },
+  { id: "robotics", label: "Robotics", x: 98, y: 650, labelX: 134, labelY: 678, width: 92, stroke: "stroke-emerald-300/30", fill: "fill-emerald-300/10", text: "fill-emerald-100" },
 ];
 
 const HERO_GRAPH_NODES = [
   ...HERO_TOPIC_NODES,
-  { id: "leftTop", x: 64, y: 116, fill: "fill-cyan-200/38" },
-  { id: "learn", x: 360, y: 88, fill: "fill-cyan-200/45" },
-  { id: "systems", x: 860, y: 78, fill: "fill-blue-200/34" },
-  { id: "model", x: 1080, y: 100, fill: "fill-blue-200/34" },
-  { id: "ship", x: 1500, y: 176, fill: "fill-rose-200/40" },
-  { id: "rightHigh", x: 1730, y: 214, fill: "fill-amber-200/36" },
-  { id: "rightMid", x: 1720, y: 500, fill: "fill-amber-200/36" },
-  { id: "feedback", x: 1400, y: 680, fill: "fill-violet-200/40" },
-  { id: "pipeline", x: 780, y: 724, fill: "fill-sky-200/34" },
-  { id: "mentor", x: 282, y: 694, fill: "fill-lime-200/36" },
-  { id: "sense", x: 64, y: 392, fill: "fill-emerald-200/36" },
+  { id: "leftTop", x: 72, y: 112, fill: "fill-cyan-200/40" },
+  { id: "leftUpper", x: 122, y: 224, fill: "fill-cyan-200/30" },
+  { id: "learn", x: 318, y: 76, fill: "fill-cyan-200/45" },
+  { id: "topCluster", x: 480, y: 102, fill: "fill-cyan-200/30" },
+  { id: "systems", x: 862, y: 92, fill: "fill-blue-200/30" },
+  { id: "model", x: 1095, y: 70, fill: "fill-blue-200/30" },
+  { id: "interfaceBridge", x: 1460, y: 130, fill: "fill-rose-200/30" },
+  { id: "ship", x: 1510, y: 154, fill: "fill-rose-200/40" },
+  { id: "rightBridge", x: 1640, y: 170, fill: "fill-amber-200/30" },
+  { id: "rightHigh", x: 1736, y: 224, fill: "fill-amber-200/40" },
+  { id: "rightSense", x: 1660, y: 392, fill: "fill-amber-200/30" },
+  { id: "rightMid", x: 1742, y: 504, fill: "fill-amber-200/40" },
+  { id: "rightLow", x: 1694, y: 628, fill: "fill-violet-200/30" },
+  { id: "feedback", x: 1388, y: 684, fill: "fill-violet-200/40" },
+  { id: "bottomBridge", x: 1220, y: 742, fill: "fill-sky-200/30" },
+  { id: "bottomModel", x: 900, y: 702, fill: "fill-sky-200/30" },
+  { id: "pipeline", x: 752, y: 742, fill: "fill-sky-200/30" },
+  { id: "bottomTeach", x: 610, y: 674, fill: "fill-lime-200/30" },
+  { id: "mentor", x: 282, y: 714, fill: "fill-lime-200/40" },
+  { id: "robotBridge", x: 190, y: 666, fill: "fill-emerald-200/30" },
+  { id: "leftLow", x: 54, y: 528, fill: "fill-emerald-200/30" },
+  { id: "leftMid", x: 100, y: 442, fill: "fill-emerald-200/30" },
+  { id: "sense", x: 62, y: 314, fill: "fill-emerald-200/40" },
 ];
 
-const HERO_GRAPH_EDGES = [
-  { from: "leftTop", to: "applied", curve: [88, 102] },
-  { from: "applied", to: "learn", curve: [236, 56] },
-  { from: "learn", to: "ml", curve: [492, 48] },
-  { from: "ml", to: "systems", curve: [754, 48] },
-  { from: "systems", to: "model", curve: [974, 82] },
-  { from: "model", to: "interfaces", curve: [1200, 74] },
-  { from: "interfaces", to: "ship", curve: [1410, 112] },
-  { from: "ship", to: "rightHigh", curve: [1640, 146] },
-  { from: "rightHigh", to: "latency", curve: [1788, 260] },
-  { from: "latency", to: "rightMid", curve: [1782, 414] },
-  { from: "rightMid", to: "evaluation", curve: [1772, 604] },
-  { from: "evaluation", to: "feedback", curve: [1540, 742] },
-  { from: "feedback", to: "data", curve: [1240, 740] },
-  { from: "data", to: "pipeline", curve: [922, 782] },
-  { from: "pipeline", to: "teaching", curve: [644, 746] },
-  { from: "teaching", to: "mentor", curve: [388, 758] },
-  { from: "mentor", to: "robotics", curve: [178, 704] },
-  { from: "robotics", to: "sense", curve: [48, 520] },
-  { from: "sense", to: "leftTop", curve: [38, 246] },
-  { from: "sense", to: "applied", curve: [92, 250] },
-  { from: "leftTop", to: "learn", curve: [188, 34] },
-  { from: "applied", to: "ml", curve: [360, 102] },
-  { from: "learn", to: "systems", curve: [608, 126] },
-  { from: "ml", to: "model", curve: [868, 118] },
-  { from: "systems", to: "interfaces", curve: [1090, 44] },
-  { from: "systems", to: "ship", curve: [1190, 86] },
-  { from: "interfaces", to: "rightHigh", curve: [1550, 78] },
-  { from: "ship", to: "latency", curve: [1618, 206] },
-  { from: "latency", to: "evaluation", curve: [1778, 500] },
-  { from: "feedback", to: "pipeline", curve: [1102, 682] },
-  { from: "pipeline", to: "mentor", curve: [532, 650] },
-  { from: "data", to: "teaching", curve: [768, 698] },
-  { from: "robotics", to: "teaching", curve: [270, 650] },
+type HeroGraphEdge = { from: string; to: string; curve?: [number, number] };
+
+const HERO_GRAPH_EDGES: HeroGraphEdge[] = [
+  { from: "leftTop", to: "applied" },
+  { from: "leftTop", to: "leftUpper" },
+  { from: "leftUpper", to: "sense" },
+  { from: "sense", to: "leftMid" },
+  { from: "leftMid", to: "leftLow" },
+  { from: "leftLow", to: "robotics" },
+  { from: "robotics", to: "robotBridge" },
+  { from: "robotBridge", to: "mentor" },
+  { from: "mentor", to: "teaching" },
+  { from: "teaching", to: "bottomTeach" },
+  { from: "bottomTeach", to: "pipeline" },
+  { from: "pipeline", to: "bottomModel" },
+  { from: "bottomModel", to: "data" },
+  { from: "data", to: "bottomBridge" },
+  { from: "bottomBridge", to: "feedback" },
+  { from: "feedback", to: "evaluation" },
+  { from: "evaluation", to: "rightLow" },
+  { from: "rightLow", to: "rightMid" },
+  { from: "rightMid", to: "rightSense" },
+  { from: "rightSense", to: "latency" },
+  { from: "latency", to: "rightHigh" },
+  { from: "rightHigh", to: "rightBridge" },
+  { from: "rightBridge", to: "ship" },
+  { from: "ship", to: "interfaceBridge" },
+  { from: "interfaceBridge", to: "interfaces" },
+  { from: "interfaces", to: "model" },
+  { from: "model", to: "systems" },
+  { from: "systems", to: "ml" },
+  { from: "ml", to: "topCluster" },
+  { from: "topCluster", to: "learn" },
+  { from: "learn", to: "applied" },
+  { from: "applied", to: "leftUpper" },
+  { from: "applied", to: "topCluster" },
+  { from: "learn", to: "ml" },
+  { from: "topCluster", to: "systems" },
+  { from: "ml", to: "model" },
+  { from: "systems", to: "interfaces" },
+  { from: "model", to: "interfaceBridge" },
+  { from: "interfaces", to: "rightBridge" },
+  { from: "ship", to: "rightHigh" },
+  { from: "rightHigh", to: "latency" },
+  { from: "latency", to: "rightMid" },
+  { from: "rightMid", to: "rightLow" },
+  { from: "rightLow", to: "feedback" },
+  { from: "feedback", to: "bottomBridge" },
+  { from: "bottomBridge", to: "bottomModel" },
+  { from: "data", to: "pipeline" },
+  { from: "pipeline", to: "teaching" },
+  { from: "bottomTeach", to: "mentor" },
+  { from: "robotBridge", to: "teaching" },
+  { from: "robotics", to: "leftMid" },
+  { from: "leftLow", to: "sense" },
+  { from: "sense", to: "applied" },
 ];
+
+const HERO_SIGNAL_PATHS = [
+  {
+    id: "top",
+    d: "M 150 92 L 318 76 L 480 102 L 655 74 L 862 92 L 1095 70 L 1328 82 L 1460 130 L 1510 154",
+    className: "stroke-cyan-200/70",
+    dotClassName: "fill-cyan-200/90",
+    dur: "6.2s",
+    begin: "0s",
+  },
+  {
+    id: "right",
+    d: "M 1510 154 L 1640 170 L 1736 224 L 1718 318 L 1660 392 L 1742 504 L 1694 628 L 1638 698 L 1388 684",
+    className: "stroke-amber-200/60",
+    dotClassName: "fill-amber-200/80",
+    dur: "6.8s",
+    begin: "-2.1s",
+  },
+  {
+    id: "bottom",
+    d: "M 1388 684 L 1220 742 L 1042 760 L 900 702 L 752 742 L 610 674 L 472 738 L 282 714 L 190 666 L 98 650",
+    className: "stroke-violet-200/60",
+    dotClassName: "fill-violet-200/80",
+    dur: "7.1s",
+    begin: "-4.3s",
+  },
+  {
+    id: "left",
+    d: "M 98 650 L 54 528 L 100 442 L 62 314 L 122 224 L 72 112 L 150 92",
+    className: "stroke-emerald-200/60",
+    dotClassName: "fill-emerald-200/80",
+    dur: "5.9s",
+    begin: "-1.4s",
+  },
+  {
+    id: "bridge",
+    d: "M 318 76 L 655 74 L 1095 70 L 1460 130 L 1736 224",
+    className: "stroke-sky-200/60",
+    dotClassName: "fill-sky-200/80",
+    dur: "7.8s",
+    begin: "-5.2s",
+  },
+];
+
+const HERO_BACKBONE_PATH = `
+  M 72 112
+  L 150 92
+  L 318 76
+  L 480 102
+  L 655 74
+  L 862 92
+  L 1095 70
+  L 1328 82
+  L 1460 130
+  L 1510 154
+  L 1640 170
+  L 1736 224
+  L 1718 318
+  L 1660 392
+  L 1742 504
+  L 1694 628
+  L 1638 698
+  L 1388 684
+  L 1220 742
+  L 1042 760
+  L 900 702
+  L 752 742
+  L 610 674
+  L 472 738
+  L 282 714
+  L 190 666
+  L 98 650
+  L 54 528
+  L 100 442
+  L 62 314
+  L 122 224
+  L 72 112
+`;
 
 function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
   const activeTopic = activeIndex % HERO_TOPIC_NODES.length;
   const nodeById = new Map(HERO_GRAPH_NODES.map((node) => [node.id, node]));
-  const link = (fromId: string, toId: string, curve?: number[]) => {
+  const link = (fromId: string, toId: string, curve?: [number, number]) => {
     const start = nodeById.get(fromId);
     const end = nodeById.get(toId);
     if (!start || !end) return "";
     if (curve) return `M ${start.x} ${start.y} Q ${curve[0]} ${curve[1]} ${end.x} ${end.y}`;
     return `M ${start.x} ${start.y} L ${end.x} ${end.y}`;
   };
-  const signalPath = `
-    M 120 116
-    Q 236 56 360 88
-    Q 492 48 650 90
-    Q 754 48 860 78
-    Q 974 82 1080 100
-    Q 1200 74 1320 98
-    Q 1410 112 1500 176
-    Q 1640 146 1730 214
-    Q 1788 260 1710 316
-    Q 1782 414 1720 500
-    Q 1772 604 1660 676
-    Q 1540 742 1400 680
-    Q 1240 740 1060 744
-    Q 922 782 780 724
-    Q 644 746 520 716
-    Q 388 758 282 694
-    Q 178 704 96 622
-    Q 48 520 64 392
-    Q 92 250 120 116
-  `;
-
   return (
     <div className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-90 md:block" aria-hidden="true">
       <svg
@@ -1378,85 +1468,93 @@ function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
             </feMerge>
           </filter>
         </defs>
-        {HERO_GRAPH_EDGES.map(({ from, to, curve }, index) => (
+        <g>
           <path
-            key={`${from}-${to}`}
-            d={link(from, to, curve)}
-            className={index % 3 === 0 ? "stroke-cyan-200/30" : index % 3 === 1 ? "stroke-sky-200/24" : "stroke-violet-200/22"}
-            strokeWidth={index > 18 ? "1" : "1.3"}
+            d={HERO_BACKBONE_PATH}
+            className="stroke-cyan-100/60"
+            strokeWidth="2.1"
             strokeLinecap="round"
             strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
           />
-        ))}
-        <path d={signalPath} stroke="url(#hero-signal-trail)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-        <path
-          d={signalPath}
-          className="stroke-cyan-200/70"
-          strokeWidth="2.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeDasharray="42 1750"
-          filter="url(#hero-soft-glow)"
-        >
-          <animate attributeName="stroke-dashoffset" from="0" to="-1792" dur="5.5s" repeatCount="indefinite" />
-        </path>
-        <circle r="5" className="fill-cyan-200/90" filter="url(#hero-soft-glow)">
-          <animateMotion dur="15s" repeatCount="indefinite" path={signalPath} />
-        </circle>
-        <circle r="4" className="fill-emerald-200/75" filter="url(#hero-soft-glow)">
-          <animateMotion dur="18s" repeatCount="indefinite" begin="-6s" path={signalPath} />
-        </circle>
-        <circle r="4" className="fill-violet-200/70" filter="url(#hero-soft-glow)">
-          <animateMotion dur="21s" repeatCount="indefinite" begin="-12s" path={signalPath} />
-        </circle>
-        {HERO_GRAPH_NODES.map((node) => {
-          const isTopic = "label" in node;
-          const isActive = node.id === HERO_TOPIC_NODES[activeTopic].id;
-          return (
-            <g key={node.id}>
-              {isTopic && (
-                <circle cx={node.x} cy={node.y} r={isActive ? 14 : 10} fill="url(#hero-node-glow)" opacity={isActive ? 0.28 : 0.14} />
-              )}
-              <circle
-                cx={node.x}
-                cy={node.y}
-                r={isActive ? 6 : isTopic ? 4.5 : 3}
-                className={isTopic ? "fill-cyan-100/70" : node.fill}
-              />
+          {HERO_GRAPH_EDGES.map(({ from, to, curve }, index) => (
+            <path
+              key={`${from}-${to}`}
+              d={link(from, to, curve)}
+              className={index % 3 === 0 ? "stroke-cyan-100/50" : index % 3 === 1 ? "stroke-slate-100/40" : "stroke-sky-100/40"}
+              strokeWidth={index > 22 ? "1.25" : "1.6"}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+          {HERO_SIGNAL_PATHS.map((path) => (
+            <g key={path.id}>
+              <path
+                d={path.d}
+                className={path.className}
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray="34 760"
+                filter="url(#hero-soft-glow)"
+              >
+                <animate attributeName="stroke-dashoffset" from="0" to="-794" dur={path.dur} begin={path.begin} repeatCount="indefinite" />
+              </path>
+              <circle r="4.5" className={path.dotClassName} filter="url(#hero-soft-glow)">
+                <animateMotion dur={path.dur} repeatCount="indefinite" begin={path.begin} path={path.d} />
+              </circle>
             </g>
-          );
-        })}
-        {HERO_TOPIC_NODES.map((topic, index) => (
-          <g
+          ))}
+          {HERO_GRAPH_NODES.map((node) => {
+            const isTopic = "label" in node;
+            const isActive = node.id === HERO_TOPIC_NODES[activeTopic].id;
+            return (
+              <g key={node.id}>
+                {isTopic && (
+                  <circle cx={node.x} cy={node.y} r={isActive ? 15 : 11} fill="url(#hero-node-glow)" opacity={isActive ? 0.32 : 0.18} />
+                )}
+                <circle
+                  cx={node.x}
+                  cy={node.y}
+                  r={isActive ? 7 : isTopic ? 5.5 : 4.75}
+                  className={isTopic ? "fill-cyan-50/80" : "fill-cyan-100/60"}
+                />
+              </g>
+            );
+          })}
+          {HERO_TOPIC_NODES.map((topic, index) => (
+            <g
             key={topic.label}
             className="transition-opacity duration-500"
-            opacity={index === activeTopic ? 0.92 : 0.58}
+            opacity={index === activeTopic ? 0.96 : 0.8}
           >
-            <path
-              d={`M ${topic.x} ${topic.y} L ${topic.labelX + 13} ${topic.labelY}`}
-              className={topic.stroke}
-              strokeWidth="1"
-              strokeLinecap="round"
-            />
-            <rect
-              x={topic.labelX}
-              y={topic.labelY - 14}
-              width={topic.width}
-              height="28"
-              rx="7"
-              className={`${topic.fill} ${topic.stroke}`}
-              strokeWidth="1"
-            />
-            <circle cx={topic.labelX + 13} cy={topic.labelY} r="3" className={topic.text} />
-            <text
-              x={topic.labelX + 25}
-              y={topic.labelY + 4}
-              className={`${topic.text} font-mono text-[11px] uppercase tracking-normal`}
-            >
-              {topic.label}
-            </text>
-          </g>
-        ))}
+              <path
+                d={`M ${topic.x} ${topic.y} L ${topic.labelX + 13} ${topic.labelY}`}
+                className={topic.stroke}
+                strokeWidth="1"
+                strokeLinecap="round"
+              />
+              <rect
+                x={topic.labelX}
+                y={topic.labelY - 14}
+                width={topic.width}
+                height="28"
+                rx="7"
+                className={`${topic.fill} ${topic.stroke}`}
+                strokeWidth="1"
+              />
+              <circle cx={topic.labelX + 13} cy={topic.labelY} r="3" className={topic.text} />
+              <text
+                x={topic.labelX + 25}
+                y={topic.labelY + 4}
+                className={`${topic.text} font-mono text-[11px] uppercase tracking-normal`}
+              >
+                {topic.label}
+              </text>
+            </g>
+          ))}
+        </g>
       </svg>
     </div>
   );
@@ -1511,7 +1609,7 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
                 <span className="text-slate-400">currently: </span>
                 <span
                   className="text-green-300 transition-opacity duration-300"
-                  style={{ opacity: visible ? 1 : 0 }}
+                  style={{ opacity: visible ? 1 : 0.55 }}
                 >"{CURRENTLY_ITEMS[idx]}",</span>
               </div>
               <div>{"}"}</div>
