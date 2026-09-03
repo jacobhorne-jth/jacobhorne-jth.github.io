@@ -1258,81 +1258,206 @@ const CURRENTLY_ITEMS = [
   "Chasing performance from interface latency down to lower-level systems",
 ];
 
-const HERO_TOPICS = [
-  { label: "Applied AI", x: 6, y: 12, labelX: 14, labelY: 12, stroke: "stroke-cyan-300/24", dot: "bg-cyan-300/75", tone: "border-cyan-300/35 bg-cyan-300/10 text-cyan-100" },
-  { label: "ML Systems", x: 38, y: 8, labelX: 46, labelY: 8, stroke: "stroke-blue-300/20", dot: "bg-blue-300/65", tone: "border-blue-300/30 bg-blue-300/10 text-blue-100" },
-  { label: "Interfaces", x: 72, y: 10, labelX: 80, labelY: 10, stroke: "stroke-rose-300/20", dot: "bg-rose-300/65", tone: "border-rose-300/30 bg-rose-300/10 text-rose-100" },
-  { label: "Latency", x: 95, y: 34, labelX: 95, labelY: 28, stroke: "stroke-amber-300/20", dot: "bg-amber-300/65", tone: "border-amber-300/30 bg-amber-300/10 text-amber-100" },
-  { label: "Evaluation", x: 95, y: 72, labelX: 95, labelY: 78, stroke: "stroke-violet-300/20", dot: "bg-violet-300/65", tone: "border-violet-300/30 bg-violet-300/10 text-violet-100" },
-  { label: "Data Pipelines", x: 60, y: 88, labelX: 51, labelY: 88, stroke: "stroke-sky-300/20", dot: "bg-sky-300/65", tone: "border-sky-300/30 bg-sky-300/10 text-sky-100" },
-  { label: "Teaching", x: 30, y: 88, labelX: 24, labelY: 88, stroke: "stroke-lime-300/20", dot: "bg-lime-300/60", tone: "border-lime-300/30 bg-lime-300/10 text-lime-100" },
-  { label: "Robotics", x: 6, y: 74, labelX: 13, labelY: 74, stroke: "stroke-emerald-300/20", dot: "bg-emerald-300/65", tone: "border-emerald-300/30 bg-emerald-300/10 text-emerald-100" },
+const HERO_TOPIC_NODES = [
+  { id: "applied", label: "Applied AI", x: 120, y: 116, labelX: 156, labelY: 94, width: 98, stroke: "stroke-cyan-300/42", fill: "fill-cyan-300/12", text: "fill-cyan-100" },
+  { id: "ml", label: "ML Systems", x: 650, y: 90, labelX: 690, labelY: 76, width: 114, stroke: "stroke-blue-300/34", fill: "fill-blue-300/10", text: "fill-blue-100" },
+  { id: "interfaces", label: "Interfaces", x: 1320, y: 98, labelX: 1362, labelY: 82, width: 112, stroke: "stroke-rose-300/34", fill: "fill-rose-300/10", text: "fill-rose-100" },
+  { id: "latency", label: "Latency", x: 1710, y: 316, labelX: 1608, labelY: 282, width: 84, stroke: "stroke-amber-300/34", fill: "fill-amber-300/10", text: "fill-amber-100" },
+  { id: "evaluation", label: "Evaluation", x: 1660, y: 676, labelX: 1546, labelY: 710, width: 110, stroke: "stroke-violet-300/34", fill: "fill-violet-300/10", text: "fill-violet-100" },
+  { id: "data", label: "Data Pipelines", x: 1060, y: 744, labelX: 902, labelY: 756, width: 138, stroke: "stroke-sky-300/34", fill: "fill-sky-300/10", text: "fill-sky-100" },
+  { id: "teaching", label: "Teaching", x: 520, y: 716, labelX: 388, labelY: 742, width: 94, stroke: "stroke-lime-300/32", fill: "fill-lime-300/10", text: "fill-lime-100" },
+  { id: "robotics", label: "Robotics", x: 96, y: 622, labelX: 132, labelY: 654, width: 92, stroke: "stroke-emerald-300/34", fill: "fill-emerald-300/10", text: "fill-emerald-100" },
+];
+
+const HERO_GRAPH_NODES = [
+  ...HERO_TOPIC_NODES,
+  { id: "leftTop", x: 64, y: 116, fill: "fill-cyan-200/38" },
+  { id: "learn", x: 360, y: 88, fill: "fill-cyan-200/45" },
+  { id: "systems", x: 860, y: 78, fill: "fill-blue-200/34" },
+  { id: "model", x: 1080, y: 100, fill: "fill-blue-200/34" },
+  { id: "ship", x: 1500, y: 176, fill: "fill-rose-200/40" },
+  { id: "rightHigh", x: 1730, y: 214, fill: "fill-amber-200/36" },
+  { id: "rightMid", x: 1720, y: 500, fill: "fill-amber-200/36" },
+  { id: "feedback", x: 1400, y: 680, fill: "fill-violet-200/40" },
+  { id: "pipeline", x: 780, y: 724, fill: "fill-sky-200/34" },
+  { id: "mentor", x: 282, y: 694, fill: "fill-lime-200/36" },
+  { id: "sense", x: 64, y: 392, fill: "fill-emerald-200/36" },
+];
+
+const HERO_GRAPH_EDGES = [
+  { from: "leftTop", to: "applied", curve: [88, 102] },
+  { from: "applied", to: "learn", curve: [236, 56] },
+  { from: "learn", to: "ml", curve: [492, 48] },
+  { from: "ml", to: "systems", curve: [754, 48] },
+  { from: "systems", to: "model", curve: [974, 82] },
+  { from: "model", to: "interfaces", curve: [1200, 74] },
+  { from: "interfaces", to: "ship", curve: [1410, 112] },
+  { from: "ship", to: "rightHigh", curve: [1640, 146] },
+  { from: "rightHigh", to: "latency", curve: [1788, 260] },
+  { from: "latency", to: "rightMid", curve: [1782, 414] },
+  { from: "rightMid", to: "evaluation", curve: [1772, 604] },
+  { from: "evaluation", to: "feedback", curve: [1540, 742] },
+  { from: "feedback", to: "data", curve: [1240, 740] },
+  { from: "data", to: "pipeline", curve: [922, 782] },
+  { from: "pipeline", to: "teaching", curve: [644, 746] },
+  { from: "teaching", to: "mentor", curve: [388, 758] },
+  { from: "mentor", to: "robotics", curve: [178, 704] },
+  { from: "robotics", to: "sense", curve: [48, 520] },
+  { from: "sense", to: "leftTop", curve: [38, 246] },
+  { from: "sense", to: "applied", curve: [92, 250] },
+  { from: "leftTop", to: "learn", curve: [188, 34] },
+  { from: "applied", to: "ml", curve: [360, 102] },
+  { from: "learn", to: "systems", curve: [608, 126] },
+  { from: "ml", to: "model", curve: [868, 118] },
+  { from: "systems", to: "interfaces", curve: [1090, 44] },
+  { from: "systems", to: "ship", curve: [1190, 86] },
+  { from: "interfaces", to: "rightHigh", curve: [1550, 78] },
+  { from: "ship", to: "latency", curve: [1618, 206] },
+  { from: "latency", to: "evaluation", curve: [1778, 500] },
+  { from: "feedback", to: "pipeline", curve: [1102, 682] },
+  { from: "pipeline", to: "mentor", curve: [532, 650] },
+  { from: "data", to: "teaching", curve: [768, 698] },
+  { from: "robotics", to: "teaching", curve: [270, 650] },
 ];
 
 function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
-  const activeTopic = activeIndex % HERO_TOPICS.length;
-  const center = (index: number) => ({ x: HERO_TOPICS[index].x, y: HERO_TOPICS[index].y });
-  const elbow = (from: number, to: number, via?: { x?: number; y?: number }) => {
-    const start = center(from);
-    const end = center(to);
-    if (via?.x !== undefined) {
-      return `M ${start.x} ${start.y} L ${via.x} ${start.y} L ${via.x} ${end.y} L ${end.x} ${end.y}`;
-    }
-    if (via?.y !== undefined) {
-      return `M ${start.x} ${start.y} L ${start.x} ${via.y} L ${end.x} ${via.y} L ${end.x} ${end.y}`;
-    }
+  const activeTopic = activeIndex % HERO_TOPIC_NODES.length;
+  const nodeById = new Map(HERO_GRAPH_NODES.map((node) => [node.id, node]));
+  const link = (fromId: string, toId: string, curve?: number[]) => {
+    const start = nodeById.get(fromId);
+    const end = nodeById.get(toId);
+    if (!start || !end) return "";
+    if (curve) return `M ${start.x} ${start.y} Q ${curve[0]} ${curve[1]} ${end.x} ${end.y}`;
     return `M ${start.x} ${start.y} L ${end.x} ${end.y}`;
   };
-  const connections = [
-    { from: 0, to: 1, via: { y: 8 } },
-    { from: 1, to: 2, via: { y: 8 } },
-    { from: 2, to: 3, via: { x: 95 } },
-    { from: 3, to: 4, via: { x: 97 } },
-    { from: 4, to: 5, via: { y: 88 } },
-    { from: 5, to: 6, via: { y: 91 } },
-    { from: 6, to: 7, via: { y: 88 } },
-    { from: 7, to: 0, via: { x: 4 } },
-  ];
+  const signalPath = `
+    M 120 116
+    Q 236 56 360 88
+    Q 492 48 650 90
+    Q 754 48 860 78
+    Q 974 82 1080 100
+    Q 1200 74 1320 98
+    Q 1410 112 1500 176
+    Q 1640 146 1730 214
+    Q 1788 260 1710 316
+    Q 1782 414 1720 500
+    Q 1772 604 1660 676
+    Q 1540 742 1400 680
+    Q 1240 740 1060 744
+    Q 922 782 780 724
+    Q 644 746 520 716
+    Q 388 758 282 694
+    Q 178 704 96 622
+    Q 48 520 64 392
+    Q 92 250 120 116
+  `;
+
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-95 md:block" aria-hidden="true">
+    <div className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-90 md:block" aria-hidden="true">
       <svg
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
+        viewBox="0 0 1800 836"
+        preserveAspectRatio="xMidYMin meet"
         className="absolute inset-0 h-full w-full"
         fill="none"
       >
-        {connections.map(({ from, to, via }, index) => (
+        <defs>
+          <radialGradient id="hero-node-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#a5f3fc" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#a5f3fc" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="hero-signal-trail" x1="80" y1="100" x2="1360" y2="720" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.12" />
+            <stop offset="48%" stopColor="#60a5fa" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#a78bfa" stopOpacity="0.14" />
+          </linearGradient>
+          <filter id="hero-soft-glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        {HERO_GRAPH_EDGES.map(({ from, to, curve }, index) => (
           <path
             key={`${from}-${to}`}
-            d={elbow(from, to, via)}
-            className={HERO_TOPICS[from].stroke}
-            strokeWidth="0.18"
+            d={link(from, to, curve)}
+            className={index % 3 === 0 ? "stroke-cyan-200/30" : index % 3 === 1 ? "stroke-sky-200/24" : "stroke-violet-200/22"}
+            strokeWidth={index > 18 ? "1" : "1.3"}
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeDasharray={index % 3 === 0 ? "2 6" : undefined}
           />
         ))}
-      </svg>
-      <span className="hero-graph-orb absolute h-2 w-2 rounded-full bg-cyan-300/85 shadow-[0_0_18px_rgba(103,232,249,0.45)]" />
-      <span className="hero-graph-orb hero-graph-orb-delayed absolute h-2 w-2 rounded-full bg-cyan-300/85 shadow-[0_0_18px_rgba(103,232,249,0.45)]" />
-      {HERO_TOPICS.map((topic, index) => (
-        <div key={topic.label}>
-          <span
-            className={`absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full ${topic.dot} ${
-              index === activeTopic ? "opacity-100" : "opacity-55"
-            }`}
-            style={{ left: `${topic.x}%`, top: `${topic.y}%` }}
-          />
-          <span
-            className={`absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-md border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em] shadow-sm backdrop-blur-md transition-opacity duration-500 ${topic.tone} ${
-              index === activeTopic ? "opacity-90" : "opacity-65"
-            }`}
-            style={{ left: `${topic.labelX}%`, top: `${topic.labelY}%` }}
+        <path d={signalPath} stroke="url(#hero-signal-trail)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d={signalPath}
+          className="stroke-cyan-200/70"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeDasharray="42 1750"
+          filter="url(#hero-soft-glow)"
+        >
+          <animate attributeName="stroke-dashoffset" from="0" to="-1792" dur="5.5s" repeatCount="indefinite" />
+        </path>
+        <circle r="5" className="fill-cyan-200/90" filter="url(#hero-soft-glow)">
+          <animateMotion dur="15s" repeatCount="indefinite" path={signalPath} />
+        </circle>
+        <circle r="4" className="fill-emerald-200/75" filter="url(#hero-soft-glow)">
+          <animateMotion dur="18s" repeatCount="indefinite" begin="-6s" path={signalPath} />
+        </circle>
+        <circle r="4" className="fill-violet-200/70" filter="url(#hero-soft-glow)">
+          <animateMotion dur="21s" repeatCount="indefinite" begin="-12s" path={signalPath} />
+        </circle>
+        {HERO_GRAPH_NODES.map((node) => {
+          const isTopic = "label" in node;
+          const isActive = node.id === HERO_TOPIC_NODES[activeTopic].id;
+          return (
+            <g key={node.id}>
+              {isTopic && (
+                <circle cx={node.x} cy={node.y} r={isActive ? 14 : 10} fill="url(#hero-node-glow)" opacity={isActive ? 0.28 : 0.14} />
+              )}
+              <circle
+                cx={node.x}
+                cy={node.y}
+                r={isActive ? 6 : isTopic ? 4.5 : 3}
+                className={isTopic ? "fill-cyan-100/70" : node.fill}
+              />
+            </g>
+          );
+        })}
+        {HERO_TOPIC_NODES.map((topic, index) => (
+          <g
+            key={topic.label}
+            className="transition-opacity duration-500"
+            opacity={index === activeTopic ? 0.92 : 0.58}
           >
-            {topic.label}
-          </span>
-        </div>
-      ))}
+            <path
+              d={`M ${topic.x} ${topic.y} L ${topic.labelX + 13} ${topic.labelY}`}
+              className={topic.stroke}
+              strokeWidth="1"
+              strokeLinecap="round"
+            />
+            <rect
+              x={topic.labelX}
+              y={topic.labelY - 14}
+              width={topic.width}
+              height="28"
+              rx="7"
+              className={`${topic.fill} ${topic.stroke}`}
+              strokeWidth="1"
+            />
+            <circle cx={topic.labelX + 13} cy={topic.labelY} r="3" className={topic.text} />
+            <text
+              x={topic.labelX + 25}
+              y={topic.labelY + 4}
+              className={`${topic.text} font-mono text-[11px] uppercase tracking-normal`}
+            >
+              {topic.label}
+            </text>
+          </g>
+        ))}
+      </svg>
     </div>
   );
 }
