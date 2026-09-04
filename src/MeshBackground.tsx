@@ -11,22 +11,48 @@ import { useEffect, useRef } from "react";
 
 const MAX_DPR = 2;
 
-// Camera. Screen y for a flat point at depth z is HORIZON_RATIO*H + NEAR_DROP*H / z,
-// so Z_NEAR lands just below the bottom edge and Z_FAR sits close to the horizon.
-const HORIZON_RATIO = 0.52;
-const NEAR_DROP = 0.5;
-const Z_NEAR = 1;
-const Z_FAR = 8;
+// Camera. Screen y for a point at depth z is horizon + (camHeight - wave) / z.
+// The camera is not fixed: horizon and camHeight are solved each resize so the highest
+// crest lands just under the hero copy and the nearest trough falls off the bottom
+// edge. See solveCamera().
+// The grid starts well in front of the bottom edge. If the nearest row sits AT the
+// bottom edge, every crest on it opens a gap underneath with no row in front to fill
+// it — that is the void under the "lip".
+const Z_NEAR = 1.2;
+// Kept modest on purpose. A large Z_FAR crushes the distant rows into a thin band, and
+// since on-screen row width scales as 1/z it also shrinks the far rows until they no
+// longer span the viewport — leaving the left and right edges empty.
+const Z_FAR = 4;
+
+// Where the nearest row's CREST sits, as a fraction of hero height. Past 1, so even
+// the highest point of the front row is below the bottom edge and the foreground is
+// solid at every x.
+const MESH_FRONT = 1.02;
+// Crest height as a fraction of camera height. This ratio is what makes the surface
+// read as rolling terrain rather than a rippled plane. Must stay below 1.
+const AMP_K = 0.48;
+// Clearance between the top of the mesh and the lowest hero element.
+const CEILING_GAP = 0.02;
+// Depth past which the wave is damped, on top of the natural 1/z falloff. Kept close
+// to Z_FAR: damping earlier than this flattens the distance into a smooth dome and
+// loses the ridges stacking into the horizon.
+const Z_DAMP = 3;
+
+/** Extra amplitude falloff with depth. 1 in the foreground, shrinking past Z_DAMP. */
+const dampAt = (z: number) => Math.min(1, Z_DAMP / z);
 
 // World half-width of the grid. Wider than the viewport at Z_NEAR (so the front row
 // bleeds off both edges) and narrower at Z_FAR (so the mesh visibly converges).
+// WORLD_HALF_W * FOCAL_X_RATIO / Z_FAR is the farthest row's half-width in screen
+// widths. It must clear 0.5 or the most distant rows stop short of the viewport edges
+// and the corners of the mesh are simply missing.
 const WORLD_HALF_W = 2.6;
-const FOCAL_X_RATIO = 0.52;
+const FOCAL_X_RATIO = 0.95;
 
-// Large relative to NEAR_DROP (the camera height) — that ratio is what turns a rippled
-// plane into a rolling landscape whose hills read side-on.
-const AMPLITUDE_RATIO = 0.17;
 const DRIFT = 0.004; // lateral drift in world units — a few pixels on screen
+
+// Peak absolute value of calculateHeight, used to size the wave against the camera.
+const HEIGHT_PEAK = 1.42;
 
 type Palette = {
   stops: [string, string, string];
@@ -39,38 +65,63 @@ type Palette = {
 
 const DARK: Palette = {
   stops: ["#38d9ff", "#4f8cff", "#a78bfa"],
-  line: 0.26,
-  ridge: 0.3,
-  point: 0.42,
+  line: 0.42,
+  ridge: 0.4,
+  point: 0.72,
   glow: 0.7,
   star: 0.2,
 };
 
 const LIGHT: Palette = {
   stops: ["#0e91ad", "#3b6fd4", "#7c5cd6"],
-  line: 0.24,
-  ridge: 0.26,
-  point: 0.4,
+  line: 0.36,
+  ridge: 0.34,
+  point: 0.62,
   glow: 0.5,
   star: 0.16,
 };
 
 /** Grid density and wave scale by viewport width. */
 function densityFor(width: number) {
-  if (width < 640) return { cols: 34, rows: 24, amp: 0.5 };
-  if (width < 1024) return { cols: 54, rows: 34, amp: 0.75 };
-  if (width < 1536) return { cols: 72, rows: 42, amp: 1 };
-  return { cols: 82, rows: 46, amp: 1 };
+  if (width < 640) return { cols: 40, rows: 30, amp: 0.6 };
+  if (width < 1024) return { cols: 64, rows: 42, amp: 0.8 };
+  if (width < 1536) return { cols: 86, rows: 54, amp: 1 };
+  return { cols: 100, rows: 60, amp: 1 };
 }
 
-/** Sum of three slow sine waves plus a fixed per-point offset. */
-function calculateHeight(wx: number, z: number, phase: number, t: number) {
+/**
+ * Sum of three slow sine waves. Deliberately free of any per-point randomness — a
+ * random offset per vertex reads as surface noise and makes the swells look jagged
+ * rather than smooth.
+ */
+function calculateHeight(wx: number, z: number, t: number) {
   return (
-    Math.sin(wx * 1.15 + t * 0.26) * 0.62 +
-    Math.sin(z * 1.45 - t * 0.19) * 0.44 +
-    Math.sin((wx * 0.8 + z) * 1.05 + t * 0.31) * 0.36 +
-    Math.sin(phase + t * 0.14) * 0.08
+    Math.sin(wx * 2.6 + t * 0.26) * 0.62 +
+    Math.sin(z * 1.35 - t * 0.19) * 0.46 +
+    Math.sin((wx * 1.5 + z) * 1.1 + t * 0.31) * 0.34
   );
+}
+
+/**
+ * Solves horizon and camera height from the one number that varies — where the hero
+ * content ends — so the mesh always spans the gap beneath it. Both constraints sit on
+ * the crest line y = horizon + C/z, since the crest line is what bounds the mesh at
+ * both ends:
+ *   horizon + C / Z_FAR  = ceiling      (farthest crest — top of the mesh)
+ *   horizon + C / Z_NEAR = MESH_FRONT   (nearest crest — below the bottom edge)
+ * Troughs fall further below at every depth, so the surface stays solid throughout.
+ */
+function solveCamera(ceiling: number) {
+  const dNear = dampAt(Z_NEAR);
+  const dFar = dampAt(Z_FAR);
+  const camA =
+    (MESH_FRONT - ceiling) /
+    (1 / Z_NEAR - 1 / Z_FAR - AMP_K * (dNear / Z_NEAR - dFar / Z_FAR));
+  return {
+    horizon: MESH_FRONT - (camA - AMP_K * camA * dNear) / Z_NEAR,
+    camA,
+    amp: (AMP_K * camA) / HEIGHT_PEAK,
+  };
 }
 
 export default function MeshBackground({ dark }: { dark: boolean }) {
@@ -94,6 +145,7 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
     let rows = 0;
     let ampScale = 1;
     let gradient: CanvasGradient | null = null;
+    let camera = solveCamera(0.7);
 
     let worldX = new Float32Array(0);
     let worldZ = new Float32Array(0);
@@ -128,11 +180,15 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       for (let i = 0; i < cols; i++) {
         worldX[i] = -WORLD_HALF_W + (2 * WORLD_HALF_W * i) / (cols - 1);
       }
-      // Near-uniform steps in z — that is what makes far rows bunch together. The
-      // slight power curve adds a few extra rows up front so the foreground grid
-      // does not stretch out into big gaps.
+      // Rows are spaced by a power curve in 1/z rather than in z. Screen position is
+      // linear in 1/z, so this controls the on-screen gaps directly: the exponent
+      // above 1 keeps gaps shrinking with distance (the perspective cue) without the
+      // enormous foreground gaps that uniform steps in z produce at small z.
+      const invNear = 1 / Z_NEAR;
+      const invFar = 1 / Z_FAR;
       for (let j = 0; j < rows; j++) {
-        worldZ[j] = Z_NEAR + (Z_FAR - Z_NEAR) * Math.pow(j / (rows - 1), 1.18);
+        const u = j / (rows - 1);
+        worldZ[j] = 1 / (invFar + (invNear - invFar) * Math.pow(1 - u, 1.9));
       }
       for (let k = 0; k < count; k++) {
         phases[k] = Math.random() * Math.PI * 2;
@@ -145,8 +201,8 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       starPhase = new Float32Array(starCount);
       for (let s = 0; s < starCount; s++) {
         starX[s] = Math.random();
-        // Keep them above the mesh, in the empty upper band.
-        starY[s] = Math.random() * HORIZON_RATIO * 0.95;
+        // Normalised against the mesh ceiling so they stay in the empty upper band.
+        starY[s] = Math.random() * 0.95;
         starPhase[s] = Math.random() * Math.PI * 2;
       }
     }
@@ -162,9 +218,28 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       gradient = g;
     }
 
+    /**
+     * Lowest point of the hero content, as a fraction of hero height. The hero is
+     * vertically centred, so this moves with viewport size (0.66 at 1920x1080, 0.72
+     * at 1280x800) — the mesh ceiling has to follow it rather than be hard-coded.
+     */
+    function measureCeiling(heroRect: DOMRect) {
+      const content = canvas!.nextElementSibling;
+      if (!content || heroRect.height === 0) return 0.7;
+      let lowest = 0;
+      for (const el of content.querySelectorAll("h1, p, a, button, img")) {
+        const b = el.getBoundingClientRect();
+        if (b.height > 0 && b.bottom > lowest) lowest = b.bottom;
+      }
+      if (lowest === 0) return 0.7;
+      const ratio = (lowest - heroRect.top) / heroRect.height + CEILING_GAP;
+      return Math.min(0.82, Math.max(0.5, ratio));
+    }
+
     function resizeCanvas() {
       const rect = canvas!.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return false;
+      camera = solveCamera(measureCeiling(rect));
       const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
       width = rect.width;
       height = rect.height;
@@ -178,31 +253,36 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
     /** Writes the projected screen position of every grid point into projX/projY. */
     function projectPoints(t: number) {
       const cx = width / 2;
-      const horizon = height * HORIZON_RATIO;
-      const camA = height * NEAR_DROP;
+      const horizon = height * camera.horizon;
+      const camA = height * camera.camA;
       const focalX = width * FOCAL_X_RATIO;
-      const amp = height * AMPLITUDE_RATIO * ampScale;
+      const amp = height * camera.amp * ampScale;
 
       for (let j = 0; j < rows; j++) {
         const z = worldZ[j];
         const invZ = 1 / z;
+        const rowAmp = amp * dampAt(z);
         const drift = Math.sin(t * 0.12 + z * 0.5) * DRIFT;
         const rowOffset = j * cols;
         for (let i = 0; i < cols; i++) {
           const k = rowOffset + i;
           const wx = worldX[i];
-          const h = calculateHeight(wx, z, phases[k], t);
+          const h = calculateHeight(wx, z, t);
           projX[k] = cx + (wx + drift) * focalX * invZ;
-          projY[k] = horizon + (camA - h * amp) * invZ;
+          projY[k] = horizon + (camA - h * rowAmp) * invZ;
           // Crests read brighter, which is what gives the mesh its glowing ridges.
-          projCrest[k] = h > 0 ? Math.min(1, h / 1.15) : 0;
+          projCrest[k] = h > 0 ? Math.min(1, h / (HEIGHT_PEAK * 0.8)) : 0;
         }
       }
     }
 
-    // Gentle falloff — the far grid has to stay readable, not vanish, or the mesh
-    // loses the stacked-ridge depth it gets from the distant rows.
-    const depthFade = (j: number) => Math.pow(1 - j / (rows - 1), 0.8);
+    // Falls off with distance but never to zero: the far rows carry the wavy top
+    // silhouette, and fading them out entirely both hides it and makes the mesh look
+    // far shorter than the camera solve intends.
+    // Most of the on-screen mesh is made of the *far* rows — the near ones are largely
+    // below the bottom edge — so the floor here has to stay high or the visible
+    // surface is uniformly dim.
+    const depthFade = (j: number) => 0.55 + 0.45 * Math.pow(1 - j / (rows - 1), 0.9);
 
     function drawConnections(palette: Palette) {
       ctx!.strokeStyle = gradient!;
@@ -250,7 +330,7 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
         // the wave tops read as glowing lines snaking across the landscape.
         ctx!.globalAlpha = Math.min(0.75, palette.ridge * fade);
         ctx!.lineWidth = 1.1;
-        ctx!.shadowBlur = fade > 0.35 ? 5 * fade : 0;
+        ctx!.shadowBlur = fade > 0.55 ? 5 * fade : 0;
         ctx!.beginPath();
         pen = false;
         for (let i = 0; i < cols; i++) {
@@ -328,7 +408,7 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
         const twinkle = 0.55 + 0.45 * Math.sin(starPhase[s] + t * 0.22);
         ctx!.globalAlpha = palette.star * twinkle;
         ctx!.beginPath();
-        ctx!.arc(starX[s] * width, starY[s] * height, 1, 0, Math.PI * 2);
+        ctx!.arc(starX[s] * width, starY[s] * camera.horizon * height, 1, 0, Math.PI * 2);
         ctx!.fill();
       }
     }
