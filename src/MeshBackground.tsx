@@ -103,9 +103,13 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
 
     function createGrid() {
       const d = densityFor(width);
+      ampScale = d.amp;
+      // Everything below is in world/normalised space, so a resize that does not
+      // change the density tier needs no rebuild — and must not reshuffle the random
+      // phases, or the mesh visibly resets on mobile URL-bar show/hide.
+      if (cols === d.cols && rows === d.rows && projX.length > 0) return;
       cols = d.cols;
       rows = d.rows;
-      ampScale = d.amp;
 
       const count = cols * rows;
       worldX = new Float32Array(cols);
