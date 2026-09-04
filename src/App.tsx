@@ -1248,311 +1248,400 @@ function Navbar({
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 const CURRENTLY_ITEMS = [
-  "Building applied AI tools that make technical workflows easier to use",
-  "Learning how ML systems behave beyond notebook experiments",
-  "Exploring robotics perception, evaluation, and real-world constraints",
-  "Turning data pipelines into faster feedback loops",
-  "Studying system design through reliability, scale, and tradeoffs",
-  "Building full-stack tools around messy technical workflows",
-  "Teaching technical ideas by making them concrete and usable",
-  "Chasing performance from interface latency down to lower-level systems",
+  { topic: "applied", text: "Building applied AI tools that make technical workflows easier to use" },
+  { topic: "ml", text: "Learning how ML systems behave beyond notebook experiments" },
+  { topic: "robotics", text: "Exploring robotics perception, evaluation, and real-world constraints" },
+  { topic: "data", text: "Turning data pipelines into faster feedback loops" },
+  { topic: "evaluation", text: "Studying system design through reliability, scale, and tradeoffs" },
+  { topic: "interfaces", text: "Building full-stack tools around messy technical workflows" },
+  { topic: "teaching", text: "Teaching technical ideas by making them concrete and usable" },
+  { topic: "latency", text: "Chasing performance from interface latency down to lower-level systems" },
 ];
 
-const HERO_TOPIC_NODES = [
-  { id: "applied", label: "Applied AI", x: 150, y: 92, labelX: 190, labelY: 70, width: 98, stroke: "stroke-cyan-300/40", fill: "fill-cyan-300/10", text: "fill-cyan-100" },
-  { id: "ml", label: "ML Systems", x: 655, y: 74, labelX: 696, labelY: 52, width: 114, stroke: "stroke-blue-300/30", fill: "fill-blue-300/10", text: "fill-blue-100" },
-  { id: "interfaces", label: "Interfaces", x: 1328, y: 82, labelX: 1372, labelY: 60, width: 112, stroke: "stroke-rose-300/30", fill: "fill-rose-300/10", text: "fill-rose-100" },
-  { id: "latency", label: "Latency", x: 1718, y: 318, labelX: 1658, labelY: 284, width: 84, stroke: "stroke-amber-300/30", fill: "fill-amber-300/10", text: "fill-amber-100" },
-  { id: "evaluation", label: "Evaluation", x: 1638, y: 698, labelX: 1506, labelY: 716, width: 110, stroke: "stroke-violet-300/30", fill: "fill-violet-300/10", text: "fill-violet-100" },
-  { id: "data", label: "Data Pipelines", x: 1042, y: 760, labelX: 878, labelY: 764, width: 138, stroke: "stroke-sky-300/30", fill: "fill-sky-300/10", text: "fill-sky-100" },
-  { id: "teaching", label: "Teaching", x: 472, y: 738, labelX: 342, labelY: 758, width: 94, stroke: "stroke-lime-300/30", fill: "fill-lime-300/10", text: "fill-lime-100" },
-  { id: "robotics", label: "Robotics", x: 98, y: 650, labelX: 134, labelY: 678, width: 92, stroke: "stroke-emerald-300/30", fill: "fill-emerald-300/10", text: "fill-emerald-100" },
+// The hero graph is drawn as clustered "lobes" rather than a perimeter ring: each
+// labeled topic is a hub with a few satellites around it, hubs are linked by a small
+// number of curved arcs, and signals fire along those arcs. Geometry lives in a fixed
+// 1800x900 space that is letterboxed into the hero, so every coordinate below is
+// chosen to sit outside the copy/laptop at >=1400px wide.
+
+const HERO_VIEW = { w: 1800, h: 900, cx: 900, cy: 450 };
+
+type HeroPoint = { x: number; y: number };
+
+type HeroLobe = HeroPoint & {
+  id: string;
+  label: string;
+  labelDx: number;
+  labelDy: number;
+  dot: string;
+  text: string;
+  halo: string;
+  satellites: HeroPoint[];
+};
+
+const round1 = (n: number) => Math.round(n * 10) / 10;
+
+/** Quadratic arc between two points. Positive bend bows away from the graph center. */
+function heroArc(a: HeroPoint, b: HeroPoint, bend: number) {
+  const mx = (a.x + b.x) / 2;
+  const my = (a.y + b.y) / 2;
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const len = Math.hypot(dx, dy) || 1;
+  let nx = -dy / len;
+  let ny = dx / len;
+  if ((mx - HERO_VIEW.cx) * nx + (my - HERO_VIEW.cy) * ny < 0) {
+    nx = -nx;
+    ny = -ny;
+  }
+  return `M ${a.x} ${a.y} Q ${round1(mx + nx * bend)} ${round1(my + ny * bend)} ${b.x} ${b.y}`;
+}
+
+/** Rounded polyline through a chain of points. */
+function heroChain(points: HeroPoint[]) {
+  let d = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 1; i < points.length - 1; i++) {
+    const mid = { x: (points[i].x + points[i + 1].x) / 2, y: (points[i].y + points[i + 1].y) / 2 };
+    d += ` Q ${points[i].x} ${points[i].y} ${round1(mid.x)} ${round1(mid.y)}`;
+  }
+  const last = points[points.length - 1];
+  return `${d} L ${last.x} ${last.y}`;
+}
+
+/** Concatenate path segments into one continuous path for a signal to travel. */
+function heroJoin(...segments: string[]) {
+  return segments
+    .map((seg, i) => (i === 0 ? seg : seg.replace(/^M\s*-?[\d.]+\s+-?[\d.]+\s*/, "")))
+    .join(" ");
+}
+
+const HERO_LOBES: HeroLobe[] = [
+  {
+    id: "applied", label: "Applied AI", x: 236, y: 56, labelDx: 16, labelDy: 5,
+    dot: "fill-cyan-600 dark:fill-cyan-200",
+    text: "fill-cyan-700 dark:fill-cyan-100",
+    halo: "fill-cyan-500 dark:fill-cyan-300",
+    satellites: [{ x: 120, y: 116 }, { x: 368, y: 22 }, { x: 150, y: 20 }],
+  },
+  {
+    id: "ml", label: "ML Systems", x: 700, y: 46, labelDx: 16, labelDy: 5,
+    dot: "fill-blue-600 dark:fill-blue-200",
+    text: "fill-blue-700 dark:fill-blue-100",
+    halo: "fill-blue-500 dark:fill-blue-300",
+    satellites: [{ x: 572, y: 94 }, { x: 846, y: 82 }, { x: 724, y: 8 }],
+  },
+  {
+    id: "interfaces", label: "Interfaces", x: 1420, y: 56, labelDx: 16, labelDy: 5,
+    dot: "fill-rose-600 dark:fill-rose-200",
+    text: "fill-rose-700 dark:fill-rose-100",
+    halo: "fill-rose-500 dark:fill-rose-300",
+    satellites: [{ x: 1300, y: 120 }, { x: 1552, y: 18 }, { x: 1382, y: 142 }],
+  },
+  {
+    id: "latency", label: "Latency", x: 1672, y: 262, labelDx: 16, labelDy: 5,
+    dot: "fill-amber-600 dark:fill-amber-200",
+    text: "fill-amber-700 dark:fill-amber-100",
+    halo: "fill-amber-500 dark:fill-amber-300",
+    satellites: [{ x: 1740, y: 172 }, { x: 1770, y: 372 }, { x: 1688, y: 430 }],
+  },
+  {
+    id: "evaluation", label: "Evaluation", x: 1580, y: 706, labelDx: 16, labelDy: 5,
+    dot: "fill-violet-600 dark:fill-violet-200",
+    text: "fill-violet-700 dark:fill-violet-100",
+    halo: "fill-violet-500 dark:fill-violet-300",
+    satellites: [{ x: 1700, y: 636 }, { x: 1712, y: 812 }, { x: 1462, y: 782 }],
+  },
+  {
+    id: "data", label: "Data Pipelines", x: 1046, y: 806, labelDx: 16, labelDy: 5,
+    dot: "fill-sky-600 dark:fill-sky-200",
+    text: "fill-sky-700 dark:fill-sky-100",
+    halo: "fill-sky-500 dark:fill-sky-300",
+    satellites: [{ x: 928, y: 742 }, { x: 1186, y: 848 }, { x: 1156, y: 702 }],
+  },
+  {
+    id: "teaching", label: "Teaching", x: 540, y: 842, labelDx: 16, labelDy: 5,
+    dot: "fill-teal-600 dark:fill-teal-200",
+    text: "fill-teal-700 dark:fill-teal-100",
+    halo: "fill-teal-500 dark:fill-teal-300",
+    satellites: [{ x: 408, y: 762 }, { x: 668, y: 800 }, { x: 508, y: 886 }],
+  },
+  {
+    id: "robotics", label: "Robotics", x: 118, y: 700, labelDx: 16, labelDy: 5,
+    dot: "fill-emerald-600 dark:fill-emerald-200",
+    text: "fill-emerald-700 dark:fill-emerald-100",
+    halo: "fill-emerald-500 dark:fill-emerald-300",
+    satellites: [{ x: 40, y: 620 }, { x: 226, y: 768 }, { x: 62, y: 806 }],
+  },
 ];
 
-const HERO_GRAPH_NODES = [
-  ...HERO_TOPIC_NODES,
-  { id: "leftTop", x: 72, y: 112, fill: "fill-cyan-200/40" },
-  { id: "leftUpper", x: 122, y: 224, fill: "fill-cyan-200/30" },
-  { id: "learn", x: 318, y: 76, fill: "fill-cyan-200/45" },
-  { id: "topCluster", x: 480, y: 102, fill: "fill-cyan-200/30" },
-  { id: "systems", x: 862, y: 92, fill: "fill-blue-200/30" },
-  { id: "model", x: 1095, y: 70, fill: "fill-blue-200/30" },
-  { id: "interfaceBridge", x: 1460, y: 130, fill: "fill-rose-200/30" },
-  { id: "ship", x: 1510, y: 154, fill: "fill-rose-200/40" },
-  { id: "rightBridge", x: 1640, y: 170, fill: "fill-amber-200/30" },
-  { id: "rightHigh", x: 1736, y: 224, fill: "fill-amber-200/40" },
-  { id: "rightSense", x: 1660, y: 392, fill: "fill-amber-200/30" },
-  { id: "rightMid", x: 1742, y: 504, fill: "fill-amber-200/40" },
-  { id: "rightLow", x: 1694, y: 628, fill: "fill-violet-200/30" },
-  { id: "feedback", x: 1388, y: 684, fill: "fill-violet-200/40" },
-  { id: "bottomBridge", x: 1220, y: 742, fill: "fill-sky-200/30" },
-  { id: "bottomModel", x: 900, y: 702, fill: "fill-sky-200/30" },
-  { id: "pipeline", x: 752, y: 742, fill: "fill-sky-200/30" },
-  { id: "bottomTeach", x: 610, y: 674, fill: "fill-lime-200/30" },
-  { id: "mentor", x: 282, y: 714, fill: "fill-lime-200/40" },
-  { id: "robotBridge", x: 190, y: 666, fill: "fill-emerald-200/30" },
-  { id: "leftLow", x: 54, y: 528, fill: "fill-emerald-200/30" },
-  { id: "leftMid", x: 100, y: 442, fill: "fill-emerald-200/30" },
-  { id: "sense", x: 62, y: 314, fill: "fill-emerald-200/40" },
+const HERO_LOBE_BY_ID = new Map(HERO_LOBES.map(lobe => [lobe.id, lobe]));
+
+const lobe = (id: string) => HERO_LOBE_BY_ID.get(id)!;
+
+/** Long connections between lobes. Bends vary so no two arcs run parallel. */
+const HERO_ARCS: { from: string; to: string; bend: number }[] = [
+  { from: "applied", to: "ml", bend: 45 },
+  { from: "ml", to: "interfaces", bend: 38 },
+  { from: "interfaces", to: "latency", bend: 90 },
+  { from: "latency", to: "evaluation", bend: 90 },
+  { from: "evaluation", to: "data", bend: -45 },
+  { from: "data", to: "teaching", bend: 50 },
+  { from: "teaching", to: "robotics", bend: -40 },
 ];
 
-type HeroGraphEdge = { from: string; to: string; curve?: [number, number] };
+const HERO_ARC_D = new Map(
+  HERO_ARCS.map(({ from, to, bend }) => [`${from}>${to}`, heroArc(lobe(from), lobe(to), bend)])
+);
 
-const HERO_GRAPH_EDGES: HeroGraphEdge[] = [
-  { from: "leftTop", to: "applied" },
-  { from: "leftTop", to: "leftUpper" },
-  { from: "leftUpper", to: "sense" },
-  { from: "sense", to: "leftMid" },
-  { from: "leftMid", to: "leftLow" },
-  { from: "leftLow", to: "robotics" },
-  { from: "robotics", to: "robotBridge" },
-  { from: "robotBridge", to: "mentor" },
-  { from: "mentor", to: "teaching" },
-  { from: "teaching", to: "bottomTeach" },
-  { from: "bottomTeach", to: "pipeline" },
-  { from: "pipeline", to: "bottomModel" },
-  { from: "bottomModel", to: "data" },
-  { from: "data", to: "bottomBridge" },
-  { from: "bottomBridge", to: "feedback" },
-  { from: "feedback", to: "evaluation" },
-  { from: "evaluation", to: "rightLow" },
-  { from: "rightLow", to: "rightMid" },
-  { from: "rightMid", to: "rightSense" },
-  { from: "rightSense", to: "latency" },
-  { from: "latency", to: "rightHigh" },
-  { from: "rightHigh", to: "rightBridge" },
-  { from: "rightBridge", to: "ship" },
-  { from: "ship", to: "interfaceBridge" },
-  { from: "interfaceBridge", to: "interfaces" },
-  { from: "interfaces", to: "model" },
-  { from: "model", to: "systems" },
-  { from: "systems", to: "ml" },
-  { from: "ml", to: "topCluster" },
-  { from: "topCluster", to: "learn" },
-  { from: "learn", to: "applied" },
-  { from: "applied", to: "leftUpper" },
-  { from: "applied", to: "topCluster" },
-  { from: "learn", to: "ml" },
-  { from: "topCluster", to: "systems" },
-  { from: "ml", to: "model" },
-  { from: "systems", to: "interfaces" },
-  { from: "model", to: "interfaceBridge" },
-  { from: "interfaces", to: "rightBridge" },
-  { from: "ship", to: "rightHigh" },
-  { from: "rightHigh", to: "latency" },
-  { from: "latency", to: "rightMid" },
-  { from: "rightMid", to: "rightLow" },
-  { from: "rightLow", to: "feedback" },
-  { from: "feedback", to: "bottomBridge" },
-  { from: "bottomBridge", to: "bottomModel" },
-  { from: "data", to: "pipeline" },
-  { from: "pipeline", to: "teaching" },
-  { from: "bottomTeach", to: "mentor" },
-  { from: "robotBridge", to: "teaching" },
-  { from: "robotics", to: "leftMid" },
-  { from: "leftLow", to: "sense" },
-  { from: "sense", to: "applied" },
+const arcD = (from: string, to: string) => HERO_ARC_D.get(`${from}>${to}`)!;
+
+/** Left-hand axon: a chain of small nodes closing robotics back up to applied. */
+const HERO_AXON = [
+  lobe("robotics"),
+  { x: 54, y: 556 },
+  { x: 110, y: 452 },
+  { x: 44, y: 330 },
+  { x: 108, y: 200 },
+  lobe("applied"),
 ];
 
-const HERO_SIGNAL_PATHS = [
+const HERO_AXON_D = heroChain(HERO_AXON);
+
+/**
+ * The one interior connection. Hand-routed rather than generated: it has to thread
+ * the ~75-unit corridor between the copy (ends at x 893) and the laptop (starts at
+ * x 968), which no single-control arc can do.
+ */
+const HERO_CHORD_D = "M 700 46 C 880 40 928 150 928 420 C 928 640 980 740 1046 806";
+
+/** Short dendrites inside each lobe: hub to satellites, plus one closing edge. */
+const HERO_DENDRITES = HERO_LOBES.flatMap(l => [
+  ...l.satellites.map((sat, i) => ({ key: `${l.id}-d${i}`, d: heroArc(l, sat, 14 + i * 7) })),
+  { key: `${l.id}-rim`, d: heroArc(l.satellites[0], l.satellites[l.satellites.length - 1], 26) },
+]);
+
+const HERO_MINOR_NODES = [
+  ...HERO_LOBES.flatMap(l => l.satellites),
+  ...HERO_AXON.slice(1, -1),
+];
+
+const HERO_SIGNALS = [
   {
     id: "top",
-    d: "M 150 92 L 318 76 L 480 102 L 655 74 L 862 92 L 1095 70 L 1328 82 L 1460 130 L 1510 154",
-    className: "stroke-cyan-200/70",
-    dotClassName: "fill-cyan-200/90",
-    dur: "6.2s",
+    d: heroJoin(arcD("applied", "ml"), arcD("ml", "interfaces")),
+    stroke: "stroke-cyan-500/60 dark:stroke-cyan-200/70",
+    dot: "fill-cyan-500 dark:fill-cyan-100",
+    dur: "7.4s",
     begin: "0s",
   },
   {
     id: "right",
-    d: "M 1510 154 L 1640 170 L 1736 224 L 1718 318 L 1660 392 L 1742 504 L 1694 628 L 1638 698 L 1388 684",
-    className: "stroke-amber-200/60",
-    dotClassName: "fill-amber-200/80",
-    dur: "6.8s",
-    begin: "-2.1s",
+    d: heroJoin(arcD("interfaces", "latency"), arcD("latency", "evaluation")),
+    stroke: "stroke-amber-500/55 dark:stroke-amber-200/65",
+    dot: "fill-amber-500 dark:fill-amber-100",
+    dur: "8.1s",
+    begin: "-2.6s",
   },
   {
     id: "bottom",
-    d: "M 1388 684 L 1220 742 L 1042 760 L 900 702 L 752 742 L 610 674 L 472 738 L 282 714 L 190 666 L 98 650",
-    className: "stroke-violet-200/60",
-    dotClassName: "fill-violet-200/80",
-    dur: "7.1s",
-    begin: "-4.3s",
+    d: heroJoin(arcD("evaluation", "data"), arcD("data", "teaching")),
+    stroke: "stroke-violet-500/55 dark:stroke-violet-200/65",
+    dot: "fill-violet-500 dark:fill-violet-100",
+    dur: "7.8s",
+    begin: "-4.9s",
   },
   {
     id: "left",
-    d: "M 98 650 L 54 528 L 100 442 L 62 314 L 122 224 L 72 112 L 150 92",
-    className: "stroke-emerald-200/60",
-    dotClassName: "fill-emerald-200/80",
-    dur: "5.9s",
-    begin: "-1.4s",
+    d: heroJoin(arcD("teaching", "robotics"), HERO_AXON_D),
+    stroke: "stroke-emerald-500/55 dark:stroke-emerald-200/65",
+    dot: "fill-emerald-500 dark:fill-emerald-100",
+    dur: "9.2s",
+    begin: "-1.3s",
   },
   {
-    id: "bridge",
-    d: "M 318 76 L 655 74 L 1095 70 L 1460 130 L 1736 224",
-    className: "stroke-sky-200/60",
-    dotClassName: "fill-sky-200/80",
-    dur: "7.8s",
-    begin: "-5.2s",
+    id: "chord",
+    d: HERO_CHORD_D,
+    stroke: "stroke-sky-500/45 dark:stroke-sky-200/55",
+    dot: "fill-sky-500 dark:fill-sky-100",
+    dur: "6.6s",
+    begin: "-3.4s",
   },
 ];
 
-const HERO_BACKBONE_PATH = `
-  M 72 112
-  L 150 92
-  L 318 76
-  L 480 102
-  L 655 74
-  L 862 92
-  L 1095 70
-  L 1328 82
-  L 1460 130
-  L 1510 154
-  L 1640 170
-  L 1736 224
-  L 1718 318
-  L 1660 392
-  L 1742 504
-  L 1694 628
-  L 1638 698
-  L 1388 684
-  L 1220 742
-  L 1042 760
-  L 900 702
-  L 752 742
-  L 610 674
-  L 472 738
-  L 282 714
-  L 190 666
-  L 98 650
-  L 54 528
-  L 100 442
-  L 62 314
-  L 122 224
-  L 72 112
-`;
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
 
-function HeroTopicGraph({ activeIndex }: { activeIndex: number }) {
-  const activeTopic = activeIndex % HERO_TOPIC_NODES.length;
-  const nodeById = new Map(HERO_GRAPH_NODES.map((node) => [node.id, node]));
-  const link = (fromId: string, toId: string, curve?: [number, number]) => {
-    const start = nodeById.get(fromId);
-    const end = nodeById.get(toId);
-    if (!start || !end) return "";
-    if (curve) return `M ${start.x} ${start.y} Q ${curve[0]} ${curve[1]} ${end.x} ${end.y}`;
-    return `M ${start.x} ${start.y} L ${end.x} ${end.y}`;
-  };
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  return reduced;
+}
+
+function HeroTopicGraph({ activeTopic }: { activeTopic: string }) {
+  const reducedMotion = usePrefersReducedMotion();
+
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-90 md:block" aria-hidden="true">
+    <div
+      className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-60 lg:block min-[1400px]:opacity-100"
+      aria-hidden="true"
+    >
       <svg
-        viewBox="0 0 1800 836"
-        preserveAspectRatio="xMidYMin meet"
+        viewBox={`0 0 ${HERO_VIEW.w} ${HERO_VIEW.h}`}
+        preserveAspectRatio="xMidYMid meet"
         className="absolute inset-0 h-full w-full"
         fill="none"
       >
         <defs>
-          <radialGradient id="hero-node-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#a5f3fc" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="#a5f3fc" stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="hero-signal-trail" x1="80" y1="100" x2="1360" y2="720" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.12" />
-            <stop offset="48%" stopColor="#60a5fa" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#a78bfa" stopOpacity="0.14" />
-          </linearGradient>
-          <filter id="hero-soft-glow" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+          <filter id="hero-soft-glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
-        <g>
+
+        {/* Interior chord + axon: the quietest layer */}
+        <path
+          d={HERO_CHORD_D}
+          className="stroke-slate-400/25 dark:stroke-cyan-100/15"
+          strokeWidth="1"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
+        <path
+          d={HERO_AXON_D}
+          className="stroke-slate-400/45 dark:stroke-cyan-100/30"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
+
+        {/* Short dendrites within each lobe */}
+        {HERO_DENDRITES.map(({ key, d }) => (
           <path
-            d={HERO_BACKBONE_PATH}
-            className="stroke-cyan-100/60"
-            strokeWidth="2.1"
+            key={key}
+            d={d}
+            className="stroke-slate-400/35 dark:stroke-slate-100/20"
+            strokeWidth="1"
             strokeLinecap="round"
-            strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
           />
-          {HERO_GRAPH_EDGES.map(({ from, to, curve }, index) => (
+        ))}
+
+        {/* Long connections between lobes */}
+        {HERO_ARCS.map(({ from, to }) => (
+          <path
+            key={`${from}-${to}`}
+            d={arcD(from, to)}
+            className="stroke-slate-400/55 dark:stroke-cyan-100/40"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
+          />
+        ))}
+
+        {/* Signals firing along those connections */}
+        {!reducedMotion && HERO_SIGNALS.map(signal => (
+          <g key={signal.id}>
             <path
-              key={`${from}-${to}`}
-              d={link(from, to, curve)}
-              className={index % 3 === 0 ? "stroke-cyan-100/50" : index % 3 === 1 ? "stroke-slate-100/40" : "stroke-sky-100/40"}
-              strokeWidth={index > 22 ? "1.25" : "1.6"}
+              d={signal.d}
+              pathLength="100"
+              className={signal.stroke}
+              strokeWidth="2.4"
               strokeLinecap="round"
-              strokeLinejoin="round"
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
-          {HERO_SIGNAL_PATHS.map((path) => (
-            <g key={path.id}>
-              <path
-                d={path.d}
-                className={path.className}
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeDasharray="34 760"
-                filter="url(#hero-soft-glow)"
-              >
-                <animate attributeName="stroke-dashoffset" from="0" to="-794" dur={path.dur} begin={path.begin} repeatCount="indefinite" />
-              </path>
-              <circle r="4.5" className={path.dotClassName} filter="url(#hero-soft-glow)">
-                <animateMotion dur={path.dur} repeatCount="indefinite" begin={path.begin} path={path.d} />
-              </circle>
-            </g>
-          ))}
-          {HERO_GRAPH_NODES.map((node) => {
-            const isTopic = "label" in node;
-            const isActive = node.id === HERO_TOPIC_NODES[activeTopic].id;
-            return (
-              <g key={node.id}>
-                {isTopic && (
-                  <circle cx={node.x} cy={node.y} r={isActive ? 15 : 11} fill="url(#hero-node-glow)" opacity={isActive ? 0.32 : 0.18} />
+              strokeDasharray="7 93"
+            >
+              <animate
+                attributeName="stroke-dashoffset"
+                from="0"
+                to="-100"
+                dur={signal.dur}
+                begin={signal.begin}
+                repeatCount="indefinite"
+              />
+            </path>
+            <circle r="5" className={signal.dot} filter="url(#hero-soft-glow)">
+              <animateMotion
+                dur={signal.dur}
+                begin={signal.begin}
+                repeatCount="indefinite"
+                path={signal.d}
+              />
+            </circle>
+          </g>
+        ))}
+
+        {/* Satellite + axon nodes */}
+        {HERO_MINOR_NODES.map(node => (
+          <circle
+            key={`${node.x}-${node.y}`}
+            cx={node.x}
+            cy={node.y}
+            r="4"
+            className="fill-slate-400/70 dark:fill-cyan-100/45"
+          />
+        ))}
+
+        {/* Topic hubs */}
+        {HERO_LOBES.map((l, index) => {
+          const isActive = l.id === activeTopic;
+          return (
+            <g key={l.id}>
+              <circle cx={l.x} cy={l.y} r="12" className={l.halo} opacity="0">
+                {!reducedMotion && (
+                  <>
+                    <animate
+                      attributeName="r"
+                      values="9;26;9"
+                      dur="5.4s"
+                      begin={`${index * 0.68}s`}
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0;0.28;0"
+                      dur="5.4s"
+                      begin={`${index * 0.68}s`}
+                      repeatCount="indefinite"
+                    />
+                  </>
                 )}
-                <circle
-                  cx={node.x}
-                  cy={node.y}
-                  r={isActive ? 7 : isTopic ? 5.5 : 4.75}
-                  className={isTopic ? "fill-cyan-50/80" : "fill-cyan-100/60"}
-                />
-              </g>
-            );
-          })}
-          {HERO_TOPIC_NODES.map((topic, index) => (
-            <g
-            key={topic.label}
-            className="transition-opacity duration-500"
-            opacity={index === activeTopic ? 0.96 : 0.8}
-          >
-              <path
-                d={`M ${topic.x} ${topic.y} L ${topic.labelX + 13} ${topic.labelY}`}
-                className={topic.stroke}
-                strokeWidth="1"
-                strokeLinecap="round"
+              </circle>
+              <circle
+                cx={l.x}
+                cy={l.y}
+                r={isActive ? 16 : 0}
+                className={`${l.halo} transition-all duration-500`}
+                opacity={isActive ? 0.22 : 0}
               />
-              <rect
-                x={topic.labelX}
-                y={topic.labelY - 14}
-                width={topic.width}
-                height="28"
-                rx="7"
-                className={`${topic.fill} ${topic.stroke}`}
-                strokeWidth="1"
+              <circle
+                cx={l.x}
+                cy={l.y}
+                r={isActive ? 8 : 6}
+                className={`${l.dot} transition-all duration-500`}
               />
-              <circle cx={topic.labelX + 13} cy={topic.labelY} r="3" className={topic.text} />
-              <text
-                x={topic.labelX + 25}
-                y={topic.labelY + 4}
-                className={`${topic.text} font-mono text-[11px] uppercase tracking-normal`}
-              >
-                {topic.label}
-              </text>
             </g>
+          );
+        })}
+
+        {/* Labels are the nodes — only shown once there is margin for them */}
+        <g className="hidden min-[1400px]:block">
+          {HERO_LOBES.map(l => (
+            <text
+              key={l.id}
+              x={l.x + l.labelDx}
+              y={l.y + l.labelDy}
+              className={`${l.text} font-mono text-[15px] uppercase tracking-[0.12em] transition-opacity duration-500`}
+              opacity={l.id === activeTopic ? 1 : 0.6}
+            >
+              {l.label}
+            </text>
           ))}
         </g>
       </svg>
@@ -1610,7 +1699,7 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
                 <span
                   className="text-green-300 transition-opacity duration-300"
                   style={{ opacity: visible ? 1 : 0.55 }}
-                >"{CURRENTLY_ITEMS[idx]}",</span>
+                >"{CURRENTLY_ITEMS[idx].text}",</span>
               </div>
               <div>{"}"}</div>
             </div>
@@ -1637,7 +1726,7 @@ function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
 
   return (
     <section id="top" className="relative overflow-hidden bg-[#fbfaf7] text-gray-950 dark:bg-[#070914] dark:text-white">
-      <HeroTopicGraph activeIndex={idx} />
+      <HeroTopicGraph activeTopic={CURRENTLY_ITEMS[idx].topic} />
       <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1220px] px-6 py-12 md:px-8 lg:py-16">
         <div className="grid min-w-0 w-full grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-8 xl:-translate-y-10">
           {/* Left */}
