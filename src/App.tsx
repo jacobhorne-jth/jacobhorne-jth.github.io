@@ -1276,8 +1276,10 @@ type HeroLobe = HeroPoint & {
   dot: string;
   text: string;
   halo: string;
-  satellites: HeroPoint[];
 };
+
+/** A loose neuron: a small node wired into exactly one labeled node by a single line. */
+type HeroNeuron = HeroPoint & { to: string };
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
@@ -1297,17 +1299,6 @@ function heroArc(a: HeroPoint, b: HeroPoint, bend: number) {
   return `M ${a.x} ${a.y} Q ${round1(mx + nx * bend)} ${round1(my + ny * bend)} ${b.x} ${b.y}`;
 }
 
-/** Rounded polyline through a chain of points. */
-function heroChain(points: HeroPoint[]) {
-  let d = `M ${points[0].x} ${points[0].y}`;
-  for (let i = 1; i < points.length - 1; i++) {
-    const mid = { x: (points[i].x + points[i + 1].x) / 2, y: (points[i].y + points[i + 1].y) / 2 };
-    d += ` Q ${points[i].x} ${points[i].y} ${round1(mid.x)} ${round1(mid.y)}`;
-  }
-  const last = points[points.length - 1];
-  return `${d} L ${last.x} ${last.y}`;
-}
-
 /** Concatenate path segments into one continuous path for a signal to travel. */
 function heroJoin(...segments: string[]) {
   return segments
@@ -1317,76 +1308,91 @@ function heroJoin(...segments: string[]) {
 
 const HERO_LOBES: HeroLobe[] = [
   {
-    id: "applied", label: "Applied AI", x: 236, y: 56, labelDx: 16, labelDy: 5,
+    id: "applied", label: "Applied AI", x: 168, y: 52, labelDx: 16, labelDy: 5,
     dot: "fill-cyan-600 dark:fill-cyan-200",
     text: "fill-cyan-700 dark:fill-cyan-100",
     halo: "fill-cyan-500 dark:fill-cyan-300",
-    satellites: [{ x: 120, y: 116 }, { x: 368, y: 22 }, { x: 150, y: 20 }],
   },
   {
-    id: "ml", label: "ML Systems", x: 700, y: 46, labelDx: 16, labelDy: 5,
+    id: "ml", label: "ML Infrastructure", x: 700, y: 46, labelDx: 16, labelDy: 5,
     dot: "fill-blue-600 dark:fill-blue-200",
     text: "fill-blue-700 dark:fill-blue-100",
     halo: "fill-blue-500 dark:fill-blue-300",
-    satellites: [{ x: 572, y: 94 }, { x: 846, y: 82 }, { x: 724, y: 8 }],
   },
   {
-    id: "interfaces", label: "Interfaces", x: 1420, y: 56, labelDx: 16, labelDy: 5,
+    id: "interfaces", label: "Full-Stack Tools", x: 1420, y: 56, labelDx: 16, labelDy: 5,
     dot: "fill-rose-600 dark:fill-rose-200",
     text: "fill-rose-700 dark:fill-rose-100",
     halo: "fill-rose-500 dark:fill-rose-300",
-    satellites: [{ x: 1300, y: 120 }, { x: 1552, y: 18 }, { x: 1382, y: 142 }],
   },
   {
-    id: "latency", label: "Latency", x: 1672, y: 262, labelDx: 16, labelDy: 5,
+    id: "latency", label: "Performance", x: 1642, y: 268, labelDx: 16, labelDy: 5,
     dot: "fill-amber-600 dark:fill-amber-200",
     text: "fill-amber-700 dark:fill-amber-100",
     halo: "fill-amber-500 dark:fill-amber-300",
-    satellites: [{ x: 1740, y: 172 }, { x: 1770, y: 372 }, { x: 1688, y: 430 }],
   },
   {
-    id: "evaluation", label: "Evaluation", x: 1580, y: 706, labelDx: 16, labelDy: 5,
+    id: "evaluation", label: "Evaluation Systems", x: 1540, y: 716, labelDx: 16, labelDy: 5,
     dot: "fill-violet-600 dark:fill-violet-200",
     text: "fill-violet-700 dark:fill-violet-100",
     halo: "fill-violet-500 dark:fill-violet-300",
-    satellites: [{ x: 1700, y: 636 }, { x: 1712, y: 812 }, { x: 1462, y: 782 }],
   },
   {
     id: "data", label: "Data Pipelines", x: 1046, y: 806, labelDx: 16, labelDy: 5,
     dot: "fill-sky-600 dark:fill-sky-200",
     text: "fill-sky-700 dark:fill-sky-100",
     halo: "fill-sky-500 dark:fill-sky-300",
-    satellites: [{ x: 928, y: 742 }, { x: 1186, y: 848 }, { x: 1156, y: 702 }],
   },
   {
-    id: "teaching", label: "Teaching", x: 540, y: 842, labelDx: 16, labelDy: 5,
+    id: "teaching", label: "Teaching & Mentorship", x: 540, y: 842, labelDx: 16, labelDy: 5,
     dot: "fill-teal-600 dark:fill-teal-200",
     text: "fill-teal-700 dark:fill-teal-100",
     halo: "fill-teal-500 dark:fill-teal-300",
-    satellites: [{ x: 408, y: 762 }, { x: 668, y: 800 }, { x: 508, y: 886 }],
   },
   {
-    id: "robotics", label: "Robotics", x: 118, y: 700, labelDx: 16, labelDy: 5,
+    id: "robotics", label: "Robotics Perception", x: 118, y: 700, labelDx: 16, labelDy: 5,
     dot: "fill-emerald-600 dark:fill-emerald-200",
     text: "fill-emerald-700 dark:fill-emerald-100",
     halo: "fill-emerald-500 dark:fill-emerald-300",
-    satellites: [{ x: 40, y: 620 }, { x: 226, y: 768 }, { x: 62, y: 806 }],
   },
+];
+
+/**
+ * Loose neurons. Each one is a single dot on a single line into one node — never a
+ * fan of stubs. Counts per node vary deliberately so the scatter reads as irregular.
+ */
+const HERO_NEURONS: HeroNeuron[] = [
+  { x: 368, y: 20, to: "applied" },
+  { x: 122, y: 118, to: "applied" },
+  { x: 104, y: 246, to: "applied" },
+  { x: 852, y: 76, to: "ml" },
+  { x: 1272, y: 130, to: "interfaces" },
+  { x: 1560, y: 16, to: "interfaces" },
+  { x: 1758, y: 166, to: "latency" },
+  { x: 1736, y: 392, to: "latency" },
+  { x: 1688, y: 816, to: "evaluation" },
+  { x: 1188, y: 860, to: "data" },
+  { x: 912, y: 720, to: "data" },
+  { x: 668, y: 792, to: "teaching" },
+  { x: 446, y: 890, to: "teaching" },
+  { x: 42, y: 624, to: "robotics" },
+  { x: 240, y: 780, to: "robotics" },
 ];
 
 const HERO_LOBE_BY_ID = new Map(HERO_LOBES.map(lobe => [lobe.id, lobe]));
 
 const lobe = (id: string) => HERO_LOBE_BY_ID.get(id)!;
 
-/** Long connections between lobes. Bends vary so no two arcs run parallel. */
+/** Exactly one edge between neighbouring nodes. Bends vary so no two run parallel. */
 const HERO_ARCS: { from: string; to: string; bend: number }[] = [
   { from: "applied", to: "ml", bend: 45 },
   { from: "ml", to: "interfaces", bend: 38 },
-  { from: "interfaces", to: "latency", bend: 90 },
-  { from: "latency", to: "evaluation", bend: 90 },
+  { from: "interfaces", to: "latency", bend: 140 },
+  { from: "latency", to: "evaluation", bend: 110 },
   { from: "evaluation", to: "data", bend: -45 },
   { from: "data", to: "teaching", bend: 50 },
   { from: "teaching", to: "robotics", bend: -40 },
+  { from: "robotics", to: "applied", bend: 55 },
 ];
 
 const HERO_ARC_D = new Map(
@@ -1395,74 +1401,64 @@ const HERO_ARC_D = new Map(
 
 const arcD = (from: string, to: string) => HERO_ARC_D.get(`${from}>${to}`)!;
 
-/** Left-hand axon: a chain of small nodes closing robotics back up to applied. */
-const HERO_AXON = [
-  lobe("robotics"),
-  { x: 54, y: 556 },
-  { x: 110, y: 452 },
-  { x: 44, y: 330 },
-  { x: 108, y: 200 },
-  lobe("applied"),
-];
-
-const HERO_AXON_D = heroChain(HERO_AXON);
-
 /**
- * The one interior connection. Hand-routed rather than generated: it has to thread
- * the ~75-unit corridor between the copy (ends at x 893) and the laptop (starts at
- * x 968), which no single-control arc can do.
+ * The one edge that crosses behind the hero copy, so it is drawn far fainter than the
+ * rest. Hand-routed rather than generated: it has to thread the ~75-unit corridor
+ * between the copy (ends at x 893) and the laptop (starts at x 968), which no
+ * single-control arc can do.
  */
 const HERO_CHORD_D = "M 700 46 C 880 40 928 150 928 420 C 928 640 980 740 1046 806";
 
-/** Short dendrites inside each lobe: hub to satellites, plus one closing edge. */
-const HERO_DENDRITES = HERO_LOBES.flatMap(l => [
-  ...l.satellites.map((sat, i) => ({ key: `${l.id}-d${i}`, d: heroArc(l, sat, 14 + i * 7) })),
-  { key: `${l.id}-rim`, d: heroArc(l.satellites[0], l.satellites[l.satellites.length - 1], 26) },
-]);
-
-const HERO_MINOR_NODES = [
-  ...HERO_LOBES.flatMap(l => l.satellites),
-  ...HERO_AXON.slice(1, -1),
-];
+/** One line per loose neuron, straight, so the graph edges stay the dominant read. */
+const HERO_NEURON_LINKS = HERO_NEURONS.map(n => {
+  const node = lobe(n.to);
+  return { key: `${n.to}-${n.x}-${n.y}`, d: `M ${node.x} ${node.y} L ${n.x} ${n.y}` };
+});
 
 const HERO_SIGNALS = [
   {
     id: "top",
     d: heroJoin(arcD("applied", "ml"), arcD("ml", "interfaces")),
-    stroke: "stroke-cyan-500/60 dark:stroke-cyan-200/70",
+    stroke: "stroke-cyan-500/45 dark:stroke-cyan-200/55",
     dot: "fill-cyan-500 dark:fill-cyan-100",
+    dotOpacity: 0.85,
     dur: "7.4s",
     begin: "0s",
   },
   {
     id: "right",
     d: heroJoin(arcD("interfaces", "latency"), arcD("latency", "evaluation")),
-    stroke: "stroke-amber-500/55 dark:stroke-amber-200/65",
+    stroke: "stroke-amber-500/40 dark:stroke-amber-200/50",
     dot: "fill-amber-500 dark:fill-amber-100",
+    dotOpacity: 0.85,
     dur: "8.1s",
     begin: "-2.6s",
   },
   {
     id: "bottom",
     d: heroJoin(arcD("evaluation", "data"), arcD("data", "teaching")),
-    stroke: "stroke-violet-500/55 dark:stroke-violet-200/65",
+    stroke: "stroke-violet-500/40 dark:stroke-violet-200/50",
     dot: "fill-violet-500 dark:fill-violet-100",
+    dotOpacity: 0.85,
     dur: "7.8s",
     begin: "-4.9s",
   },
   {
     id: "left",
-    d: heroJoin(arcD("teaching", "robotics"), HERO_AXON_D),
-    stroke: "stroke-emerald-500/55 dark:stroke-emerald-200/65",
+    d: heroJoin(arcD("teaching", "robotics"), arcD("robotics", "applied")),
+    stroke: "stroke-emerald-500/40 dark:stroke-emerald-200/50",
     dot: "fill-emerald-500 dark:fill-emerald-100",
+    dotOpacity: 0.85,
     dur: "9.2s",
     begin: "-1.3s",
   },
   {
+    // Crosses behind the copy, so it stays well below the others.
     id: "chord",
     d: HERO_CHORD_D,
-    stroke: "stroke-sky-500/45 dark:stroke-sky-200/55",
+    stroke: "stroke-sky-500/16 dark:stroke-sky-200/20",
     dot: "fill-sky-500 dark:fill-sky-100",
+    dotOpacity: 0.3,
     dur: "6.6s",
     begin: "-3.4s",
   },
@@ -1487,7 +1483,7 @@ function HeroTopicGraph({ activeTopic }: { activeTopic: string }) {
 
   return (
     <div
-      className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-60 lg:block min-[1400px]:opacity-100"
+      className="pointer-events-none absolute inset-x-0 top-16 bottom-0 hidden overflow-hidden opacity-50 lg:block min-[1400px]:opacity-85"
       aria-hidden="true"
     >
       <svg
@@ -1506,41 +1502,34 @@ function HeroTopicGraph({ activeTopic }: { activeTopic: string }) {
           </filter>
         </defs>
 
-        {/* Interior chord + axon: the quietest layer */}
+        {/* Crosses behind the hero copy, so it is the faintest thing on the canvas */}
         <path
           d={HERO_CHORD_D}
-          className="stroke-slate-400/25 dark:stroke-cyan-100/15"
+          className="stroke-slate-400/18 dark:stroke-cyan-100/12"
           strokeWidth="1"
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"
         />
-        <path
-          d={HERO_AXON_D}
-          className="stroke-slate-400/45 dark:stroke-cyan-100/30"
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          vectorEffect="non-scaling-stroke"
-        />
 
-        {/* Short dendrites within each lobe */}
-        {HERO_DENDRITES.map(({ key, d }) => (
+        {/* One straight line per loose neuron */}
+        {HERO_NEURON_LINKS.map(({ key, d }) => (
           <path
             key={key}
             d={d}
-            className="stroke-slate-400/35 dark:stroke-slate-100/20"
+            className="stroke-slate-400/45 dark:stroke-slate-100/28"
             strokeWidth="1"
             strokeLinecap="round"
             vectorEffect="non-scaling-stroke"
           />
         ))}
 
-        {/* Long connections between lobes */}
+        {/* The graph itself: one edge between neighbouring nodes */}
         {HERO_ARCS.map(({ from, to }) => (
           <path
             key={`${from}-${to}`}
             d={arcD(from, to)}
-            className="stroke-slate-400/55 dark:stroke-cyan-100/40"
-            strokeWidth="1.4"
+            className="stroke-slate-400/40 dark:stroke-cyan-100/30"
+            strokeWidth="1.3"
             strokeLinecap="round"
             vectorEffect="non-scaling-stroke"
           />
@@ -1566,7 +1555,12 @@ function HeroTopicGraph({ activeTopic }: { activeTopic: string }) {
                 repeatCount="indefinite"
               />
             </path>
-            <circle r="5" className={signal.dot} filter="url(#hero-soft-glow)">
+            <circle
+              r="5"
+              className={signal.dot}
+              opacity={signal.dotOpacity}
+              filter="url(#hero-soft-glow)"
+            >
               <animateMotion
                 dur={signal.dur}
                 begin={signal.begin}
@@ -1577,14 +1571,14 @@ function HeroTopicGraph({ activeTopic }: { activeTopic: string }) {
           </g>
         ))}
 
-        {/* Satellite + axon nodes */}
-        {HERO_MINOR_NODES.map(node => (
+        {/* Loose neurons */}
+        {HERO_NEURONS.map(n => (
           <circle
-            key={`${node.x}-${node.y}`}
-            cx={node.x}
-            cy={node.y}
+            key={`${n.x}-${n.y}`}
+            cx={n.x}
+            cy={n.y}
             r="4"
-            className="fill-slate-400/70 dark:fill-cyan-100/45"
+            className="fill-slate-400/55 dark:fill-cyan-100/35"
           />
         ))}
 
@@ -1605,7 +1599,7 @@ function HeroTopicGraph({ activeTopic }: { activeTopic: string }) {
                     />
                     <animate
                       attributeName="opacity"
-                      values="0;0.28;0"
+                      values="0;0.2;0"
                       dur="5.4s"
                       begin={`${index * 0.68}s`}
                       repeatCount="indefinite"
