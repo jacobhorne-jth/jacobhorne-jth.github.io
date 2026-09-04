@@ -13,22 +13,25 @@ const MAX_DPR = 2;
 
 // Camera. Screen y for a flat point at depth z is HORIZON_RATIO*H + NEAR_DROP*H / z,
 // so Z_NEAR lands just below the bottom edge and Z_FAR sits close to the horizon.
-const HORIZON_RATIO = 0.48;
-const NEAR_DROP = 0.58;
+const HORIZON_RATIO = 0.52;
+const NEAR_DROP = 0.5;
 const Z_NEAR = 1;
-const Z_FAR = 5.5;
+const Z_FAR = 8;
 
 // World half-width of the grid. Wider than the viewport at Z_NEAR (so the front row
 // bleeds off both edges) and narrower at Z_FAR (so the mesh visibly converges).
 const WORLD_HALF_W = 2.6;
 const FOCAL_X_RATIO = 0.52;
 
-const AMPLITUDE_RATIO = 0.06; // peak wave displacement at Z_NEAR, as a fraction of H
+// Large relative to NEAR_DROP (the camera height) — that ratio is what turns a rippled
+// plane into a rolling landscape whose hills read side-on.
+const AMPLITUDE_RATIO = 0.17;
 const DRIFT = 0.004; // lateral drift in world units — a few pixels on screen
 
 type Palette = {
   stops: [string, string, string];
   line: number;
+  ridge: number;
   point: number;
   glow: number;
   star: number;
@@ -36,35 +39,37 @@ type Palette = {
 
 const DARK: Palette = {
   stops: ["#38d9ff", "#4f8cff", "#a78bfa"],
-  line: 0.19,
-  point: 0.54,
-  glow: 0.78,
+  line: 0.26,
+  ridge: 0.3,
+  point: 0.42,
+  glow: 0.7,
   star: 0.2,
 };
 
 const LIGHT: Palette = {
   stops: ["#0e91ad", "#3b6fd4", "#7c5cd6"],
-  line: 0.2,
-  point: 0.5,
-  glow: 0.55,
+  line: 0.24,
+  ridge: 0.26,
+  point: 0.4,
+  glow: 0.5,
   star: 0.16,
 };
 
 /** Grid density and wave scale by viewport width. */
 function densityFor(width: number) {
-  if (width < 640) return { cols: 30, rows: 18, amp: 0.5 };
-  if (width < 1024) return { cols: 42, rows: 24, amp: 0.75 };
-  if (width < 1536) return { cols: 52, rows: 28, amp: 1 };
-  return { cols: 58, rows: 30, amp: 1 };
+  if (width < 640) return { cols: 34, rows: 24, amp: 0.5 };
+  if (width < 1024) return { cols: 54, rows: 34, amp: 0.75 };
+  if (width < 1536) return { cols: 72, rows: 42, amp: 1 };
+  return { cols: 82, rows: 46, amp: 1 };
 }
 
 /** Sum of three slow sine waves plus a fixed per-point offset. */
 function calculateHeight(wx: number, z: number, phase: number, t: number) {
   return (
-    Math.sin(wx * 1.6 + t * 0.26) * 0.55 +
-    Math.sin(z * 1.1 - t * 0.19) * 0.42 +
-    Math.sin((wx + z) * 0.85 + t * 0.31) * 0.33 +
-    Math.sin(phase + t * 0.14) * 0.13
+    Math.sin(wx * 1.15 + t * 0.26) * 0.62 +
+    Math.sin(z * 1.45 - t * 0.19) * 0.44 +
+    Math.sin((wx * 0.8 + z) * 1.05 + t * 0.31) * 0.36 +
+    Math.sin(phase + t * 0.14) * 0.08
   );
 }
 
@@ -123,9 +128,11 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       for (let i = 0; i < cols; i++) {
         worldX[i] = -WORLD_HALF_W + (2 * WORLD_HALF_W * i) / (cols - 1);
       }
-      // Uniform steps in z, which is what makes the far rows bunch together.
+      // Near-uniform steps in z — that is what makes far rows bunch together. The
+      // slight power curve adds a few extra rows up front so the foreground grid
+      // does not stretch out into big gaps.
       for (let j = 0; j < rows; j++) {
-        worldZ[j] = Z_NEAR + ((Z_FAR - Z_NEAR) * j) / (rows - 1);
+        worldZ[j] = Z_NEAR + (Z_FAR - Z_NEAR) * Math.pow(j / (rows - 1), 1.18);
       }
       for (let k = 0; k < count; k++) {
         phases[k] = Math.random() * Math.PI * 2;
@@ -193,17 +200,18 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       }
     }
 
-    const depthFade = (j: number) => {
-      const f = 1 - j / (rows - 1);
-      return f * Math.sqrt(f);
-    };
+    // Gentle falloff — the far grid has to stay readable, not vanish, or the mesh
+    // loses the stacked-ridge depth it gets from the distant rows.
+    const depthFade = (j: number) => Math.pow(1 - j / (rows - 1), 0.8);
 
     function drawConnections(palette: Palette) {
       ctx!.strokeStyle = gradient!;
       ctx!.lineWidth = 1;
 
-      for (let j = 0; j < rows; j++) {
-        const alpha = palette.line * depthFade(j);
+      // Back to front, so foreground hills layer over the ones behind them.
+      for (let j = rows - 1; j >= 0; j--) {
+        const fade = depthFade(j);
+        const alpha = palette.line * fade;
         if (alpha < 0.004) continue;
         const rowOffset = j * cols;
 
@@ -225,36 +233,59 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
         ctx!.stroke();
 
         // Column segments from this row to the next.
-        if (j === rows - 1) continue;
+        if (j < rows - 1) {
+          ctx!.beginPath();
+          const nextOffset = rowOffset + cols;
+          for (let i = 0; i < cols; i++) {
+            const x = projX[rowOffset + i];
+            const nx = projX[nextOffset + i];
+            if ((x < -60 || x > width + 60) && (nx < -60 || nx > width + 60)) continue;
+            ctx!.moveTo(x, projY[rowOffset + i]);
+            ctx!.lineTo(nx, projY[nextOffset + i]);
+          }
+          ctx!.stroke();
+        }
+
+        // Ridge pass: the stretch of this row that sits on a crest, drawn bright so
+        // the wave tops read as glowing lines snaking across the landscape.
+        ctx!.globalAlpha = Math.min(0.75, palette.ridge * fade);
+        ctx!.lineWidth = 1.1;
+        ctx!.shadowBlur = fade > 0.35 ? 5 * fade : 0;
         ctx!.beginPath();
-        const nextOffset = rowOffset + cols;
+        pen = false;
         for (let i = 0; i < cols; i++) {
-          const x = projX[rowOffset + i];
-          const nx = projX[nextOffset + i];
-          if ((x < -60 || x > width + 60) && (nx < -60 || nx > width + 60)) continue;
-          ctx!.moveTo(x, projY[rowOffset + i]);
-          ctx!.lineTo(nx, projY[nextOffset + i]);
+          const k = rowOffset + i;
+          const x = projX[k];
+          if (projCrest[k] < 0.6 || x < -60 || x > width + 60) {
+            pen = false;
+            continue;
+          }
+          if (pen) ctx!.lineTo(x, projY[k]);
+          else ctx!.moveTo(x, projY[k]);
+          pen = true;
         }
         ctx!.stroke();
+        ctx!.shadowBlur = 0;
+        ctx!.lineWidth = 1;
       }
     }
 
     function drawPoints(palette: Palette) {
       ctx!.fillStyle = gradient!;
 
-      for (let j = 0; j < rows; j++) {
+      for (let j = rows - 1; j >= 0; j--) {
         const fade = depthFade(j);
         const alpha = palette.point * fade;
         if (alpha < 0.01) continue;
         const invZ = 1 / worldZ[j];
-        const r = Math.max(0.4, 2.2 * invZ);
+        const r = Math.max(0.35, 1.8 * invZ);
         const rowOffset = j * cols;
 
         // Two batches per row — troughs at the base alpha, crests brighter and larger.
         for (let pass = 0; pass < 2; pass++) {
           const crest = pass === 1;
-          ctx!.globalAlpha = crest ? Math.min(1, alpha * 1.9) : alpha;
-          const pr = crest ? r * 1.3 : r;
+          ctx!.globalAlpha = crest ? Math.min(1, alpha * 1.6) : alpha;
+          const pr = crest ? r * 1.25 : r;
           ctx!.beginPath();
           for (let i = 0; i < cols; i++) {
             const k = rowOffset + i;
@@ -305,6 +336,7 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
     function render(t: number) {
       const palette = darkRef.current ? DARK : LIGHT;
       ctx!.clearRect(0, 0, width, height);
+      ctx!.shadowColor = palette.stops[0];
       projectPoints(t);
       drawStars(palette, t);
       drawConnections(palette);
