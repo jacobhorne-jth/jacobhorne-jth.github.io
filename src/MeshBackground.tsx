@@ -12,6 +12,7 @@ import {
   Z_FAR,
   Z_NEAR,
 } from "./meshField";
+import { createFishSystem, FISH_ENABLED, type FishInk } from "./MeshFish";
 
 /**
  * Decorative animated point-grid mesh for the hero background.
@@ -34,6 +35,7 @@ type Palette = {
   point: number;
   glow: number;
   star: number;
+  fish: FishInk;
 };
 
 const DARK: Palette = {
@@ -44,6 +46,7 @@ const DARK: Palette = {
   point: 0.72,
   glow: 0.7,
   star: 0.2,
+  fish: { body: 0.85, ripple: 0.42, droplet: 0.8 },
 };
 
 const LIGHT: Palette = {
@@ -54,6 +57,7 @@ const LIGHT: Palette = {
   point: 0.62,
   glow: 0.5,
   star: 0.16,
+  fish: { body: 0.72, ripple: 0.36, droplet: 0.65 },
 };
 
 /** Grid density and wave scale by viewport width. */
@@ -88,6 +92,7 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
     let camera = solveCamera(0.7);
     let ceiling = 0.7;
     const view = makeView();
+    const fish = FISH_ENABLED ? createFishSystem() : null;
 
     let worldX = new Float32Array(0);
     let worldZ = new Float32Array(0);
@@ -363,6 +368,13 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       drawStars(palette, t);
       drawConnections(palette);
       drawPoints(palette);
+      if (fish) {
+        // Same gradient as the mesh, so a leaping fish picks up the colour of
+        // whatever part of the water it came out of.
+        ctx!.strokeStyle = gradient!;
+        ctx!.fillStyle = gradient!;
+        fish.draw(ctx!, view, t, palette.fish);
+      }
       ctx!.globalAlpha = 1;
     }
 
@@ -374,8 +386,12 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
 
     function animate(now: number) {
       // Advance by real elapsed time, clamped so a backgrounded tab cannot jump.
-      elapsed += Math.min(now - last, 100) / 1000;
+      const dt = Math.min(now - last, 100) / 1000;
+      elapsed += dt;
       last = now;
+      // Driven off `elapsed`, not the wall clock, so a tab left in the background
+      // does not come back owing a burst of fish.
+      if (fish) fish.update(view, elapsed, dt);
       render(elapsed);
       frame = requestAnimationFrame(animate);
     }
@@ -403,6 +419,9 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       syncView();
       if (reduceMotion.matches) {
         stop();
+        // Nothing ever calls fish.update under reduced motion, but clear any state
+        // left over from a preference change mid-session.
+        fish?.reset();
         render(0);
       } else if (!running) {
         start();
