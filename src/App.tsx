@@ -45,6 +45,7 @@ import logoBlockchain from "./assets/logos/blockchainlogo.jpeg";
 import logoSENS from "./assets/logos/senslogo.jpeg";
 import logoRFA from "./assets/logos/rfalogo.jpeg";
 import logoCalit2 from "./assets/logos/calit2.png";
+import MeshBackground from "./MeshBackground";
 import logoUCI from "./assets/logos/uci.jpeg";
 import logoDLL from "./assets/logos/dllreal.png";
 
@@ -1330,11 +1331,12 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
   );
 }
 
-function Hero({ onOpenTerminal }: { onOpenTerminal: () => void }) {
+function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMode: boolean }) {
   const { idx, visible } = useCurrentlyRotation();
 
   return (
     <section id="top" className="relative overflow-hidden bg-[#fbfaf7] text-gray-950 dark:bg-[#070914] dark:text-white">
+      <MeshBackground dark={darkMode} />
       <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1220px] px-6 py-12 md:px-8 lg:py-16">
         <div className="grid min-w-0 w-full grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-8 xl:-translate-y-10">
           {/* Left */}
@@ -1729,7 +1731,7 @@ export default function App() {
     <div className={`min-h-screen${darkMode ? " dark" : ""}`}>
       {terminalOpen && <Terminal onClose={closeTerminal} />}
       <Navbar onOpenTerminal={openTerminal} darkMode={darkMode} onToggleDark={() => setDarkMode(v => !v)} />
-      <Hero onOpenTerminal={openTerminal} />
+      <Hero onOpenTerminal={openTerminal} darkMode={darkMode} />
       <AboutSection />
       <ExperienceSection />
       <ProjectsSection />
