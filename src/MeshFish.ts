@@ -24,8 +24,9 @@ const FIRST_DELAY: [number, number] = [13, 21];
 const GAP: [number, number] = [26, 42];
 
 const AIRTIME: [number, number] = [1.0, 1.45];
-const LAUNCH_Z: [number, number] = [1.4, 3.2];
-const BODY_LEN = 0.135;
+const LAUNCH_Z: [number, number] = [1.9, 3.4];
+// Nudged up alongside LAUNCH_Z so the apparent size stays put as fish move back.
+const BODY_LEN = 0.15;
 
 /**
  * Launch sites are chosen in SCREEN space, not world space. At near depths the mean
@@ -33,7 +34,7 @@ const BODY_LEN = 0.135;
  * picking a world position at random puts most fish off-frame entirely. A candidate is
  * only usable if the water there renders inside this band.
  */
-const LAUNCH_BAND: [number, number] = [0.87, 1.0];
+const LAUNCH_BAND: [number, number] = [0.84, 0.97];
 const LAUNCH_TRIES = 20;
 /** Apex, as a fraction of hero height. Quiet: a small hop, not a breach. */
 const RISE: [number, number] = [0.085, 0.15];
@@ -322,7 +323,7 @@ export function createFishSystem() {
     for (const r of ripples) {
       const k = r.age / RIPPLE_LIFE;
       // Expands quickly then eases; fades out over its life.
-      const radius = 0.22 * (1 - Math.exp(-r.age * 2.4));
+      const radius = 0.27 * (1 - Math.exp(-r.age * 2.4));
       const alpha = ink.ripple * r.strength * (1 - k) * (1 - k);
       if (alpha < 0.008) continue;
       ctx.globalAlpha = alpha;

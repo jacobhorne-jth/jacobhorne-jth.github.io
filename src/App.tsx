@@ -1338,7 +1338,7 @@ function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMo
     <section id="top" className="relative overflow-hidden bg-[#fbfaf7] text-gray-950 dark:bg-[#070914] dark:text-white">
       <MeshBackground dark={darkMode} />
       <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1220px] px-6 py-12 md:px-8 lg:py-16">
-        <div className="grid min-w-0 w-full grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-8 xl:-translate-y-10">
+        <div className="grid min-w-0 w-full grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-12 xl:-translate-y-14">
           {/* Left */}
           <div className="min-w-0 w-full max-w-80 space-y-7 pt-6 sm:max-w-xl lg:max-w-none lg:pt-0">
             <div className="space-y-3">
