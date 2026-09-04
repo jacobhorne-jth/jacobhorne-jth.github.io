@@ -1,4 +1,17 @@
 import { useEffect, useRef } from "react";
+import {
+  calculateHeight,
+  CEILING_GAP,
+  dampAt,
+  driftAt,
+  HEIGHT_PEAK,
+  makeView,
+  solveCamera,
+  updateView,
+  WORLD_HALF_W,
+  Z_FAR,
+  Z_NEAR,
+} from "./meshField";
 
 /**
  * Decorative animated point-grid mesh for the hero background.
@@ -10,50 +23,6 @@ import { useEffect, useRef } from "react";
  */
 
 const MAX_DPR = 2;
-
-// Camera. Screen y for a point at depth z is horizon + (camHeight - wave) / z.
-// The camera is not fixed: horizon and camHeight are solved each resize so the highest
-// crest lands just under the hero copy and the nearest trough falls off the bottom
-// edge. See solveCamera().
-// The grid starts well in front of the bottom edge. If the nearest row sits AT the
-// bottom edge, every crest on it opens a gap underneath with no row in front to fill
-// it — that is the void under the "lip".
-const Z_NEAR = 1.2;
-// Kept modest on purpose. A large Z_FAR crushes the distant rows into a thin band, and
-// since on-screen row width scales as 1/z it also shrinks the far rows until they no
-// longer span the viewport — leaving the left and right edges empty.
-const Z_FAR = 4;
-
-// Where the nearest row's CREST sits, as a fraction of hero height. Past 1, so even
-// the highest point of the front row is below the bottom edge and the foreground is
-// solid at every x.
-const MESH_FRONT = 1.02;
-// Crest height as a fraction of camera height. This ratio is what makes the surface
-// read as rolling terrain rather than a rippled plane. Must stay below 1.
-const AMP_K = 0.48;
-// Clearance between the top of the mesh and the lowest hero element.
-const CEILING_GAP = 0.02;
-// Depth past which the wave is damped, on top of the natural 1/z falloff. Kept close
-// to Z_FAR: damping earlier than this flattens the distance into a smooth dome and
-// loses the ridges stacking into the horizon.
-const Z_DAMP = 3;
-
-/** Extra amplitude falloff with depth. 1 in the foreground, shrinking past Z_DAMP. */
-const dampAt = (z: number) => Math.min(1, Z_DAMP / z);
-
-// World half-width of the grid. Wider than the viewport at Z_NEAR (so the front row
-// bleeds off both edges) and narrower at Z_FAR (so the mesh visibly converges).
-// WORLD_HALF_W * FOCAL_X_RATIO / Z_FAR is the farthest row's half-width in screen
-// widths. It must clear 0.5 or the most distant rows stop short of the viewport edges
-// and the corners of the mesh are simply missing.
-const WORLD_HALF_W = 2.6;
-const FOCAL_X_RATIO = 0.95;
-
-const DRIFT = 0.004; // lateral drift in world units — a few pixels on screen
-
-// Peak absolute value of calculateHeight, used to size the wave against the camera.
-// Must include the per-point jitter term or crests can overshoot the ceiling.
-const HEIGHT_PEAK = 1.475;
 
 type Palette = {
   /** Cyan on the left, blue through the middle, violet on the right. */
@@ -95,43 +64,6 @@ function densityFor(width: number) {
   return { cols: 100, rows: 60, amp: 1 };
 }
 
-/**
- * Three slow sine waves give the rolling swells, plus a small per-point term keyed to
- * that vertex's fixed random phase. The last term is what stops every point sitting
- * exactly on the ideal surface — it breaks the machine-regular look and gives each
- * point its own slight depth, without being large enough to make the swells jagged.
- */
-function calculateHeight(wx: number, z: number, phase: number, t: number) {
-  return (
-    Math.sin(wx * 2.6 + t * 0.26) * 0.62 +
-    Math.sin(z * 1.35 - t * 0.19) * 0.46 +
-    Math.sin((wx * 1.5 + z) * 1.1 + t * 0.31) * 0.34 +
-    Math.sin(phase + t * 0.14) * 0.055
-  );
-}
-
-/**
- * Solves horizon and camera height from the one number that varies — where the hero
- * content ends — so the mesh always spans the gap beneath it. Both constraints sit on
- * the crest line y = horizon + C/z, since the crest line is what bounds the mesh at
- * both ends:
- *   horizon + C / Z_FAR  = ceiling      (farthest crest — top of the mesh)
- *   horizon + C / Z_NEAR = MESH_FRONT   (nearest crest — below the bottom edge)
- * Troughs fall further below at every depth, so the surface stays solid throughout.
- */
-function solveCamera(ceiling: number) {
-  const dNear = dampAt(Z_NEAR);
-  const dFar = dampAt(Z_FAR);
-  const camA =
-    (MESH_FRONT - ceiling) /
-    (1 / Z_NEAR - 1 / Z_FAR - AMP_K * (dNear / Z_NEAR - dFar / Z_FAR));
-  return {
-    horizon: MESH_FRONT - (camA - AMP_K * camA * dNear) / Z_NEAR,
-    camA,
-    amp: (AMP_K * camA) / HEIGHT_PEAK,
-  };
-}
-
 export default function MeshBackground({ dark }: { dark: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const darkRef = useRef(dark);
@@ -154,6 +86,8 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
     let ampScale = 1;
     let gradient: CanvasGradient | null = null;
     let camera = solveCamera(0.7);
+    let ceiling = 0.7;
+    const view = makeView();
 
     let worldX = new Float32Array(0);
     let worldZ = new Float32Array(0);
@@ -250,7 +184,8 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
     function resizeCanvas() {
       const rect = canvas!.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return false;
-      camera = solveCamera(measureCeiling(rect));
+      ceiling = measureCeiling(rect);
+      camera = solveCamera(ceiling);
       const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
       width = rect.width;
       height = rect.height;
@@ -263,17 +198,13 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
 
     /** Writes the projected screen position of every grid point into projX/projY. */
     function projectPoints(t: number) {
-      const cx = width / 2;
-      const horizon = height * camera.horizon;
-      const camA = height * camera.camA;
-      const focalX = width * FOCAL_X_RATIO;
-      const amp = height * camera.amp * ampScale;
+      const { cx, horizon, camA, focalX, amp } = view;
 
       for (let j = 0; j < rows; j++) {
         const z = worldZ[j];
         const invZ = 1 / z;
         const rowAmp = amp * dampAt(z);
-        const drift = Math.sin(t * 0.12 + z * 0.5) * DRIFT;
+        const drift = driftAt(z, t);
         const rowOffset = j * cols;
         for (let i = 0; i < cols; i++) {
           const k = rowOffset + i;
@@ -461,9 +392,15 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       cancelAnimationFrame(frame);
     }
 
+    /** Rebuilds the pixel-space view. Must follow createGrid, which sets ampScale. */
+    function syncView() {
+      updateView(view, width, height, camera, ampScale, ceiling);
+    }
+
     function boot() {
       if (!resizeCanvas()) return;
       createGrid();
+      syncView();
       if (reduceMotion.matches) {
         stop();
         render(0);
@@ -490,6 +427,7 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       resizeFrame = requestAnimationFrame(() => {
         if (!resizeCanvas()) return;
         createGrid();
+        syncView();
         if (reduceMotion.matches || document.hidden) render(elapsed);
       });
     });
