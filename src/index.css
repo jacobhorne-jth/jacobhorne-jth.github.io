@@ -5,3 +5,17 @@ html { scroll-behavior: smooth; }
 section { scroll-margin-top: 80px; }
 html, body, #root { overflow-x: hidden; }
 body { transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
+
+/* Hero entry: three groups rise in sequence, all settled inside ~520ms. `both` holds
+   the from-state before the delay elapses so nothing flashes at full opacity first. */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-rise { animation: hero-rise 0.36s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hero-rise-1 { animation-delay: 0.04s; }
+.hero-rise-2 { animation-delay: 0.12s; }
+.hero-rise-3 { animation-delay: 0.2s; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise { animation: none; }
+}

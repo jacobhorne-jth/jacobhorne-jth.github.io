@@ -1342,19 +1342,27 @@ function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMo
           {/* Left */}
           <div className="min-w-0 w-full max-w-80 space-y-7 pt-6 sm:max-w-xl lg:max-w-none lg:pt-0">
             <div className="space-y-3">
-              <h1 className="text-4xl font-semibold tracking-tight leading-none text-gray-950 dark:text-white sm:text-6xl md:text-7xl">
-                Jacob Horne.
-              </h1>
-              <p className="max-w-xl text-xl font-medium text-gray-700 dark:text-slate-300 sm:text-2xl md:text-3xl">
+              <div className="hero-rise hero-rise-1 space-y-3">
+                {/* Below lg the code card drops beneath this column, so the role would
+                    otherwise not appear until after a scroll. Hidden once the card is
+                    alongside and carrying the same information. */}
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-700 dark:text-cyan-300/80 sm:text-xs lg:hidden">
+                  CS @ UCI · SWE Intern @ Sandia
+                </p>
+                <h1 className="text-4xl font-semibold tracking-tight leading-none text-gray-950 dark:text-white sm:text-6xl md:text-7xl">
+                  Jacob Horne.
+                </h1>
+              </div>
+              <p className="hero-rise hero-rise-2 max-w-xl text-xl font-medium text-gray-700 dark:text-slate-300 sm:text-2xl md:text-3xl">
                 I build things to understand them, then make them clearer, faster, or more useful.
               </p>
             </div>
-            <p className="text-sm text-gray-600 dark:text-slate-400 leading-relaxed max-w-lg sm:text-base">
+            <p className="hero-rise hero-rise-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed max-w-lg sm:text-base">
               I like learning by building things that make technical ideas concrete: ML infrastructure,
               evaluation systems, robotics perception, CUDA experiments, and full-stack tools.
             </p>
             {/* Buttons */}
-            <div className="grid w-full max-w-80 grid-cols-1 gap-3 pt-1 sm:max-w-xl sm:flex sm:flex-wrap lg:max-w-none">
+            <div className="hero-rise hero-rise-3 grid w-full max-w-80 grid-cols-1 gap-3 pt-1 sm:max-w-xl sm:flex sm:flex-wrap lg:max-w-none">
               <a
                 href="/JacobHorneResume.pdf"
                 target="_blank"
@@ -1367,7 +1375,7 @@ function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMo
                 href="https://github.com/jacobhorne-jth"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 rounded-lg border border-violet-300/50 text-gray-700 hover:border-violet-500/70 hover:bg-violet-500/10 dark:border-violet-300/20 dark:hover:border-violet-300/55 dark:hover:bg-violet-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:border-violet-500/70 hover:bg-violet-500/10 dark:border-white/15 dark:hover:border-violet-300/55 dark:hover:bg-violet-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
               >
                 <GithubIcon className="h-4 w-4" /> GitHub
               </a>
@@ -1375,22 +1383,22 @@ function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMo
                 href="https://linkedin.com/in/jacobhornejth"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 rounded-lg border border-amber-300/60 text-gray-700 hover:border-amber-500/75 hover:bg-amber-500/10 dark:border-amber-300/20 dark:hover:border-amber-300/55 dark:hover:bg-amber-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:border-amber-500/75 hover:bg-amber-500/10 dark:border-white/15 dark:hover:border-amber-300/55 dark:hover:bg-amber-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
               >
                 <LinkedinIcon className="h-4 w-4" /> LinkedIn
               </a>
               <a
                 href="mailto:jacobhorne.jth@gmail.com"
-                className="flex items-center justify-center gap-2 rounded-lg border border-emerald-300/60 text-gray-700 hover:border-emerald-500/75 hover:bg-emerald-500/10 dark:border-emerald-300/20 dark:hover:border-emerald-300/55 dark:hover:bg-emerald-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
+                className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:border-emerald-500/75 hover:bg-emerald-500/10 dark:border-white/15 dark:hover:border-emerald-300/55 dark:hover:bg-emerald-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
               >
                 <Mail className="h-4 w-4" /> Email
               </a>
             </div>
             {/* Terminal button — prominent */}
-            <div className="flex items-center gap-3">
+            <div className="hero-rise hero-rise-3 flex items-center gap-3">
               <button
                 onClick={onOpenTerminal}
-                className="inline-flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/8 px-4 py-2 font-mono text-sm text-green-400 hover:border-green-500/60 hover:bg-green-500/15 transition-all duration-150"
+                className="inline-flex items-center gap-2 rounded-lg border border-green-600/45 bg-green-500/10 px-4 py-2 font-mono text-sm text-green-700 hover:border-green-600/75 hover:bg-green-500/15 dark:border-green-500/30 dark:bg-green-500/[0.08] dark:text-green-400 dark:hover:border-green-500/60 dark:hover:bg-green-500/15 transition-all duration-150"
               >
                 &gt;_ open terminal
               </button>
