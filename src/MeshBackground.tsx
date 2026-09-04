@@ -52,10 +52,14 @@ const FOCAL_X_RATIO = 0.95;
 const DRIFT = 0.004; // lateral drift in world units — a few pixels on screen
 
 // Peak absolute value of calculateHeight, used to size the wave against the camera.
-const HEIGHT_PEAK = 1.42;
+// Must include the per-point jitter term or crests can overshoot the ceiling.
+const HEIGHT_PEAK = 1.475;
 
 type Palette = {
+  /** Cyan on the left, blue through the middle, violet on the right. */
   stops: [string, string, string];
+  /** Colour used for the soft glow behind ridges and highlight points. */
+  glowColor: string;
   line: number;
   ridge: number;
   point: number;
@@ -64,7 +68,8 @@ type Palette = {
 };
 
 const DARK: Palette = {
-  stops: ["#38d9ff", "#4f8cff", "#a78bfa"],
+  stops: ["#22e3ff", "#3f6ff2", "#a855f7"],
+  glowColor: "#4f7dff",
   line: 0.42,
   ridge: 0.4,
   point: 0.72,
@@ -73,7 +78,8 @@ const DARK: Palette = {
 };
 
 const LIGHT: Palette = {
-  stops: ["#0e91ad", "#3b6fd4", "#7c5cd6"],
+  stops: ["#0e9bb8", "#2b52cc", "#7c3aed"],
+  glowColor: "#3f63d8",
   line: 0.36,
   ridge: 0.34,
   point: 0.62,
@@ -90,15 +96,17 @@ function densityFor(width: number) {
 }
 
 /**
- * Sum of three slow sine waves. Deliberately free of any per-point randomness — a
- * random offset per vertex reads as surface noise and makes the swells look jagged
- * rather than smooth.
+ * Three slow sine waves give the rolling swells, plus a small per-point term keyed to
+ * that vertex's fixed random phase. The last term is what stops every point sitting
+ * exactly on the ideal surface — it breaks the machine-regular look and gives each
+ * point its own slight depth, without being large enough to make the swells jagged.
  */
-function calculateHeight(wx: number, z: number, t: number) {
+function calculateHeight(wx: number, z: number, phase: number, t: number) {
   return (
     Math.sin(wx * 2.6 + t * 0.26) * 0.62 +
     Math.sin(z * 1.35 - t * 0.19) * 0.46 +
-    Math.sin((wx * 1.5 + z) * 1.1 + t * 0.31) * 0.34
+    Math.sin((wx * 1.5 + z) * 1.1 + t * 0.31) * 0.34 +
+    Math.sin(phase + t * 0.14) * 0.055
   );
 }
 
@@ -211,9 +219,12 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       if (width === 0) return;
       const g = ctx!.createLinearGradient(0, 0, width, 0);
       const stops = (darkRef.current ? DARK : LIGHT).stops;
+      // Holding each colour flat over a stretch before handing off gives three
+      // readable zones rather than one continuous blue-ish wash.
       g.addColorStop(0, stops[0]);
-      g.addColorStop(0.5, stops[1]);
-      g.addColorStop(0.92, stops[2]);
+      g.addColorStop(0.24, stops[0]);
+      g.addColorStop(0.52, stops[1]);
+      g.addColorStop(0.82, stops[2]);
       g.addColorStop(1, stops[2]);
       gradient = g;
     }
@@ -267,7 +278,7 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
         for (let i = 0; i < cols; i++) {
           const k = rowOffset + i;
           const wx = worldX[i];
-          const h = calculateHeight(wx, z, t);
+          const h = calculateHeight(wx, z, phases[k], t);
           projX[k] = cx + (wx + drift) * focalX * invZ;
           projY[k] = horizon + (camA - h * rowAmp) * invZ;
           // Crests read brighter, which is what gives the mesh its glowing ridges.
@@ -380,7 +391,7 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       }
 
       // A handful of near points get a soft glow.
-      ctx!.shadowColor = (darkRef.current ? DARK : LIGHT).stops[0];
+      ctx!.shadowColor = (darkRef.current ? DARK : LIGHT).glowColor;
       for (let j = 0; j < rows; j++) {
         const fade = depthFade(j);
         if (fade < 0.45) break;
@@ -416,7 +427,7 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
     function render(t: number) {
       const palette = darkRef.current ? DARK : LIGHT;
       ctx!.clearRect(0, 0, width, height);
-      ctx!.shadowColor = palette.stops[0];
+      ctx!.shadowColor = palette.glowColor;
       projectPoints(t);
       drawStars(palette, t);
       drawConnections(palette);
