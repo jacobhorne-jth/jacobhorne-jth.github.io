@@ -28,7 +28,7 @@ function LinkedinIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-import pfp from "./assets/pfp.png";
+import pfp from "./assets/pfp.jpg";
 import projAgonus from "./assets/projects/agonus.png";
 import projPropIntel from "./assets/projects/propintel.png";
 import projCrimeMap from "./assets/projects/JacobHorneCrimeMap.png";
@@ -407,10 +407,18 @@ type RoleEntry = {
 type Project = {
   name: string; monogram: string; desc: string; detail: string; tech: string[];
   accentLine: string; repoUrl: string; demoUrl?: string; imgUrl?: string;
+  /** "contain" for entries whose artwork is a logo rather than a wide screenshot — the
+   *  default crop would cut a square logo off inside the landscape frame. */
+  imageFit?: "cover" | "contain";
   group?: string;
+  /** Still being worked on — surfaces the same Active dot the role cards use. */
+  isActive?: boolean;
 };
 type Paper = {
-  venue: string;
+  /** The recognisable half of the venue — "ICLR 2026". This is the credential, so it gets
+   *  the badge; the track is supporting detail. */
+  conference: string;
+  track?: string;
   title: string;
   detail: string;
   url?: string;
@@ -423,22 +431,34 @@ type DetailItem = {
   title: string;
   subtitle?: string;
   summary: string;
+  /** Short chips shown on the collapsed card. Omit where the subtitle already lists the
+   *  stack (projects do), or the card ends up saying the same thing twice. */
+  chips?: string[];
+  /** Takes over the card's eyebrow row when the venue is the headline fact, as on a paper.
+   *  `label` gets the accent badge; `note` sits beside it as supporting detail. */
+  badge?: { label: string; note?: string };
   period?: string;
   logo?: string;
   logoImg?: string;
   image?: string;
   imageAlt?: string;
+  imageFit?: "cover" | "contain";
   meta?: string[];
   paragraphs: string[];
   highlights: string[];
   tags: string[];
-  href?: string;
-  hrefLabel?: string;
+  /** Outbound links for the modal. First one is filled, the rest are outlined, so a project
+   *  can offer a demo and its source without either hiding the other. */
+  links?: Array<{ href: string; label: string }>;
   accentLine?: string;
   isActive?: boolean;
   tone?: Tone;
 };
 
+// `card` is deliberately identical across every tone, matching what light mode already did
+// with plain white. A tone tints its border, label, bullets and buttons — never the fill.
+// Tinted fills read as coloured panels against the neutral section surfaces, which is the
+// same problem the section backgrounds had, just at card size.
 const toneStyles: Record<Tone, {
   text: string;
   soft: string;
@@ -461,7 +481,7 @@ const toneStyles: Record<Tone, {
     arrow: "group-hover:text-cyan-500 dark:group-hover:text-cyan-300",
     button: "border-cyan-600/35 text-cyan-700 dark:border-cyan-300/35 dark:text-cyan-300",
     primary: "bg-cyan-700 hover:bg-cyan-600",
-    card: "bg-white dark:bg-[#10202a]",
+    card: "bg-white dark:bg-[#161922]",
   },
   emerald: {
     text: "text-emerald-700 dark:text-emerald-300",
@@ -473,7 +493,7 @@ const toneStyles: Record<Tone, {
     arrow: "group-hover:text-emerald-500 dark:group-hover:text-emerald-300",
     button: "border-emerald-600/35 text-emerald-700 dark:border-emerald-300/35 dark:text-emerald-300",
     primary: "bg-emerald-700 hover:bg-emerald-600",
-    card: "bg-white dark:bg-[#10251e]",
+    card: "bg-white dark:bg-[#161922]",
   },
   violet: {
     text: "text-violet-700 dark:text-violet-300",
@@ -485,7 +505,7 @@ const toneStyles: Record<Tone, {
     arrow: "group-hover:text-violet-500 dark:group-hover:text-violet-300",
     button: "border-violet-600/35 text-violet-700 dark:border-violet-300/35 dark:text-violet-300",
     primary: "bg-violet-700 hover:bg-violet-600",
-    card: "bg-white dark:bg-[#1d1730]",
+    card: "bg-white dark:bg-[#161922]",
   },
   amber: {
     text: "text-amber-700 dark:text-amber-300",
@@ -497,7 +517,7 @@ const toneStyles: Record<Tone, {
     arrow: "group-hover:text-amber-500 dark:group-hover:text-amber-300",
     button: "border-amber-600/35 text-amber-700 dark:border-amber-300/35 dark:text-amber-300",
     primary: "bg-amber-700 hover:bg-amber-600",
-    card: "bg-white dark:bg-[#241c10]",
+    card: "bg-white dark:bg-[#161922]",
   },
   rose: {
     text: "text-rose-700 dark:text-rose-300",
@@ -509,7 +529,7 @@ const toneStyles: Record<Tone, {
     arrow: "group-hover:text-rose-500 dark:group-hover:text-rose-300",
     button: "border-rose-600/35 text-rose-700 dark:border-rose-300/35 dark:text-rose-300",
     primary: "bg-rose-700 hover:bg-rose-600",
-    card: "bg-white dark:bg-[#281722]",
+    card: "bg-white dark:bg-[#161922]",
   },
   blue: {
     text: "text-blue-700 dark:text-blue-300",
@@ -521,9 +541,22 @@ const toneStyles: Record<Tone, {
     arrow: "group-hover:text-blue-500 dark:group-hover:text-blue-300",
     button: "border-blue-600/35 text-blue-700 dark:border-blue-300/35 dark:text-blue-300",
     primary: "bg-blue-700 hover:bg-blue-600",
-    card: "bg-white dark:bg-[#111c32]",
+    card: "bg-white dark:bg-[#161922]",
   },
 };
+
+/**
+ * Sections alternate between these two neutral surfaces rather than each owning a hue.
+ * Every section already announces itself with a numbered accent eyebrow and a bold title,
+ * so a tinted background was a third, redundant signal — and the only one large enough to
+ * make a whole screen read as "the yellow one". Keeping both surfaces neutral means
+ * adjacent sections always separate without any of them carrying a colour.
+ * Accent colour still lives in the eyebrows, card borders, bullets, and buttons.
+ */
+const SURFACE_BASE = "bg-[#fbfaf7] dark:bg-[#0a0c12]";
+const SURFACE_RAISED = "bg-[#f4f2ec] dark:bg-[#0f1219]";
+/** Hairline at every section boundary, so the seam is crisp at either tone. */
+const SURFACE_EDGE = "border-t border-black/5 dark:border-white/10";
 
 const aboutFocus: Array<{ Icon: LucideIcon; label: string; detail: string; tone: Tone }> = [
   {
@@ -649,7 +682,7 @@ const researchRoles: RoleEntry[] = [
     logo: "C2",
     logoImg: logoCalit2,
     company: "Calit2 @ UCI",
-    role: "AI/ML Undergraduate Researcher",
+    role: "Machine Learning Research Assistant",
     period: "Apr 2026 — Present",
     isActive: true,
     bullets: [
@@ -719,14 +752,33 @@ const teachingRoles: RoleEntry[] = [
 
 const projects: Project[] = [
   {
+    name: "context-cuda",
+    monogram: "CTX",
+    desc: "A hand-written attention path for running long-context models on the GPU.",
+    detail: "A C++/CUDA PyTorch extension that implements the inference-time attention path directly instead of calling PyTorch's built-in ops: fused scaled dot-product attention with causal masking, rotary position embeddings applied inside the kernel, and KV-cache management so each new token doesn't recompute the whole sequence. Python drives correctness tests against PyTorch reference implementations and the benchmarks. Currently at the math-groundwork stage — attention is worked out in annotated PyTorch, with the kernels still ahead.",
+    tech: ["CUDA", "C++", "PyTorch", "Python"],
+    accentLine: "bg-emerald-500",
+    repoUrl: "https://github.com/jacobhorne-jth/context-cuda",
+    isActive: true,
+  },
+  {
+    name: "Lazarus",
+    monogram: "LAZ",
+    desc: "A way to keep smart devices working after the company behind them shuts the servers off.",
+    detail: "Smart hardware often isn't self-contained — the phone talks to a vendor cloud, which talks to the device. When that service shuts down, working hardware becomes useless. Lazarus replaces the vendor cloud with software you run yourself. Since devices speak wildly different protocols — JSON, MQTT, raw bytes — it works by guided reverse engineering rather than auto-discovery: you run controlled experiments while Lazarus records the traffic, diffs the traces, and proposes a mapping from device behaviour to protocol.",
+    tech: ["Protocol Analysis", "Reverse Engineering", "MQTT", "Embedded"],
+    accentLine: "bg-teal-500",
+    repoUrl: "https://github.com/jacobhorne-jth/lazarus",
+    isActive: true,
+  },
+  {
     name: "Agonus",
     monogram: "AGN",
     desc: "A trading arena where automated competitors face off and viewers can follow the action live.",
     detail: "Decentralized AI trading platform where autonomous agents compete in crypto tournaments with on-chain betting, real-time leaderboards, and tokenized rewards.",
     tech: ["LangChain", "FastAPI", "Next.js", "Solidity", "PostgreSQL"],
     accentLine: "bg-yellow-500",
-    repoUrl: "#",
-    demoUrl: "https://agonus-frontend-45256917921.us-central1.run.app/",
+    repoUrl: "https://github.com/blockchainuci/Agonus",
     imgUrl: projAgonus,
     group: "Blockchain @ UCI",
   },
@@ -737,8 +789,9 @@ const projects: Project[] = [
     detail: "React/FastAPI banking chatbot with DeBERTa ethics checks, PDF/OCR document ingestion, OpenAI embeddings, and PostgreSQL/pgvector retrieval to ground customer guidance in banking data.",
     tech: ["FastAPI", "PostgreSQL", "pgvector", "OpenAI", "DeBERTa"],
     accentLine: "bg-sky-500",
-    repoUrl: "#",
+    repoUrl: "https://github.com/TCS-COMPSCI-180A/chatbot",
     imgUrl: logoTCS,
+    imageFit: "contain",
     group: "Tata Consultancy Services",
   },
   {
@@ -750,16 +803,26 @@ const projects: Project[] = [
     accentLine: "bg-orange-500",
     repoUrl: "https://github.com/jacobhorne-jth/prop-intel",
     imgUrl: projPropIntel,
+    group: "IrvineHacks 2026",
   },
   {
-    name: "SF Crime Mapper",
-    monogram: "SCM",
-    desc: "An interactive map for exploring where neighborhood safety risks may be changing.",
-    detail: "Full-stack interactive web app that forecasts San Francisco neighborhood-level incident risk and visualizes it on a Mapbox choropleth.",
-    tech: ["FastAPI", "Prophet", "XGBoost", "React", "Vite"],
-    accentLine: "bg-amber-500",
-    repoUrl: "https://github.com/jacobhorne-jth/sf-crime-mapper",
-    imgUrl: projCrimeMap,
+    name: "chrome-org",
+    monogram: "ORG",
+    desc: "A workspace switcher that gives each project its own Chrome window, tabs, and shortcuts.",
+    detail: "A local-first workspace launcher for Chrome on macOS. Each workspace owns a dedicated window, a saved tab session, and optional launch actions for a VS Code project, a macOS app, a file, or a Discord channel. Built as an MV3 extension with a native-messaging companion, with a keyboard-first command palette and no account, backend, or sync service — everything stays on the machine.",
+    tech: ["TypeScript", "React", "Vite", "Chrome MV3", "Node.js"],
+    accentLine: "bg-indigo-500",
+    repoUrl: "https://github.com/jacobhorne-jth/chrome-org",
+  },
+  {
+    name: "Portfolio Website",
+    monogram: "JH",
+    desc: "A personal site for showing the work I care about without making it feel static.",
+    detail: "This portfolio is built with React, TypeScript, and Tailwind CSS. It features focused storytelling, dark/light mode, detailed project modals, and an interactive terminal Easter egg.",
+    tech: ["React", "TypeScript", "Tailwind CSS", "Vite"],
+    accentLine: "bg-blue-500",
+    repoUrl: "https://github.com/jacobhorne-jth/jacobhorne-jth.github.io",
+    imgUrl: projWebsite,
   },
   {
     name: "GitHub Onboarding Agent",
@@ -772,6 +835,26 @@ const projects: Project[] = [
     imgUrl: projOnboarding,
   },
   {
+    name: "SF Crime Mapper",
+    monogram: "SCM",
+    desc: "An interactive map for exploring where neighborhood safety risks may be changing.",
+    detail: "Full-stack interactive web app that forecasts San Francisco neighborhood-level incident risk and visualizes it on a Mapbox choropleth.",
+    tech: ["FastAPI", "Prophet", "XGBoost", "React", "Vite"],
+    accentLine: "bg-amber-500",
+    repoUrl: "https://github.com/jacobhorne-jth/sf-crime-mapper",
+    imgUrl: projCrimeMap,
+  },
+  {
+    name: "Earnings Web Scraper",
+    monogram: "EWS",
+    desc: "A tool for checking when S&P 500 companies report earnings and how the stock has moved since.",
+    detail: "A Streamlit app that pulls the S&P 500 constituent list from Wikipedia using Scrapy and BeautifulSoup, then scrapes Yahoo Finance for each ticker's next earnings date and one-month return.",
+    tech: ["Python", "Streamlit", "Scrapy", "BeautifulSoup"],
+    accentLine: "bg-lime-500",
+    repoUrl: "https://github.com/jacobhorne-jth/earnings-web-scraper",
+    demoUrl: "https://earnings-web-scraper-rpydsw4z5ssjlduswto56m.streamlit.app/",
+  },
+  {
     name: "SMS Spam Detector",
     monogram: "SMS",
     desc: "A simple message checker that flags likely spam before someone trusts it.",
@@ -781,35 +864,27 @@ const projects: Project[] = [
     repoUrl: "https://github.com/jacobhorne-jth/sms-spam-detector",
     imgUrl: projSMS,
   },
-  {
-    name: "Portfolio Website",
-    monogram: "JH",
-    desc: "A personal site for showing the work I care about without making it feel static.",
-    detail: "This portfolio is built with React, TypeScript, and Tailwind CSS. It features focused storytelling, dark/light mode, detailed project modals, and an interactive terminal Easter egg.",
-    tech: ["React", "TypeScript", "Tailwind CSS", "Vite"],
-    accentLine: "bg-blue-500",
-    repoUrl: "https://github.com/jacobhorne-jth/jacobhorne-jth.github.io",
-    imgUrl: projWebsite,
-  },
 ];
 
 const papers: Paper[] = [
   {
-    venue: "ICLR 2026 LLM Reasoning Workshop",
+    conference: "ICLR 2026",
+    track: "LLM Reasoning Workshop",
     title: "The First Tokens Matter: Early Confidence Signals for Evaluating LLM Reasoning",
     detail: "Explores whether early token-level confidence can predict reasoning quality and expose failure modes in LLM outputs.",
     url: "https://openreview.net/forum?id=0FOOrwSQ9E",
     tags: ["LLM Evaluation", "Confidence", "Reasoning"],
   },
   {
-    venue: "ACL 2026 Student Research Workshop",
+    conference: "ACL 2026",
+    track: "Student Research Workshop",
     title: "The Confident Liar: Diagnosing Multi-Agent Debate with Log-Probabilities and LLM-as-Judge",
     detail: "Studies multi-agent debate behavior through log-probability signals, judge scoring, and failure analysis.",
     url: "https://aclanthology.org/2026.acl-srw.121/",
     tags: ["Multi-Agent Systems", "NLP", "Log-Probabilities"],
   },
   {
-    venue: "GEM 2026",
+    conference: "GEM 2026",
     title: "Early-Token Confidence Predicts Reasoning Quality in Multi-Agent LLM Debate",
     detail: "Connects early confidence patterns to downstream reasoning quality in debate-style LLM evaluation workflows.",
     url: "https://aclanthology.org/2026.gem-main.60/",
@@ -879,6 +954,7 @@ const roleToDetail = (entry: RoleEntry, section: string, tone: Tone): DetailItem
     title: entry.company,
     subtitle: entry.role,
     summary: entry.bullets[0] ?? entry.role,
+    chips: entry.tags.slice(0, 4),
     period: entry.period,
     logo: entry.logo,
     logoImg: entry.logoImg,
@@ -889,8 +965,7 @@ const roleToDetail = (entry: RoleEntry, section: string, tone: Tone): DetailItem
       ...featured.map(f => f.text),
     ],
     tags: entry.tags,
-    href: entry.companyLink,
-    hrefLabel: "Open organization",
+    links: entry.companyLink ? [{ href: entry.companyLink, label: "Open organization" }] : undefined,
     isActive: entry.isActive,
     tone,
   };
@@ -905,16 +980,24 @@ const projectToDetail = (project: Project): DetailItem => ({
   logo: project.monogram,
   image: project.imgUrl,
   imageAlt: project.name,
-  meta: project.group ? [`Group — ${project.group}`] : ["Independent build"],
+  imageFit: project.imageFit,
+  // No meta row: the eyebrow already shows project.group, and the stack and links have
+  // their own sections, so anything here would just repeat something above it.
+  meta: undefined,
   paragraphs: [project.detail],
   highlights: [
     `Built with ${project.tech.slice(0, 4).join(", ")}.`,
     project.demoUrl ? "Includes a live demo surface for trying the system." : "Designed as a code-first project with implementation details in the repository.",
   ],
   tags: project.tech,
-  href: project.demoUrl ?? (project.repoUrl !== "#" ? project.repoUrl : undefined),
-  hrefLabel: project.demoUrl ? "Open demo" : "Open code",
+  // Demo first when there is one, but the repo always gets its own link rather than being
+  // hidden behind the demo the way a single-link card did it.
+  links: [
+    ...(project.demoUrl ? [{ href: project.demoUrl, label: "Open demo" }] : []),
+    ...(project.repoUrl !== "#" ? [{ href: project.repoUrl, label: "Open code" }] : []),
+  ],
   accentLine: project.accentLine,
+  isActive: project.isActive,
   tone: "violet",
 });
 
@@ -922,12 +1005,15 @@ const paperToDetail = (paper: Paper): DetailItem => ({
   id: `paper-${paper.title}`,
   eyebrow: "UCI Digital Learning Lab",
   title: paper.title,
-  subtitle: "Associated with UCI Digital Learning Lab",
-  summary: paper.detail,
-  logo: "PDF",
-  logoImg: logoDLL,
-  period: paper.venue,
-  meta: [`Venue — ${paper.venue}`, "Lab — UCI Digital Learning Lab"],
+  badge: { label: paper.conference, note: paper.track },
+  // The collapsed card is deliberately just venue + title + topic chips. It previously also
+  // carried the lab logo, an "Associated with UCI Digital Learning Lab" line, and a summary
+  // paragraph — the logo and the lab line were identical on all three papers, and with the
+  // logo taking a column the titles wrapped to four lines. The detail lives in the modal.
+  summary: "",
+  chips: paper.tags.slice(0, 3),
+  // The badge carries the venue now, so the meta row only adds the lab.
+  meta: ["Lab — UCI Digital Learning Lab"],
   paragraphs: [
     paper.detail,
     "This work reflects my interest in evaluating model behavior with signals that can be measured, compared, and improved.",
@@ -937,8 +1023,7 @@ const paperToDetail = (paper: Paper): DetailItem => ({
     "Connects empirical analysis to practical LLM evaluation workflows.",
   ],
   tags: paper.tags,
-  href: paper.url,
-  hrefLabel: "Open paper",
+  links: paper.url ? [{ href: paper.url, label: "Open paper" }] : undefined,
   tone: "cyan",
 });
 
@@ -959,22 +1044,25 @@ const educationDetail: DetailItem = {
 };
 
 function DetailLogo({ item, size = "card" }: { item: DetailItem; size?: "card" | "modal" }) {
-  const imageFrame = size === "modal" ? "h-20 w-28" : "h-12 w-16";
-  const logoFrame = size === "modal" ? "h-[4.5rem] w-[4.5rem]" : "h-12 w-12";
+  const imageFrame = size === "modal" ? "h-24 w-32" : "h-14 w-20";
+  const logoFrame = size === "modal" ? "h-20 w-20" : "h-16 w-16";
 
   if (item.image) {
+    const fit = item.imageFit === "contain" ? "object-contain p-1.5" : "object-cover object-top";
     return (
       <div className={`${imageFrame} rounded-md bg-white dark:bg-white/5 border border-gray-200/80 dark:border-white/10 overflow-hidden shrink-0`}>
-        <img src={item.image} alt={item.imageAlt ?? item.title} className="h-full w-full object-cover object-top" />
+        <img src={item.image} alt={item.imageAlt ?? item.title} loading="lazy" decoding="async" className={`h-full w-full ${fit}`} />
       </div>
     );
   }
 
+  // No artwork means no frame. A monogram placeholder would only add a box to look at,
+  // and on the papers every one of them would read the same.
+  if (!item.logoImg) return null;
+
   return (
     <div className={`${logoFrame} rounded-md bg-white dark:bg-white/5 border border-gray-200/80 dark:border-white/10 flex items-center justify-center overflow-hidden shrink-0`}>
-      {item.logoImg
-        ? <img src={item.logoImg} alt={item.title} className="h-full w-full object-cover" />
-        : <span className="text-[10px] font-semibold tracking-wide text-gray-500 dark:text-slate-300">{item.logo}</span>}
+      <img src={item.logoImg} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-cover" />
     </div>
   );
 }
@@ -993,12 +1081,30 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500 dark:text-slate-400">
-                {item.period ?? item.eyebrow}
-              </p>
+              {item.badge ? (
+                <>
+                  <span className={`inline-flex items-center rounded px-2 py-1 font-mono text-xs font-bold uppercase tracking-[0.12em] ${tone.soft} ${tone.text}`}>
+                    {item.badge.label}
+                  </span>
+                  {item.badge.note && (
+                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-gray-500 dark:text-slate-400">
+                      {item.badge.note}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500 dark:text-slate-400">
+                  {item.period ?? item.eyebrow}
+                </p>
+              )}
+              {/* Fixed emerald rather than the section tone. "Active" is a state, not a
+                  category, so it should look identical wherever it appears — inheriting the
+                  tone made it cyan under Research, emerald under Experience and violet under
+                  Projects, and the cyan in particular read as a link rather than a status.
+                  Sized to match the period beside it so the two sit as one line. */}
               {item.isActive && (
-                <span className={`inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] ${tone.text}`}>
-                  <span className={`h-1.5 w-1.5 rounded-full ${tone.bullet}`} />
+                <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   Active
                 </span>
               )}
@@ -1013,7 +1119,22 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
           <DetailLogo item={item} />
         </div>
 
-        <p className="whitespace-pre-line text-sm leading-6 text-gray-600 dark:text-slate-300">{item.summary}</p>
+        {item.summary && (
+          <p className="whitespace-pre-line text-sm leading-6 text-gray-600 dark:text-slate-300">{item.summary}</p>
+        )}
+
+        {item.chips && item.chips.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {item.chips.map(chip => (
+              <span
+                key={chip}
+                className="rounded border border-gray-200 px-2 py-0.5 font-mono text-[10px] text-gray-500 dark:border-white/10 dark:text-slate-400"
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-1">
           <span className={`font-mono text-[10px] uppercase tracking-[0.18em] opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100 ${tone.text}`}>
@@ -1060,9 +1181,22 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
         </button>
 
         <div className="pr-10">
-          <p className={`font-mono text-xs uppercase tracking-[0.22em] ${tone.text}`}>
-            {item.period ?? item.eyebrow}
-          </p>
+          {item.badge ? (
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className={`inline-flex items-center rounded px-2.5 py-1 font-mono text-sm font-bold uppercase tracking-[0.12em] ${tone.soft} ${tone.text}`}>
+                {item.badge.label}
+              </span>
+              {item.badge.note && (
+                <span className="font-mono text-xs uppercase tracking-[0.16em] text-gray-500 dark:text-slate-400">
+                  {item.badge.note}
+                </span>
+              )}
+            </div>
+          ) : (
+            <p className={`font-mono text-xs uppercase tracking-[0.22em] ${tone.text}`}>
+              {item.period ?? item.eyebrow}
+            </p>
+          )}
           <div className="mt-4 flex items-start gap-4">
             <div className="min-w-0 flex-1">
               <h3 className="text-3xl font-semibold leading-tight text-gray-950 dark:text-white md:text-4xl">
@@ -1122,16 +1256,25 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
           </div>
         )}
 
-        {item.href && (
-          <a
-            href={item.href}
-            target="_blank"
-            rel="noreferrer"
-            className={`mt-9 inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-colors ${tone.primary}`}
-          >
-            {item.hrefLabel ?? "Open link"}
-            <ExternalLink className="h-4 w-4" />
-          </a>
+        {item.links && item.links.length > 0 && (
+          <div className="mt-9 flex flex-wrap gap-3">
+            {item.links.map((link, i) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                className={
+                  i === 0
+                    ? `inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition-colors ${tone.primary}`
+                    : `inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-black/[0.03] dark:hover:bg-white/5 ${tone.button}`
+                }
+              >
+                {link.label}
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
         )}
       </article>
     </div>
@@ -1248,15 +1391,17 @@ function Navbar({
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
+// Most of these name a specific thing on purpose. This field is the live-looking part of
+// the card, so generic phrasing here costs more than it does anywhere else on the page.
 const CURRENTLY_ITEMS = [
-  "Building applied AI tools that make technical workflows easier to use",
-  "Learning how ML systems behave beyond notebook experiments",
-  "Exploring robotics perception, evaluation, and real-world constraints",
-  "Turning data pipelines into faster feedback loops",
-  "Studying system design through reliability, scale, and tradeoffs",
-  "Building full-stack tools around messy technical workflows",
-  "Teaching technical ideas by making them concrete and usable",
-  "Chasing performance from interface latency down to lower-level systems",
+  "Building AI R&D applications for researchers at Sandia National Labs",
+  "Writing perception code for UCI's autonomous underwater robot",
+  "Researching token-level confidence in multi-turn Text-to-SQL benchmarks",
+  "Training physics-informed ML models to replace thermal simulations",
+  "Building AI-powered smart contract security tooling with Foundry and Slither",
+  "Chasing performance from interface latency down to CUDA kernels",
+  "Building Lazarus, open-source recovery for abandoned cloud-dependent devices",
+  "Studying system design to understand the production systems around me",
 ];
 
 function useCurrentlyRotation() {
@@ -1315,7 +1460,7 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
             </div>
             {/* Portrait panel */}
             <div className="h-44 overflow-hidden rounded-lg border border-slate-700/50 bg-slate-800/60 shadow-lg shadow-black/20 sm:h-auto">
-              <img src={pfp} alt="Jacob Horne" className="h-full min-h-[178px] w-full object-cover object-top" />
+              <img src={pfp} alt="Jacob Horne" decoding="async" className="h-full min-h-[178px] w-full object-cover object-top" />
             </div>
           </div>
           {/* Terminal line */}
@@ -1353,13 +1498,14 @@ function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMo
                   Jacob Horne.
                 </h1>
               </div>
-              <p className="hero-rise hero-rise-2 max-w-xl text-xl font-medium text-gray-700 dark:text-slate-300 sm:text-2xl md:text-3xl">
-                I build things to understand them, then make them clearer, faster, or more useful.
+              <p className="hero-rise hero-rise-2 max-w-xl text-balance text-xl font-medium text-gray-700 dark:text-slate-300 sm:text-2xl">
+                I follow questions until they become buildable.
               </p>
             </div>
-            <p className="hero-rise hero-rise-2 text-sm text-gray-600 dark:text-slate-400 leading-relaxed max-w-lg sm:text-base">
-              I like learning by building things that make technical ideas concrete: ML infrastructure,
-              evaluation systems, robotics perception, CUDA experiments, and full-stack tools.
+            <p className="hero-rise hero-rise-2 max-w-lg text-pretty text-sm leading-relaxed text-gray-600 dark:text-slate-400 sm:text-base">
+              Right now that means AI R&amp;D tooling at Sandia National Labs. Before that, recommender
+              infrastructure at Capital One — 25% lower latency for 60M+ customers. Alongside: LLM
+              evaluation research, CUDA experiments, and perception for an autonomous underwater robot.
             </p>
             {/* Buttons */}
             <div className="hero-rise hero-rise-3 grid w-full max-w-80 grid-cols-1 gap-3 pt-1 sm:max-w-xl sm:flex sm:flex-wrap lg:max-w-none">
@@ -1420,16 +1566,16 @@ function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMo
 
 function AboutSection() {
   return (
-    <section id="about" className="bg-[#f7f1e8] dark:bg-[#10120f] pt-12 pb-24 scroll-mt-16">
+    <section id="about" className={`${SURFACE_RAISED} ${SURFACE_EDGE} pt-12 pb-24 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="01" title="About Me" tone="amber" />
         <div className="grid md:grid-cols-[340px_1fr] gap-12 lg:gap-16 items-start">
           {/* Photo */}
           <div className="relative shrink-0">
-            <div className="rounded-xl overflow-hidden bg-gray-100 dark:bg-[#191d18] aspect-[4/5] border border-amber-900/10 dark:border-amber-200/15 shadow-lg shadow-slate-950/10">
-              <img src={pfp} alt="Jacob Horne" className="w-full h-full object-cover" />
+            <div className="rounded-xl overflow-hidden bg-gray-100 dark:bg-[#15171c] aspect-[4/5] border border-black/10 dark:border-white/10 shadow-lg shadow-slate-950/10">
+              <img src={pfp} alt="Jacob Horne" loading="lazy" decoding="async" className="w-full h-full object-cover" />
             </div>
-            <div className="absolute bottom-3 right-3 bg-white dark:bg-[#171b18] border border-gray-200 dark:border-emerald-200/20 shadow-lg shadow-slate-950/20 rounded-lg px-4 py-3 min-w-44 sm:-bottom-5 sm:-right-5">
+            <div className="absolute bottom-3 right-3 bg-white dark:bg-[#161920] border border-gray-200 dark:border-emerald-200/20 shadow-lg shadow-slate-950/20 rounded-lg px-4 py-3 min-w-44 sm:-bottom-5 sm:-right-5">
               <p className="text-[11px] font-mono text-emerald-700 dark:text-emerald-300">Current role</p>
               <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">Software Engineer Intern</p>
               <p className="text-xs text-gray-500 dark:text-slate-400">@ Sandia National Labs</p>
@@ -1447,8 +1593,9 @@ function AboutSection() {
                 Before that, I worked on recommender infrastructure at Capital One.
               </p>
               <p>
-                I tend to follow questions until they become buildable: how models behave, how systems hold up,
-                how robots perceive, and how tools can make complicated work easier to reason about.
+                The throughline is making complicated technical work easier to reason about: how models behave,
+                how systems hold up under load, how robots perceive, and what it takes to turn any of that into
+                something a person can actually use.
               </p>
             </div>
             <div className="grid gap-3 max-w-3xl">
@@ -1481,7 +1628,7 @@ function ExperienceSection() {
   const items = experienceRoles.map(entry => roleToDetail(entry, "Experience", "emerald"));
 
   return (
-    <section id="experience" className="border-t border-black/5 bg-[#f7f6f1] pt-10 pb-24 scroll-mt-16 dark:border-white/10 dark:bg-[#0b100d]">
+    <section id="experience" className={`${SURFACE_BASE} ${SURFACE_EDGE} pt-10 pb-24 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="02" title="Experience" tone="emerald" />
         <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
@@ -1500,7 +1647,7 @@ function ProjectsSection() {
   const items = projects.map(projectToDetail);
 
   return (
-    <section id="projects" className="border-t border-black/5 bg-[#fbfaf7] pt-10 pb-24 scroll-mt-16 dark:border-white/10 dark:bg-[#0f0d14]">
+    <section id="projects" className={`${SURFACE_RAISED} ${SURFACE_EDGE} pt-10 pb-24 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         {/* Header row */}
         <div className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
@@ -1536,7 +1683,7 @@ function ResearchSection() {
   const paperItems = papers.map(paperToDetail);
 
   return (
-    <section id="research" className="border-t border-black/5 bg-[#f4f8f7] pt-10 pb-24 scroll-mt-16 dark:border-white/10 dark:bg-[#091214]">
+    <section id="research" className={`${SURFACE_BASE} ${SURFACE_EDGE} pt-10 pb-24 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="04" title="Research" tone="cyan" />
         <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
@@ -1564,7 +1711,7 @@ function TeachingSection() {
   const items = teachingRoles.map(entry => roleToDetail(entry, "Teaching", "blue"));
 
   return (
-    <section id="teaching" className="border-t border-black/5 bg-[#f7f6f1] pt-10 pb-24 scroll-mt-16 dark:border-white/10 dark:bg-[#0b0f15]">
+    <section id="teaching" className={`${SURFACE_RAISED} ${SURFACE_EDGE} pt-10 pb-24 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="05" title="Teaching & Mentorship" tone="blue" />
         <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
@@ -1582,7 +1729,7 @@ function EducationSection() {
   const [selected, setSelected] = useState<DetailItem | null>(null);
 
   return (
-    <section id="education" className="bg-[#fbf0f5] dark:bg-[#1b0c15] pt-10 pb-24 scroll-mt-16">
+    <section id="education" className={`${SURFACE_BASE} ${SURFACE_EDGE} pt-10 pb-24 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="max-w-xl">
           <div className="flex items-baseline gap-3 mb-10">
@@ -1605,9 +1752,9 @@ function NowSection() {
       label: "Building",
       tone: "emerald",
       entries: [
-        "AI R&D tooling at Sandia",
-        "CUDA model-execution experiments",
-        "Lazarus workflow tooling",
+        "AI R&D applications at Sandia",
+        "Smart contract security tooling",
+        "Lazarus, recovery for abandoned devices",
         "A personal operating system",
       ],
     },
@@ -1615,8 +1762,8 @@ function NowSection() {
       label: "Researching",
       tone: "cyan",
       entries: [
-        "Text-to-SQL confidence",
-        "Physics-informed thermal prediction",
+        "Token-level confidence in Text-to-SQL",
+        "Physics-informed thermal models",
         "Multi-agent LLM evaluation",
         "Underwater robotics perception",
       ],
@@ -1625,16 +1772,16 @@ function NowSection() {
       label: "Learning",
       tone: "amber",
       entries: [
-        "System design",
+        "System design in production systems",
         "CUDA kernels and inference throughput",
+        "Protocol reverse engineering",
         "Robotics software architecture",
-        "Cleaner technical tools",
       ],
     },
   ];
 
   return (
-    <section id="now" className="bg-[#f8f5ff] dark:bg-[#0d0a12] border-t border-violet-200 dark:border-violet-300/15 pt-20 pb-24 scroll-mt-16">
+    <section id="now" className={`${SURFACE_RAISED} ${SURFACE_EDGE} pt-20 pb-24 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="mb-10">
           <div className="flex items-baseline gap-3">
@@ -1669,7 +1816,7 @@ function NowSection() {
 
 function ContactSection() {
   return (
-    <section id="contact" className="bg-[#fff5df] dark:bg-[#1d1508] border-t border-amber-200 dark:border-amber-300/15 pt-16 pb-20 scroll-mt-16">
+    <section id="contact" className={`${SURFACE_BASE} ${SURFACE_EDGE} pt-16 pb-20 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="grid gap-10 md:grid-cols-[minmax(0,0.9fr)_minmax(360px,1fr)] md:items-start">
           <div>
