@@ -852,7 +852,6 @@ const projects: Project[] = [
     tech: ["Python", "Streamlit", "Scrapy", "BeautifulSoup"],
     accentLine: "bg-lime-500",
     repoUrl: "https://github.com/jacobhorne-jth/earnings-web-scraper",
-    demoUrl: "https://earnings-web-scraper-rpydsw4z5ssjlduswto56m.streamlit.app/",
   },
   {
     name: "SMS Spam Detector",
