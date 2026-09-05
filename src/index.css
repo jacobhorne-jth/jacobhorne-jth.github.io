@@ -3,7 +3,13 @@
 @tailwind utilities;
 html { scroll-behavior: smooth; }
 section { scroll-margin-top: 80px; }
+/* `clip` rather than `hidden`: hidden forces overflow-y to compute as `auto`, which makes
+   #root a scroll container. The sticky navbar then anchors to #root — which never scrolls,
+   since the document does — and slides away with the page. `clip` suppresses the same
+   horizontal overflow without establishing a scrollport. The `hidden` line stays first as
+   the fallback for browsers that do not understand `clip`. */
 html, body, #root { overflow-x: hidden; }
+html, body, #root { overflow-x: clip; }
 body { transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
 
 /* Hero entry: three groups rise in sequence, all settled inside ~520ms. `both` holds

@@ -435,10 +435,27 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       if (!running) render(elapsed);
     };
 
-    const onVisibility = () => {
-      if (document.hidden) stop();
+    // The hero is roughly a seventh of the full page height, so without this the loop keeps
+    // drawing for the entire rest of the scroll with nothing it renders on screen. Gate on
+    // both signals: either a hidden tab or a scrolled-past hero should stop the work.
+    let onScreen = true;
+
+    const sync = () => {
+      if (document.hidden || !onScreen) stop();
       else start();
     };
+
+    const onVisibility = sync;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        sync();
+      },
+      // Restart just before the hero scrolls back in, so it is already animating on arrival.
+      { rootMargin: "200px" }
+    );
+    io.observe(canvas);
 
     let resizeFrame = 0;
     const observer = new ResizeObserver(() => {
@@ -464,6 +481,7 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       stop();
       cancelAnimationFrame(resizeFrame);
       observer.disconnect();
+      io.disconnect();
       applyThemeRef.current = () => {};
       document.removeEventListener("visibilitychange", onVisibility);
       reduceMotion.removeEventListener("change", onMotionChange);
