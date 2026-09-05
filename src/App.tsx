@@ -757,7 +757,7 @@ const projects: Project[] = [
     desc: "A hand-written attention path for running long-context models on the GPU.",
     detail: "A C++/CUDA PyTorch extension that implements the inference-time attention path directly instead of calling PyTorch's built-in ops: fused scaled dot-product attention with causal masking, rotary position embeddings applied inside the kernel, and KV-cache management so each new token doesn't recompute the whole sequence. Python drives correctness tests against PyTorch reference implementations and the benchmarks. Currently at the math-groundwork stage — attention is worked out in annotated PyTorch, with the kernels still ahead.",
     tech: ["CUDA", "C++", "PyTorch", "Python"],
-    accentLine: "bg-emerald-500",
+    accentLine: "bg-fuchsia-500",
     repoUrl: "https://github.com/jacobhorne-jth/context-cuda",
     isActive: true,
   },
@@ -767,7 +767,7 @@ const projects: Project[] = [
     desc: "A way to keep smart devices working after the company behind them shuts the servers off.",
     detail: "Smart hardware often isn't self-contained — the phone talks to a vendor cloud, which talks to the device. When that service shuts down, working hardware becomes useless. Lazarus replaces the vendor cloud with software you run yourself. Since devices speak wildly different protocols — JSON, MQTT, raw bytes — it works by guided reverse engineering rather than auto-discovery: you run controlled experiments while Lazarus records the traffic, diffs the traces, and proposes a mapping from device behaviour to protocol.",
     tech: ["Protocol Analysis", "Reverse Engineering", "MQTT", "Embedded"],
-    accentLine: "bg-teal-500",
+    accentLine: "bg-cyan-500",
     repoUrl: "https://github.com/jacobhorne-jth/lazarus",
     isActive: true,
   },
@@ -1076,6 +1076,10 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
       className={`group relative min-h-[168px] w-full overflow-hidden rounded-md border border-gray-200/80 bg-white/90 p-5 text-left shadow-[0_1px_0_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-300 hover:bg-white hover:shadow-md hover:shadow-slate-950/10 focus:outline-none focus-visible:ring-2 dark:border-white/10 dark:bg-white/[0.035] dark:shadow-none dark:hover:border-white/20 dark:hover:bg-white/[0.06] ${tone.ring}`}
     >
       {item.accentLine && <div className={`absolute inset-x-0 top-0 h-0.5 ${item.accentLine}`} />}
+      {/* Full-height rail rather than only the corner badge. Three active cards scattered
+          through a grid form a visible column pattern this way, so the set reads at a
+          glance without the eye hunting for a 10px label on each card. */}
+      {item.isActive && <div className="absolute inset-y-0 left-0 w-[3px] bg-emerald-500" />}
       <div className="flex h-full flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
