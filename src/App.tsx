@@ -1403,6 +1403,12 @@ const CURRENTLY_ITEMS = [
   "Studying system design to understand the production systems around me",
 ];
 
+// Each line is ~70 characters of small technical mono text, so the hold is set for
+// reading it rather than glancing at it. HOLD covers the fade, leaving FADE ms less
+// than this actually legible.
+const CURRENTLY_HOLD_MS = 11000;
+const CURRENTLY_FADE_MS = 350;
+
 function useCurrentlyRotation() {
   const [idx, setIdx] = useState(0);
   const [visible, setVisible] = useState(true);
@@ -1414,8 +1420,8 @@ function useCurrentlyRotation() {
       tid = setTimeout(() => {
         setIdx(i => (i + 1) % CURRENTLY_ITEMS.length);
         setVisible(true);
-      }, 350);
-    }, 7000);
+      }, CURRENTLY_FADE_MS);
+    }, CURRENTLY_HOLD_MS);
     return () => { clearInterval(id); clearTimeout(tid); };
   }, []);
 
