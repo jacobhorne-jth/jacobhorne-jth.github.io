@@ -1827,7 +1827,7 @@ function ContactSection() {
               I'm open to internships, research collaborations, and thoughtful conversations about building useful technical systems.
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-2">
-              {["Winter 2027", "Summer 2027", "Fall 2027"].map(term => (
+              {["Winter 2027", "Spring 2027", "Summer 2027", "Fall 2027"].map(term => (
                 <span key={term} className="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 text-xs text-emerald-700 dark:text-emerald-300 font-mono">
                   {term}
                 </span>
