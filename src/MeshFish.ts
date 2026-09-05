@@ -21,7 +21,7 @@ export const FISH_ENABLED = true;
 
 /** Seconds between leaps, and before the first one. */
 const FIRST_DELAY: [number, number] = [13, 21];
-const GAP: [number, number] = [26, 42];
+const GAP: [number, number] = [18, 35];
 
 const AIRTIME: [number, number] = [1.0, 1.45];
 const LAUNCH_Z: [number, number] = [1.9, 3.4];
