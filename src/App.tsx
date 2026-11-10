@@ -2012,8 +2012,17 @@ function ResearchSection() {
         </div>
 
         <div className="mt-12 border-t border-gray-300/70 pt-9 dark:border-white/10">
-          <div className="mb-7">
+          <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
             <h3 className="text-2xl font-semibold text-gray-950 dark:text-white">Publications</h3>
+            <a
+              href="https://scholar.google.com/citations?hl=en&user=_kLSc5MAAAAJ"
+              target="_blank"
+              rel="noreferrer"
+              className="group inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white/60 px-3.5 py-2 font-mono text-xs text-gray-700 transition-colors duration-150 hover:border-[#4285f4]/60 hover:bg-[#4285f4]/[0.07] hover:text-[#1967d2] dark:border-white/15 dark:bg-white/[0.03] dark:text-slate-300 dark:hover:border-[#8ab4f8]/50 dark:hover:bg-[#4285f4]/10 dark:hover:text-[#8ab4f8]"
+            >
+              Google Scholar
+              <ExternalLink className="h-3.5 w-3.5 transition-transform duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </a>
           </div>
           <div className="overflow-hidden rounded-lg border border-gray-200/90 bg-white/55 shadow-[0_1px_0_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-white/[0.02] dark:shadow-none">
             {paperItems.map((item, index) => (
