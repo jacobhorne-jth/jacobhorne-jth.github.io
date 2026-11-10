@@ -23,7 +23,10 @@ import { createFishSystem, FISH_ENABLED, type FishInk } from "./MeshFish";
  * into existing arrays.
  */
 
-const MAX_DPR = 2;
+// A full 2x backing store quadruples the number of pixels the browser has to clear and
+// composite every frame. The mesh is made of soft one-pixel lines, so 1.5x remains crisp
+// on Retina displays while leaving substantially more frame time for scrolling.
+const MAX_DPR = 1.5;
 
 type Palette = {
   /** Cyan on the left, blue through the middle, violet on the right. */
@@ -68,11 +71,13 @@ function densityFor(width: number) {
   return { cols: 100, rows: 60, amp: 1 };
 }
 
-export default function MeshBackground({ dark }: { dark: boolean }) {
+export default function MeshBackground({ dark, active = true }: { dark: boolean; active?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const darkRef = useRef(dark);
+  const activeRef = useRef(active);
   // Set up by the effect below so the theme effect can recolour without restarting.
   const applyThemeRef = useRef<() => void>(() => {});
+  const syncAnimationRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -326,7 +331,9 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
         }
       }
 
-      // A handful of near points get a soft glow.
+      // A handful of near points get a soft glow. Draw one path per row instead of one
+      // shadowed fill per point: canvas shadows are expensive, and the old version could
+      // trigger hundreds of separate blur operations every frame on a wide display.
       ctx!.shadowColor = (darkRef.current ? DARK : LIGHT).glowColor;
       for (let j = 0; j < rows; j++) {
         const fade = depthFade(j);
@@ -336,15 +343,18 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
         const rowOffset = j * cols;
         ctx!.globalAlpha = palette.glow * fade;
         ctx!.shadowBlur = 8 * fade;
+        ctx!.beginPath();
+        let hasGlow = false;
         for (let i = 0; i < cols; i++) {
           const k = rowOffset + i;
           if (!glows[k]) continue;
           const x = projX[k];
           if (x < -20 || x > width + 20) continue;
-          ctx!.beginPath();
+          hasGlow = true;
+          ctx!.moveTo(x + r, projY[k]);
           ctx!.arc(x, projY[k], r, 0, Math.PI * 2);
-          ctx!.fill();
         }
+        if (hasGlow) ctx!.fill();
       }
       ctx!.shadowBlur = 0;
     }
@@ -439,11 +449,14 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
     // drawing for the entire rest of the scroll with nothing it renders on screen. Gate on
     // both signals: either a hidden tab or a scrolled-past hero should stop the work.
     let onScreen = true;
+    let scrolling = false;
+    let scrollTimer = 0;
 
     const sync = () => {
-      if (document.hidden || !onScreen) stop();
+      if (document.hidden || !onScreen || scrolling || !activeRef.current) stop();
       else start();
     };
+    syncAnimationRef.current = sync;
 
     const onVisibility = sync;
 
@@ -456,6 +469,20 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
       { rootMargin: "200px" }
     );
     io.observe(canvas);
+
+    // Smooth scrolling and a continuously repainted high-DPI canvas compete for the
+    // same frame budget. Keep the last rendered frame visible while the user scrolls,
+    // then resume the water and fish immediately after scrolling settles.
+    const onScroll = () => {
+      scrolling = true;
+      stop();
+      window.clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(() => {
+        scrolling = false;
+        sync();
+      }, 100);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     let resizeFrame = 0;
     const observer = new ResizeObserver(() => {
@@ -480,11 +507,14 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
     return () => {
       stop();
       cancelAnimationFrame(resizeFrame);
+      window.clearTimeout(scrollTimer);
       observer.disconnect();
       io.disconnect();
       applyThemeRef.current = () => {};
+      syncAnimationRef.current = () => {};
       document.removeEventListener("visibilitychange", onVisibility);
       reduceMotion.removeEventListener("change", onMotionChange);
+      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
@@ -494,6 +524,11 @@ export default function MeshBackground({ dark }: { dark: boolean }) {
     darkRef.current = dark;
     applyThemeRef.current();
   }, [dark]);
+
+  useEffect(() => {
+    activeRef.current = active;
+    syncAnimationRef.current();
+  }, [active]);
 
   return (
     <canvas

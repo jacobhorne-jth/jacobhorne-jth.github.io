@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef, useEffect } from "react";
+import { memo, useCallback, useState, useRef, useEffect } from "react";
 import {
   Mail,
   ExternalLink,
@@ -64,17 +64,13 @@ const HELP_TEXT: TerminalLine[] = [
   { type: "output", text: "Available commands:" },
   { type: "blank" },
   { type: "cols", left: "  help / ?   — show this menu",   right: "  github     — open GitHub profile" },
-  { type: "cols", left: "  about      — scroll to about",  right: "  linkedin   — open LinkedIn profile" },
-  { type: "cols", left: "  education  — education",        right: "  resume     — open resume PDF" },
-  { type: "cols", left: "  experience — experience",       right: "  email      — show email address" },
-  { type: "cols", left: "  research   — research",         right: "  whoami     — info about Jacob" },
-  { type: "cols", left: "  projects   — projects",         right: "  ls         — list all sections" },
-  { type: "cols", left: "  contact    — contact",          right: "  flip       — flip the page" },
-  { type: "cols", left: "  game       — play snake",       right: "  papers     — research papers" },
-  { type: "cols", left: "  hack       — initiate hack",    right: "  joke       — random dev joke" },
-  { type: "cols", left: "  fortune    — words of wisdom",  right: "  coffee     — ☕" },
-  { type: "cols", left: "  skills     — tech stack",       right: "  ping       — ping jacob" },
-  { type: "cols", left: "  clear      — clear terminal",   right: "  exit       — close terminal" },
+  { type: "cols", left: "  clear      — clear terminal",   right: "  linkedin   — open LinkedIn profile" },
+  { type: "cols", left: "  about      — scroll to about",  right: "  resume     — open resume PDF" },
+  { type: "cols", left: "  experience — view experience",  right: "  email      — show email address" },
+  { type: "cols", left: "  research   — view research",    right: "  skills     — show tech stack" },
+  { type: "cols", left: "  projects   — view projects",    right: "  game       — play snake" },
+  { type: "cols", left: "  education  — view education",   right: "  hack       — initiate hack" },
+  { type: "cols", left: "  contact    — scroll to contact", right: "  exit       — close terminal" },
   { type: "blank" },
 ];
 
@@ -301,12 +297,14 @@ function Terminal({ onClose }: { onClose: () => void }) {
         ); break;
       case "skills":
         out.push(
-          { type: "output", text: "Languages   Python · TypeScript · JavaScript · C/C++ · SQL · Java · R" },
-          { type: "output", text: "ML/Data     PyTorch · scikit-learn · PySpark · NumPy · Pandas · OpenCV" },
-          { type: "output", text: "Backend     FastAPI · Node.js · Express · PostgreSQL · Redis · pgvector" },
-          { type: "output", text: "Frontend    React · Next.js · Tailwind CSS · Zustand · Chakra UI" },
-          { type: "output", text: "Infra       Databricks · Airflow · Docker · AWS · Supabase · Git" },
-          { type: "output", text: "Focus       Recommenders · LLM eval · Agents · PINNs · CUDA · Perception" },
+          { type: "output", text: "Languages   Python · TypeScript · JavaScript · C/C++ · SQL · Solidity" },
+          { type: "output", text: "AI/ML       PyTorch · OpenCV · scikit-learn · LangGraph · NumPy · Pandas" },
+          { type: "output", text: "Research    LLM eval · LLM-as-Judge · Agentic benchmarking · Token confidence" },
+          { type: "output", text: "Data        PySpark · Databricks · Airflow · PostgreSQL · pgvector" },
+          { type: "output", text: "Backend     FastAPI · Node.js · Express · Redis" },
+          { type: "output", text: "Systems     Docker · Linux · AWS · Vertex AI · Foundry · Slither" },
+          { type: "output", text: "Frontend    React · Next.js · Tailwind CSS" },
+          { type: "output", text: "Focus       Multi-agent systems · Text-to-SQL · Compilers · PINNs · Perception" },
           { type: "blank" },
         ); break;
       case "ping":
@@ -1622,7 +1620,6 @@ function Navbar({
     <header className="sticky top-0 z-40 border-b border-gray-200/80 bg-[#fbfaf7]/95 backdrop-blur dark:border-white/10 dark:bg-[#080a10]/95">
       <div className="h-16 w-full px-5 sm:px-8 lg:px-10 grid grid-cols-[auto_1fr_auto] items-center gap-4">
         <a href="#top" className="flex items-center gap-2.5 group">
-          <span className="h-2 w-2 rounded-full bg-cyan-700 dark:bg-cyan-300" />
           <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-gray-800 dark:text-slate-200">
             Jacob Horne
           </span>
@@ -1774,7 +1771,7 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
                 <span
                   className="text-green-300 transition-opacity duration-300"
                   style={{ opacity: visible ? 1 : 0.55 }}
-                >"{CURRENTLY_ITEMS[idx]}",</span>
+                >"{CURRENTLY_ITEMS[idx]}"</span>
               </div>
               <div>{"}"}</div>
             </div>
@@ -1794,12 +1791,12 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
   );
 }
 
-function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMode: boolean }) {
+function Hero({ onOpenTerminal, darkMode, animationActive }: { onOpenTerminal: () => void; darkMode: boolean; animationActive: boolean }) {
   const { idx, visible } = useCurrentlyRotation();
 
   return (
     <section id="top" className="relative overflow-hidden bg-[#fbfaf7] text-gray-950 dark:bg-[#070914] dark:text-white">
-      <MeshBackground dark={darkMode} />
+      <MeshBackground dark={darkMode} active={animationActive} />
       <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1220px] px-6 py-12 md:px-8 lg:py-16">
         <div className="grid min-w-0 w-full grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-12 xl:-translate-y-14">
           <div className="min-w-0 w-full max-w-80 space-y-7 pt-6 sm:max-w-xl lg:max-w-none lg:pt-0">
@@ -2209,25 +2206,40 @@ function ContactSection() {
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 
+// These sections do not depend on the global theme state—the `dark` class handles
+// their colours in CSS. Keeping their element trees stable avoids reconciling the
+// entire portfolio whenever the navbar theme control or terminal state changes.
+const MemoAboutSection = memo(AboutSection);
+const MemoExperienceSection = memo(ExperienceSection);
+const MemoResearchSection = memo(ResearchSection);
+const MemoProjectsSection = memo(ProjectsSection);
+const MemoTeachingSection = memo(TeachingSection);
+const MemoEducationSection = memo(EducationSection);
+const MemoNowSection = memo(NowSection);
+const MemoContactSection = memo(ContactSection);
+const MemoNavbar = memo(Navbar);
+const MemoHero = memo(Hero);
+
 export default function App() {
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
-  const openTerminal = () => setTerminalOpen(true);
-  const closeTerminal = () => setTerminalOpen(false);
+  const openTerminal = useCallback(() => setTerminalOpen(true), []);
+  const closeTerminal = useCallback(() => setTerminalOpen(false), []);
+  const toggleDark = useCallback(() => setDarkMode(v => !v), []);
 
   return (
     <div className={`min-h-screen${darkMode ? " dark" : ""}`}>
       {terminalOpen && <Terminal onClose={closeTerminal} />}
-      <Navbar onOpenTerminal={openTerminal} darkMode={darkMode} onToggleDark={() => setDarkMode(v => !v)} />
-      <Hero onOpenTerminal={openTerminal} darkMode={darkMode} />
-      <AboutSection />
-      <ExperienceSection />
-      <ResearchSection />
-      <ProjectsSection />
-      {SHOW_TEACHING && <TeachingSection />}
-      <EducationSection />
-      <NowSection />
-      <ContactSection />
+      <MemoNavbar onOpenTerminal={openTerminal} darkMode={darkMode} onToggleDark={toggleDark} />
+      <MemoHero onOpenTerminal={openTerminal} darkMode={darkMode} animationActive={!terminalOpen} />
+      <MemoAboutSection />
+      <MemoExperienceSection />
+      <MemoResearchSection />
+      <MemoProjectsSection />
+      {SHOW_TEACHING && <MemoTeachingSection />}
+      <MemoEducationSection />
+      <MemoNowSection />
+      <MemoContactSection />
     </div>
   );
 }
