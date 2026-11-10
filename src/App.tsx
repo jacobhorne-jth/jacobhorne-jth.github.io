@@ -35,6 +35,7 @@ import projCrimeMap from "./assets/projects/JacobHorneCrimeMap.png";
 import projOnboarding from "./assets/projects/onbaoardingreal.png";
 import projSMS from "./assets/projects/realsms.png";
 import projWebsite from "./assets/projects/port.png";
+import projChromeOrg from "./assets/projects/chrome-org.png";
 import logoC1 from "./assets/logos/c1-logo.png";
 import logoSandia from "./assets/logos/sandia.jpg";
 import logoURP from "./assets/logos/urp.jpeg";
@@ -241,7 +242,7 @@ function Terminal({ onClose }: { onClose: () => void }) {
         ); break;
       case "ls":
         out.push(
-          { type: "output", text: "about/  experience/  projects/  research/  teaching/  education/  now/  contact/" },
+          { type: "output", text: "about/  experience/  research/  projects/  education/  now/  contact/" },
           { type: "blank" },
         ); break;
       case "clear":
@@ -400,6 +401,9 @@ type RoleEntry = {
   role: string;
   period: string;
   isActive?: boolean;
+  /** Broad one-sentence description used on the collapsed timeline row. */
+  summary?: string;
+  /** Full technical evidence shown only in the detail modal. */
   bullets: string[];
   featured?: { text: string; url?: string } | { text: string; url?: string }[];
   tags: string[];
@@ -407,12 +411,16 @@ type RoleEntry = {
 type Project = {
   name: string; monogram: string; desc: string; detail: string; tech: string[];
   accentLine: string; repoUrl: string; demoUrl?: string; imgUrl?: string;
+  /** Resume-style evidence shown as scannable highlights inside the detail modal. */
+  highlights?: string[];
   /** "contain" for entries whose artwork is a logo rather than a wide screenshot — the
    *  default crop would cut a square logo off inside the landscape frame. */
   imageFit?: "cover" | "contain";
   group?: string;
   /** Still being worked on — surfaces the same Active dot the role cards use. */
   isActive?: boolean;
+  /** Keep the project data available without including it in the curated portfolio grid. */
+  isHidden?: boolean;
 };
 type Paper = {
   /** The recognisable half of the venue — "ICLR 2026". This is the credential, so it gets
@@ -421,6 +429,7 @@ type Paper = {
   track?: string;
   title: string;
   detail: string;
+  highlights: string[];
   url?: string;
   tags: string[];
 };
@@ -558,6 +567,10 @@ const SURFACE_RAISED = "bg-[#f4f2ec] dark:bg-[#0f1219]";
 /** Hairline at every section boundary, so the seam is crisp at either tone. */
 const SURFACE_EDGE = "border-t border-black/5 dark:border-white/10";
 
+// Retain the teaching content for a future alternate layout without showing it in the
+// current, research-focused portfolio narrative.
+const SHOW_TEACHING = false;
+
 const aboutFocus: Array<{ Icon: LucideIcon; label: string; detail: string; tone: Tone }> = [
   {
     Icon: Code2,
@@ -585,13 +598,15 @@ const experienceRoles: RoleEntry[] = [
     logoImg: logoSandia,
     company: "Sandia National Laboratories",
     role: "Software Engineer Intern",
-    period: "Aug 2026 — Present",
+    period: "Sep 2026 — Present",
     isActive: true,
+    summary: "Building cloud-data infrastructure and agentic benchmarks for security-focused AI evaluation.",
     bullets: [
-      "Building AI R&D tooling that makes Sandia's AI research more usable for researchers, engineers, and mission users.",
-      "Turning research workflows into practical software interfaces, tooling, and systems users can rely on.",
+      "Developing Google Cloud Vertex AI benchmarks that probe hidden software triggers, exploitable vulnerabilities, and unsafe tool execution through reproducible adversarial scenarios.",
+      "Building Databricks ingestion and transformation workflows for heterogeneous CISA cloud telemetry, with custom parsers, schema normalization, and input validation for reliable downstream analysis.",
+      "Automating benchmark execution and failure analysis in isolated Docker and Linux environments so agent behavior can be reproduced and debugged consistently.",
     ],
-    tags: ["AI R&D", "Developer Tooling", "Software Engineering"],
+    tags: ["Databricks", "Vertex AI", "Agentic Benchmarking", "Cloud Telemetry", "Docker", "Linux"],
   },
   {
     logo: "Capit",
@@ -599,66 +614,72 @@ const experienceRoles: RoleEntry[] = [
     company: "Capital One",
     role: "Software Engineer Intern",
     period: "Jun 2026 — Aug 2026",
+    summary: "Improved the data and serving infrastructure behind promotional-deal recommendations across Capital One products.",
     bullets: [
-      "Built ML recommender infrastructure for customer-message experiences.",
-      "Replaced a network API call with an in-process SDK, reducing latency by 25% for 60M+ monthly customers.",
-      "Built Databricks/PySpark sampling pipelines over 800M+ historical customer-message outcomes, enabling candidate recommender models to test against broader production behavior 28x faster.",
-      "Automated sampling and upstream jobs in Apache Airflow with 18 schema, distribution, and multiplier quality checks.",
+      "Built Databricks and PySpark sampled offline replay over 800M+ daily outcomes, accelerating recommender and campaign testing 28× through intent-aware sampling and Airflow orchestration.",
+      "Implemented 18 automated PySpark checks for sampling parity, rare-event coverage, schema quality, and replay stability; optimized jobs with partitioning, broadcast joins, and caching.",
+      "Moved 95/5 ML/control routing from a network API into an in-process SDK, preventing timeout-driven cohort misclassification and reducing serving latency 25% for 60M+ monthly users.",
+      "Added unit and end-to-end coverage for routing and ranking behavior, validating production results with Postman and AWS CloudWatch.",
     ],
-    tags: ["Python", "PySpark", "Databricks", "Airflow", "Recommender Systems"],
+    tags: ["Python", "PySpark", "Databricks", "Airflow", "Recommender Systems", "AWS CloudWatch"],
   },
   {
     logo: "URP",
     logoImg: logoURP,
     company: "Underwater Robotics Project @ UCI",
     role: "Perception Engineer",
-    period: "Aug 2026 — Present",
+    period: "Sep 2026 — Present",
     isActive: true,
+    summary: "Developing perception and navigation software for UCI's autonomous underwater robot.",
     bullets: [
-      "Building perception systems for an autonomous underwater robot, focusing on the software that gives the robot its eyes.",
-      "Evaluating camera, sonar, classical vision, and CNN-based approaches under RoboSub competition constraints.",
-      "Working on object-detection pipelines inside the robot software stack, with emphasis on robust perception in aquatic environments.",
-      "Learning ROS-style publish-subscribe architectures, embedded deployment constraints, and Dockerized robotics workflows.",
+      "Developing pathfinding logic for an autonomous underwater robot, using perception outputs to plan routes and navigate competition tasks under RoboSub constraints.",
+      "Building a sensor-fusion node that combines sonar and camera data, giving downstream navigation software a more complete view of the underwater environment.",
+      "Implementing object-detection pipelines with OpenCV, PyTorch, and CNN-based models to recognize competition targets and pass detections into the robot's autonomy stack.",
     ],
-    tags: ["Computer Vision", "Robotics", "Perception", "Autonomy", "Docker"],
+    tags: ["OpenCV", "CNNs", "PyTorch", "C++", "Python"],
   },
   {
     logo: "Block",
     logoImg: logoBlockchain,
     company: "Blockchain @ UCI",
-    role: "Technical Developer",
+    role: "Software Developer",
     period: "Oct 2025 — Present",
     isActive: true,
+    summary: "Contributing to Blockchain @ UCI projects spanning multi-agent systems and smart-contract security tooling.",
     bullets: [
-      "Developing the backend agent system for Agonus, an AI-powered crypto trading tournament platform.",
-      "Building full-stack infrastructure for autonomous trading agents to execute strategies and compete on-chain in real time.",
-      "Powering real-time agent performance tracking and strategy update broadcasts.",
+      "Built Agonus, an on-chain trading tournament platform with LangChain agents, live competitions, betting, token rewards, rankings, and real-time monitoring.",
+      "Architected 10+ concurrent ReAct agents with tools for market research, trade planning, memory, and Uniswap V3 execution, using Celery and Redis for scheduling, locking, and crash recovery.",
+      "Developed FastAPI and PostgreSQL services, Solidity betting contracts on OP Sepolia, and Next.js wallet flows with Wagmi and Viem.",
+      "Now developing an AI smart-contract security copilot with Foundry, Slither, automated tests, and contract-analysis workflows for surfacing vulnerabilities.",
     ],
-    tags: ["Python", "FastAPI", "TypeScript", "Blockchain", "AI Agents"],
+    tags: ["LangChain", "FastAPI", "Solidity", "Celery", "Redis", "Foundry", "Slither"],
   },
   {
     logo: "CareT",
     logoImg: logoCaretech,
-    company: "CareTech at UCI",
+    company: "CareTech @ UCI",
     role: "Software Developer",
     period: "Oct 2025 — Jun 2026",
+    summary: "Built Vitamind, a computer-vision food scanner for real-time recognition and nutrient tracking.",
     bullets: [
-      "Processed and prepared 28K+ food images using Python, OpenCV, and PyTorch across 270+ diverse food categories.",
-      "Trained PyTorch object detection models via Roboflow and Colab with augmentation techniques (CLAHE, brightness, gamma), achieving 81% classification accuracy.",
-      "Developing a web-based interface for real-time food recognition integrated into the full nutrition tracking platform.",
+      "Built a Next.js and FastAPI food-scanning application that connected real-time PyTorch inference with nutrition APIs and live vitamin-intake totals.",
+      "Processed and augmented 28K+ images across 270+ food categories using Python, OpenCV, Roboflow, and PyTorch.",
+      "Trained vision models to 81% test accuracy through augmentation and data ablation, then integrated inference into the user-facing tracking workflow.",
     ],
     tags: ["Python", "PyTorch", "OpenCV", "Roboflow", "Next.js", "FastAPI", "Supabase"],
   },
   {
     logo: "Comm",
     logoImg: logoCTC,
-    company: "Commit the Change",
+    company: "Commit the Change @ UCI",
     role: "Full-Stack Developer",
     period: "Oct 2025 — Jun 2026",
+    summary: "Built scheduling and operations software for a community health center serving thousands of patients.",
     bullets: [
-      "Built a scheduling/quota-management platform with React and TypeScript supporting 23,000+ patients across clinics.",
-      "Developed secure Node.js/Express REST APIs processing 5,000+ requests/week for auth and workflow automation.",
-      "Implemented Chakra UI, Zustand interfaces backed by PostgreSQL, reducing booking conflicts and scheduling workload by 30%.",
+      "Developed a React and TypeScript scheduling and quota platform supporting 6,000–8,000 patients annually.",
+      "Built Node.js, Express, and PostgreSQL tools for 24+ providers, saving 10–12 staff hours per week through centralized coordination.",
+      "Designed Chakra UI and Zustand workflows for provider management, quota tracking, and staff access controls.",
+      "Reduced scheduling conflicts 40% and patient calls 30% by consolidating provider and quota operations into one system.",
     ],
     tags: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Chakra UI"],
   },
@@ -668,10 +689,12 @@ const experienceRoles: RoleEntry[] = [
     company: "SENS Psychology",
     role: "Software Development Intern",
     period: "Sep 2025 — Jan 2026",
+    summary: "Replaced manual intake and staff coordination with an internal workflow and automation platform.",
     bullets: [
-      "Built an internal workflow system with Next.js and TypeScript supporting 30+ staff and 1,200+ monthly interactions.",
-      "Reduced patient intake time by 50% by replacing manual processes with Node.js/React intake, ticketing, and call-routing pipelines.",
-      "Cut manual email work 60% with Microsoft Azure notifications; modeled task lifecycle in Prisma/Zenstack for scalable workflow automation.",
+      "Built a Next.js and TypeScript intake platform supporting 30+ staff and more than 1,200 monthly patient interactions.",
+      "Reduced intake time 50% and manual email work 60% with Node.js, PostgreSQL, Azure notifications, and workflow automation.",
+      "Implemented intake, ticketing, call-routing, and task workflows to replace fragmented staff operations.",
+      "Modeled messaging and task lifecycles with Prisma and ZenStack for maintainable, scalable automation.",
     ],
     tags: ["Next.js", "Node.js", "TypeScript", "PostgreSQL", "Prisma", "Azure"],
   },
@@ -685,24 +708,27 @@ const researchRoles: RoleEntry[] = [
     role: "Machine Learning Research Assistant",
     period: "Apr 2026 — Present",
     isActive: true,
+    summary: "Developing physics-informed machine learning pipelines to replace slow heat-transfer simulations with faster surrogate models.",
     bullets: [
-      "Building GRU, LSTM, and PINN surrogate models to predict thermal storage temperature profiles (T_inner, T_outer, T_avg) across 150s transient simulations.",
-      "Designed a physics-informed loss function enforcing heat transfer PDEs, achieving R² > 0.97 for T_inner prediction across 10 held-out test cases.",
-      "Implemented full autoregressive rollout with an InitStateEncoder to warm-start hidden state, eliminating teacher forcing during inference for stable long-horizon prediction.",
+      "Built physics-informed PyTorch GRU sequence models as thermal simulation surrogates, incorporating governing equations, scheduled sampling, and long-horizon rollout constraints to predict spatial wall temperatures from input sequences.",
+      "Achieved 12,000× faster inference than FEA with R² = 0.99 and MAE = 1.54°C on thermal predictions.",
     ],
     tags: ["Python", "PyTorch", "GRU", "LSTM", "PINN", "Physics-Informed ML"],
   },
   {
     logo: "UCI",
     logoImg: logoDLL,
-    company: "UCI Digital Learning Lab",
+    company: "Digital Learning Lab @ UCI",
     role: "Research Assistant",
     period: "Dec 2025 — Present",
     isActive: true,
+    summary: "Studying how language models reason, express confidence, and recover from failure in complex agentic systems.",
     bullets: [
-      "Analyzed LLM output datasets using NumPy, Pandas, and Matplotlib for token log-probs, confidence behavior, and uncertainty modeling.",
-      "Built multi-agent evaluation pipelines in LangGraph with critic, advocate, and judge agents orchestrating rubric-based reasoning and scoring across essay evaluation workflows.",
-      "Co-authored papers on multi-agent LLM evaluation, token-level confidence, and reasoning quality across ICLR, ACL SRW, and GEM venues.",
+      "Designed Advocate/Skeptic/Judge multi-agent LLM pipelines with role-specific system prompts, prompt engineering, and LLM-as-judge rubrics to score evidence grounding, reasoning quality, critical failures, and four ASAP essay traits.",
+      "Analyzed token-level confidence across multi-agent responses with log-probabilities, AUROC, and Spearman correlations; found early-token signals more predictive than sequence-level confidence, informing three peer-reviewed publications in 2026.",
+      "Replicated BIRD-Interact multi-turn Text-to-SQL and built prompt-engineered agents for database and schema exploration, ambiguity resolution, query planning and generation, SQL execution, error feedback, and iterative schema and query repair.",
+      "Evaluated multi-step SQL agent traces with token-confidence failure localization and LLM-as-judge, analyzing schema and identifier errors, execution feedback, and recovery through iterative SQL repair.",
+      "Investigating student-simulator agents and ParaStudent-style evaluation, including fine-tuning language models to reproduce student revisions, feedback uptake, and engagement for scalable AI-tutor benchmarking.",
     ],
     featured: [
       {
@@ -718,7 +744,7 @@ const researchRoles: RoleEntry[] = [
         url: "https://aclanthology.org/2026.gem-main.60/",
       },
     ],
-    tags: ["Python", "LangGraph", "NLP", "NumPy", "Pandas", "Matplotlib", "LLMs"],
+    tags: ["Python", "LangGraph", "Text-to-SQL", "LLM-as-Judge", "Token Log-Probabilities", "Multi-Agent Systems"],
   },
 ];
 
@@ -752,10 +778,30 @@ const teachingRoles: RoleEntry[] = [
 
 const projects: Project[] = [
   {
+    name: "PyTorch — Dynamo Contributions",
+    monogram: "PT",
+    desc: "Open-source compiler fixes and regression tests for PyTorch's Dynamo graph-capture stack.",
+    detail: "Ongoing contributions to PyTorch Dynamo, the compiler infrastructure that captures Python programs as optimized computation graphs.",
+    highlights: [
+      "Merged 3+ fixes addressing compiler correctness, graph-capture behavior, and exception handling in PyTorch Dynamo.",
+      "Added targeted regression tests that reproduce failures and protect the affected compiler paths from future regressions.",
+    ],
+    tech: ["Python", "PyTorch", "Dynamo", "Compilers", "Testing"],
+    accentLine: "bg-orange-500",
+    repoUrl: "https://github.com/pytorch/pytorch",
+    group: "Open Source",
+    isActive: true,
+  },
+  {
     name: "context-cuda",
     monogram: "CTX",
     desc: "A hand-written attention path for running long-context models on the GPU.",
-    detail: "A C++/CUDA PyTorch extension that implements the inference-time attention path directly instead of calling PyTorch's built-in ops: fused scaled dot-product attention with causal masking, rotary position embeddings applied inside the kernel, and KV-cache management so each new token doesn't recompute the whole sequence. Python drives correctness tests against PyTorch reference implementations and the benchmarks. Currently at the math-groundwork stage — attention is worked out in annotated PyTorch, with the kernels still ahead.",
+    detail: "A C++ and CUDA PyTorch extension for understanding and optimizing the inference-time attention path behind long-context language models.",
+    highlights: [
+      "Implementing fused scaled dot-product attention with causal masking directly in CUDA rather than composing built-in PyTorch operations.",
+      "Applying rotary position embeddings inside the kernel and managing a KV cache so new tokens do not recompute the full sequence.",
+      "Using Python reference implementations and correctness tests to validate the math before benchmarking custom kernels.",
+    ],
     tech: ["CUDA", "C++", "PyTorch", "Python"],
     accentLine: "bg-fuchsia-500",
     repoUrl: "https://github.com/jacobhorne-jth/context-cuda",
@@ -765,7 +811,12 @@ const projects: Project[] = [
     name: "Lazarus",
     monogram: "LAZ",
     desc: "A way to keep smart devices working after the company behind them shuts the servers off.",
-    detail: "Smart hardware often isn't self-contained — the phone talks to a vendor cloud, which talks to the device. When that service shuts down, working hardware becomes useless. Lazarus replaces the vendor cloud with software you run yourself. Since devices speak wildly different protocols — JSON, MQTT, raw bytes — it works by guided reverse engineering rather than auto-discovery: you run controlled experiments while Lazarus records the traffic, diffs the traces, and proposes a mapping from device behaviour to protocol.",
+    detail: "A local replacement for vendor cloud services that keeps otherwise functional smart devices usable after their original servers disappear.",
+    highlights: [
+      "Guides controlled experiments while recording and comparing device traffic to infer how actions map onto undocumented protocols.",
+      "Handles heterogeneous communication patterns including JSON, MQTT, and raw binary messages instead of assuming one device format.",
+      "Turns the recovered protocol mapping into self-hosted software that can stand in for the discontinued vendor cloud.",
+    ],
     tech: ["Protocol Analysis", "Reverse Engineering", "MQTT", "Embedded"],
     accentLine: "bg-cyan-500",
     repoUrl: "https://github.com/jacobhorne-jth/lazarus",
@@ -775,19 +826,30 @@ const projects: Project[] = [
     name: "Agonus",
     monogram: "AGN",
     desc: "A trading arena where automated competitors face off and viewers can follow the action live.",
-    detail: "Decentralized AI trading platform where autonomous agents compete in crypto tournaments with on-chain betting, real-time leaderboards, and tokenized rewards.",
-    tech: ["LangChain", "FastAPI", "Next.js", "Solidity", "PostgreSQL"],
+    detail: "An agentic crypto tournament platform where autonomous traders compete on-chain while viewers follow rankings, bets, rewards, and live execution.",
+    highlights: [
+      "Architected 10+ LangChain ReAct agents with tools for market data, trade execution, planning, and memory.",
+      "Orchestrated concurrent agents with Celery and Redis scheduling, distributed locks, and crash recovery during live tournaments.",
+      "Built FastAPI services, PostgreSQL and SQLAlchemy data models, Solidity betting contracts on OP Sepolia, and Uniswap V3 execution.",
+      "Developed a Next.js interface with Wagmi and Viem wallet authentication, transaction signing, and synchronized tournament state.",
+    ],
+    tech: ["LangChain", "FastAPI", "Celery", "Redis", "Solidity", "PostgreSQL"],
     accentLine: "bg-yellow-500",
     repoUrl: "https://github.com/blockchainuci/Agonus",
     imgUrl: projAgonus,
     group: "Blockchain @ UCI",
   },
   {
-    name: "TCS Banking AI Capstone",
-    monogram: "TCS",
-    desc: "A banking assistant that helps answer customer questions using trusted internal documents.",
-    detail: "React/FastAPI banking chatbot with DeBERTa ethics checks, PDF/OCR document ingestion, OpenAI embeddings, and PostgreSQL/pgvector retrieval to ground customer guidance in banking data.",
-    tech: ["FastAPI", "PostgreSQL", "pgvector", "OpenAI", "DeBERTa"],
+    name: "EthicChat",
+    monogram: "ETH",
+    desc: "An ethics-gated banking assistant grounded in trusted internal documents and policy controls.",
+    detail: "A React and FastAPI financial assistant that combines retrieval-augmented generation with explicit ethics checks and human escalation for safer customer guidance.",
+    highlights: [
+      "Owned the RAG pipeline from PDF and OCR ingestion through document classification, OpenAI embeddings, and PostgreSQL/pgvector retrieval.",
+      "Integrated DeBERTa ethics checks, policy guardrails, and human escalation to intercept unsafe or unsupported model responses.",
+      "Delivered grounded financial Q&A from customer documents, retrieved evidence, and banking metrics through a React interface and FastAPI backend.",
+    ],
+    tech: ["React", "FastAPI", "LangGraph", "RAG", "pgvector", "DeBERTa"],
     accentLine: "bg-sky-500",
     repoUrl: "https://github.com/TCS-COMPSCI-180A/chatbot",
     imgUrl: logoTCS,
@@ -798,7 +860,12 @@ const projects: Project[] = [
     name: "Prop.Intel",
     monogram: "PRP",
     desc: "A property research tool that turns ownership and risk data into readable reports.",
-    detail: "AI property risk platform generating real-time reports using ATTOM ownership data, FEMA National Risk Index datasets, and a ridge regression model across 3,100+ counties.",
+    detail: "A full-stack property intelligence platform that combines ownership records, hazard data, predictive modeling, and readable AI summaries into real-time risk reports.",
+    highlights: [
+      "Integrated ATTOM ownership data, FEMA National Risk Index datasets, and parallel multi-API pipelines with caching for responsive report generation.",
+      "Trained ridge regression across 3,100+ counties and eight hazard categories to estimate annual property loss from risk data.",
+      "Built dashboards with ownership timelines, hazard breakdowns, and AI-generated summaries to make risk factors easier to interpret.",
+    ],
     tech: ["Next.js", "TypeScript", "Python", "Ridge Regression"],
     accentLine: "bg-orange-500",
     repoUrl: "https://github.com/jacobhorne-jth/prop-intel",
@@ -809,16 +876,27 @@ const projects: Project[] = [
     name: "chrome-org",
     monogram: "ORG",
     desc: "A workspace switcher that gives each project its own Chrome window, tabs, and shortcuts.",
-    detail: "A local-first workspace launcher for Chrome on macOS. Each workspace owns a dedicated window, a saved tab session, and optional launch actions for a VS Code project, a macOS app, a file, or a Discord channel. Built as an MV3 extension with a native-messaging companion, with a keyboard-first command palette and no account, backend, or sync service — everything stays on the machine.",
+    detail: "A local-first Chrome workspace launcher for separating projects into dedicated windows, saved sessions, and repeatable development setups.",
+    highlights: [
+      "Gives each workspace its own Chrome window and saved tab session, with optional launch actions for VS Code projects, macOS apps, files, and Discord channels.",
+      "Built an MV3 browser extension with a native-messaging companion for the operating-system actions Chrome cannot perform directly.",
+      "Designed a keyboard-first command palette with no account, backend, or sync service so workspace data stays on the machine.",
+    ],
     tech: ["TypeScript", "React", "Vite", "Chrome MV3", "Node.js"],
     accentLine: "bg-indigo-500",
     repoUrl: "https://github.com/jacobhorne-jth/chrome-org",
+    imgUrl: projChromeOrg,
   },
   {
     name: "Portfolio Website",
     monogram: "JH",
     desc: "A personal site for showing the work I care about without making it feel static.",
-    detail: "This portfolio is built with React, TypeScript, and Tailwind CSS. It features focused storytelling, dark/light mode, detailed project modals, and an interactive terminal Easter egg.",
+    detail: "A personal portfolio built as an interactive, responsive account of my engineering and research work rather than a static résumé page.",
+    highlights: [
+      "Built the interface with React, TypeScript, Tailwind CSS, and Vite, including responsive layouts and light and dark themes.",
+      "Created structured detail modals that keep overview cards concise while preserving technical evidence for each role and project.",
+      "Added an interactive terminal, animated mesh environment, and occasional fish behavior as personal, code-driven visual elements.",
+    ],
     tech: ["React", "TypeScript", "Tailwind CSS", "Vite"],
     accentLine: "bg-blue-500",
     repoUrl: "https://github.com/jacobhorne-jth/jacobhorne-jth.github.io",
@@ -828,7 +906,12 @@ const projects: Project[] = [
     name: "GitHub Onboarding Agent",
     monogram: "GOA",
     desc: "A guide that helps someone understand an unfamiliar code project faster.",
-    detail: "AI-powered GitHub onboarding agent that ingests any repository and provides code-aware summaries, repo exploration, and RAG-driven Q&A.",
+    detail: "An AI onboarding assistant that ingests a GitHub repository and turns an unfamiliar codebase into structured explanations, searchable context, and guided exploration.",
+    highlights: [
+      "Generated project overviews, component summaries, and file-level explanations to help new contributors understand unfamiliar repositories.",
+      "Built a RAG pipeline with LangChain, Hugging Face embeddings, and Pinecone for code-aware Q&A, dependency insights, and “where-am-I?” tracing.",
+      "Developed a FastAPI backend and Streamlit interface powered by LangGraph multi-step reasoning and tool calling for interactive repository exploration.",
+    ],
     tech: ["Python", "FastAPI", "LangChain", "LangGraph", "Pinecone"],
     accentLine: "bg-purple-500",
     repoUrl: "https://github.com/jacobhorne-jth/github-onboarding-agent",
@@ -838,7 +921,13 @@ const projects: Project[] = [
     name: "SF Crime Mapper",
     monogram: "SCM",
     desc: "An interactive map for exploring where neighborhood safety risks may be changing.",
-    detail: "Full-stack interactive web app that forecasts San Francisco neighborhood-level incident risk and visualizes it on a Mapbox choropleth.",
+    detail: "A full-stack forecasting dashboard that maps changing incident risk across San Francisco neighborhoods and exposes model results through an interactive choropleth.",
+    highlights: [
+      "Built an interactive React dashboard with Mapbox to visualize neighborhood-level crime predictions in real time.",
+      "Designed frontend components and API integrations around a FastAPI backend with dynamically updated map data.",
+      "Connected the interface to Python, scikit-learn, XGBoost, and Prophet models for neighborhood risk forecasting.",
+      "Engineered reusable JavaScript hooks and state logic to keep data flow between the interface and backend maintainable.",
+    ],
     tech: ["FastAPI", "Prophet", "XGBoost", "React", "Vite"],
     accentLine: "bg-amber-500",
     repoUrl: "https://github.com/jacobhorne-jth/sf-crime-mapper",
@@ -852,6 +941,7 @@ const projects: Project[] = [
     tech: ["Python", "Streamlit", "Scrapy", "BeautifulSoup"],
     accentLine: "bg-lime-500",
     repoUrl: "https://github.com/jacobhorne-jth/earnings-web-scraper",
+    isHidden: true,
   },
   {
     name: "SMS Spam Detector",
@@ -862,6 +952,7 @@ const projects: Project[] = [
     accentLine: "bg-rose-500",
     repoUrl: "https://github.com/jacobhorne-jth/sms-spam-detector",
     imgUrl: projSMS,
+    isHidden: true,
   },
 ];
 
@@ -871,6 +962,11 @@ const papers: Paper[] = [
     track: "LLM Reasoning Workshop",
     title: "The First Tokens Matter: Early Confidence Signals for Evaluating LLM Reasoning",
     detail: "Explores whether early token-level confidence can predict reasoning quality and expose failure modes in LLM outputs.",
+    highlights: [
+      "Paired Advocate and Skeptic debate agents with an LLM-as-judge that scored instruction following, justification quality, evidence grounding, and critical failures across two ASAP essay sets.",
+      "Found that dispersion in the first three to five generated tokens consistently outperformed full-sequence confidence statistics for predicting judged reasoning quality.",
+      "Identified a stable role asymmetry: confidence tracked supportive Advocate reasoning more reliably than adversarial Skeptic critique, with early-token signals detecting Advocate failures at up to 0.849 AUROC versus roughly 0.63 for the Skeptic.",
+    ],
     url: "https://openreview.net/forum?id=0FOOrwSQ9E",
     tags: ["LLM Evaluation", "Confidence", "Reasoning"],
   },
@@ -879,6 +975,11 @@ const papers: Paper[] = [
     track: "Student Research Workshop",
     title: "The Confident Liar: Diagnosing Multi-Agent Debate with Log-Probabilities and LLM-as-Judge",
     detail: "Studies multi-agent debate behavior through log-probability signals, judge scoring, and failure analysis.",
+    highlights: [
+      "Compared token-level log-probability trajectories, LLM-as-judge rubric scores, and final task accuracy across rubric scoring, mathematical reasoning, and factual question answering.",
+      "Evaluated a Constructor/Auditor debate architecture using judge dimensions for instruction following, justification quality, evidence grounding, and critical reasoning failures.",
+      "Observed a four-phase confidence trajectory and strong role asymmetry: critical-failure detection reached 0.804 AUROC for the Constructor versus 0.634 for the Auditor.",
+    ],
     url: "https://aclanthology.org/2026.acl-srw.121/",
     tags: ["Multi-Agent Systems", "NLP", "Log-Probabilities"],
   },
@@ -886,30 +987,39 @@ const papers: Paper[] = [
     conference: "GEM 2026",
     title: "Early-Token Confidence Predicts Reasoning Quality in Multi-Agent LLM Debate",
     detail: "Connects early confidence patterns to downstream reasoning quality in debate-style LLM evaluation workflows.",
+    highlights: [
+      "Evaluated token-level confidence against LLM-as-judge rubric scores in a debate-based essay-scoring framework across two ASAP essay sets.",
+      "Found that confidence within the first few generated tokens was the strongest predictor of reasoning quality, outperforming statistics computed over the full response.",
+      "Showed that the opening phase of generation contains the most informative variation and that confidence aligns more strongly with supportive reasoning than adversarial critique.",
+    ],
     url: "https://aclanthology.org/2026.gem-main.60/",
     tags: ["LLMs", "Evaluation", "Debate"],
   },
 ];
 
-
 const coursework = [
-  "CS 178 — Machine Learning & Data Mining",
+  "CS 178 — Machine Learning and Data Mining",
   "CS 171 — Introduction to Artificial Intelligence",
-  "CS 180A/B — Project in Computer Science",
-  "ICS 46 — Data Structures & Analysis",
-  "ICS 45C — Programming in C/C++",
+  "CS 143A — Principles of Operating Systems",
+  "CS 116 — Computational Photography and Vision",
+  "CS 147 — Internet of Things Software and Systems",
+  "CS 180A — Project in Computer Science",
+  "CS 180B — Project in Computer Science",
+  "ICS 46 — Data Structure Implementation and Analysis",
+  "ICS 51 — Introductory Computer Organization",
+  "ICS 45C — Programming in C/C++ as a Second Language",
   "ICS H32 — Python Programming & Libraries (Accelerated)",
-  "ICS 33 — Intermediate Programming",
-  "STATS 67 — Probability & Statistics for CS",
+  "MATH 3A — Introduction to Linear Algebra",
+  "STATS 67 — Introduction to Probability & Statistics for Computer Science",
   "IN4MATX 43 — Introduction to Software Engineering",
 ];
+
 
 const navLinks = [
   { label: "About", href: "#about" },
   { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
   { label: "Research", href: "#research" },
-  { label: "Teaching", href: "#teaching" },
+  { label: "Projects", href: "#projects" },
   { label: "Education", href: "#education" },
   { label: "Now", href: "#now" },
 ];
@@ -952,17 +1062,16 @@ const roleToDetail = (entry: RoleEntry, section: string, tone: Tone): DetailItem
     eyebrow: section,
     title: entry.company,
     subtitle: entry.role,
-    summary: entry.bullets[0] ?? entry.role,
+    summary: entry.summary ?? entry.bullets[0] ?? entry.role,
     chips: entry.tags.slice(0, 4),
     period: entry.period,
     logo: entry.logo,
     logoImg: entry.logoImg,
-    meta: [`Role — ${entry.role}`],
-    paragraphs: [entry.bullets[0] ?? entry.role],
-    highlights: [
-      ...entry.bullets.slice(1),
-      ...featured.map(f => f.text),
-    ],
+    meta: undefined,
+    paragraphs: [],
+    highlights: entry.summary
+      ? entry.bullets
+      : [...entry.bullets.slice(1), ...featured.map(f => f.text)],
     tags: entry.tags,
     links: entry.companyLink ? [{ href: entry.companyLink, label: "Open organization" }] : undefined,
     isActive: entry.isActive,
@@ -974,7 +1083,7 @@ const projectToDetail = (project: Project): DetailItem => ({
   id: `project-${project.name}`,
   eyebrow: project.group ?? "Project",
   title: project.name,
-  subtitle: project.tech.slice(0, 3).join(" / "),
+  chips: project.tech.slice(0, 3),
   summary: project.desc,
   logo: project.monogram,
   image: project.imgUrl,
@@ -983,10 +1092,10 @@ const projectToDetail = (project: Project): DetailItem => ({
   // No meta row: the eyebrow already shows project.group, and the stack and links have
   // their own sections, so anything here would just repeat something above it.
   meta: undefined,
-  paragraphs: [project.detail],
+  paragraphs: project.highlights?.length ? [] : [project.detail],
   highlights: [
-    `Built with ${project.tech.slice(0, 4).join(", ")}.`,
-    project.demoUrl ? "Includes a live demo surface for trying the system." : "Designed as a code-first project with implementation details in the repository.",
+    ...(project.highlights ?? []),
+    ...(project.demoUrl ? ["Includes a live demo surface for trying the system."] : []),
   ],
   tags: project.tech,
   // Demo first when there is one, but the repo always gets its own link rather than being
@@ -1002,25 +1111,18 @@ const projectToDetail = (project: Project): DetailItem => ({
 
 const paperToDetail = (paper: Paper): DetailItem => ({
   id: `paper-${paper.title}`,
-  eyebrow: "UCI Digital Learning Lab",
+  eyebrow: "Digital Learning Lab @ UCI",
   title: paper.title,
   badge: { label: paper.conference, note: paper.track },
   // The collapsed card is deliberately just venue + title + topic chips. It previously also
-  // carried the lab logo, an "Associated with UCI Digital Learning Lab" line, and a summary
+  // carried the lab logo, an association line, and a summary
   // paragraph — the logo and the lab line were identical on all three papers, and with the
   // logo taking a column the titles wrapped to four lines. The detail lives in the modal.
   summary: "",
-  chips: paper.tags.slice(0, 3),
   // The badge carries the venue now, so the meta row only adds the lab.
-  meta: ["Lab — UCI Digital Learning Lab"],
-  paragraphs: [
-    paper.detail,
-    "This work reflects my interest in evaluating model behavior with signals that can be measured, compared, and improved.",
-  ],
-  highlights: [
-    "Focuses on confidence, reasoning quality, and evaluation signals.",
-    "Connects empirical analysis to practical LLM evaluation workflows.",
-  ],
+  meta: ["Lab — Digital Learning Lab @ UCI"],
+  paragraphs: [paper.detail],
+  highlights: paper.highlights,
   tags: paper.tags,
   links: paper.url ? [{ href: paper.url, label: "Open paper" }] : undefined,
   tone: "cyan",
@@ -1035,8 +1137,8 @@ const educationDetail: DetailItem = {
   period: "Expected Jun 2028",
   logo: "UCI",
   logoImg: logoUCI,
-  meta: ["GPA — 3.92", "Dean's List — 6x", "Campuswide Honors Collegium"],
-  paragraphs: ["3.92 GPA", "Dean's List x 6", "Campuswide Honors Collegium"],
+  meta: undefined,
+  paragraphs: [],
   highlights: coursework,
   tags: ["Machine Learning", "AI", "Data Structures", "C/C++", "Software Engineering"],
   tone: "rose",
@@ -1060,8 +1162,8 @@ function DetailLogo({ item, size = "card" }: { item: DetailItem; size?: "card" |
   if (!item.logoImg) return null;
 
   return (
-    <div className={`${logoFrame} rounded-md bg-white dark:bg-white/5 border border-gray-200/80 dark:border-white/10 flex items-center justify-center overflow-hidden shrink-0`}>
-      <img src={item.logoImg} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+    <div className={`${logoFrame} rounded-lg bg-white dark:bg-white/5 border border-gray-200/80 dark:border-white/10 flex items-center justify-center overflow-hidden shrink-0 p-2`}>
+      <img src={item.logoImg} alt={item.title} loading="lazy" decoding="async" className="h-full w-full object-contain" />
     </div>
   );
 }
@@ -1073,15 +1175,11 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
     <button
       type="button"
       onClick={() => onOpen(item)}
-      className={`group relative min-h-[168px] w-full overflow-hidden rounded-md border border-gray-200/80 bg-white/90 p-5 text-left shadow-[0_1px_0_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-300 hover:bg-white hover:shadow-md hover:shadow-slate-950/10 focus:outline-none focus-visible:ring-2 dark:border-white/10 dark:bg-white/[0.035] dark:shadow-none dark:hover:border-white/20 dark:hover:bg-white/[0.06] ${tone.ring}`}
+      className={`group relative min-h-[190px] w-full overflow-hidden rounded-lg border border-gray-200/90 bg-white/90 p-6 text-left shadow-[0_1px_0_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-300 hover:bg-white hover:shadow-lg hover:shadow-slate-950/[0.08] focus:outline-none focus-visible:ring-2 dark:border-white/10 dark:bg-white/[0.035] dark:shadow-none dark:hover:border-white/20 dark:hover:bg-white/[0.06] ${tone.ring}`}
     >
       {item.accentLine && <div className={`absolute inset-x-0 top-0 h-0.5 ${item.accentLine}`} />}
-      {/* Full-height rail rather than only the corner badge. Three active cards scattered
-          through a grid form a visible column pattern this way, so the set reads at a
-          glance without the eye hunting for a 10px label on each card. */}
-      {item.isActive && <div className="absolute inset-y-0 left-0 w-[3px] bg-emerald-500" />}
-      <div className="flex h-full flex-col gap-4">
-        <div className="flex items-start justify-between gap-4">
+      <div className="flex h-full flex-col gap-5">
+        <div className="flex items-start justify-between gap-5">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               {item.badge ? (
@@ -1096,7 +1194,7 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
                   )}
                 </>
               ) : (
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500 dark:text-slate-400">
+                <p className="rounded-full bg-gray-100 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-gray-500 dark:bg-white/[0.06] dark:text-slate-400">
                   {item.period ?? item.eyebrow}
                 </p>
               )}
@@ -1112,11 +1210,11 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
                 </span>
               )}
             </div>
-            <h3 className="mt-3 text-lg font-semibold leading-snug text-gray-950 dark:text-white">
+            <h3 className="mt-4 text-xl font-semibold leading-snug tracking-[-0.015em] text-gray-950 dark:text-white">
               {item.title}
             </h3>
             {item.subtitle && (
-              <p className="mt-1 text-sm text-gray-600 dark:text-slate-300">{item.subtitle}</p>
+              <p className={`mt-1.5 text-sm font-medium ${tone.text}`}>{item.subtitle}</p>
             )}
           </div>
           <DetailLogo item={item} />
@@ -1131,7 +1229,7 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
             {item.chips.map(chip => (
               <span
                 key={chip}
-                className="rounded border border-gray-200 px-2 py-0.5 font-mono text-[10px] text-gray-500 dark:border-white/10 dark:text-slate-400"
+                className="rounded-md bg-gray-100 px-2.5 py-1 font-mono text-[10px] text-gray-600 dark:bg-white/[0.06] dark:text-slate-400"
               >
                 {chip}
               </span>
@@ -1139,13 +1237,135 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
           </div>
         )}
 
-        <div className="mt-auto flex items-center justify-between gap-3 pt-1">
-          <span className={`font-mono text-[10px] uppercase tracking-[0.18em] opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100 ${tone.text}`}>
+        <div className="mt-auto flex items-center justify-between gap-3 border-t border-gray-200/70 pt-4 dark:border-white/[0.07]">
+          <span className={`font-mono text-[10px] uppercase tracking-[0.16em] ${tone.text}`}>
             View details
           </span>
-          <ArrowRight className={`h-4 w-4 text-gray-300 transition-all duration-200 group-hover:translate-x-1 dark:text-slate-500 ${tone.arrow}`} />
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 transition-colors group-hover:bg-gray-200 dark:bg-white/[0.06] dark:group-hover:bg-white/10">
+            <ArrowRight className={`h-3.5 w-3.5 text-gray-500 transition-transform duration-200 group-hover:translate-x-0.5 dark:text-slate-400 ${tone.arrow}`} />
+          </span>
         </div>
       </div>
+    </button>
+  );
+}
+
+function ProjectCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailItem) => void }) {
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(item)}
+      className="group flex min-h-[210px] w-full flex-col rounded-lg border border-gray-200/90 bg-white/80 p-5 text-left shadow-[0_1px_0_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-300 hover:bg-white hover:shadow-lg hover:shadow-slate-950/[0.07] focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 dark:border-white/10 dark:bg-white/[0.025] dark:shadow-none dark:hover:border-white/20 dark:hover:bg-white/[0.045]"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-gray-500 dark:text-slate-500">
+            {item.eyebrow}
+          </p>
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            <h3 className="text-xl font-semibold leading-snug tracking-[-0.02em] text-gray-950 dark:text-white">
+              {item.title}
+            </h3>
+            {item.isActive && (
+              <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.14em] text-emerald-700 dark:text-emerald-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-current" /> active
+              </span>
+            )}
+          </div>
+        </div>
+        <DetailLogo item={item} />
+      </div>
+
+      <p className="mt-4 text-sm leading-6 text-gray-600 dark:text-slate-300">{item.summary}</p>
+
+      <div className="mt-auto flex items-end justify-between gap-4 border-t border-gray-200/70 pt-4 dark:border-white/[0.07]">
+        <div className="flex min-w-0 flex-wrap gap-x-2.5 gap-y-1">
+          {item.chips?.map(chip => (
+            <span key={chip} className="font-mono text-[9px] text-gray-500 dark:text-slate-500">
+              {chip}
+            </span>
+          ))}
+        </div>
+        <ArrowRight className="h-4 w-4 shrink-0 text-gray-400 transition-all duration-200 group-hover:translate-x-1 group-hover:text-violet-600 dark:text-slate-600 dark:group-hover:text-violet-300" />
+      </div>
+    </button>
+  );
+}
+
+function ExperienceRow({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailItem) => void }) {
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(item)}
+      className="group grid w-full gap-4 border-t border-gray-200/80 px-4 py-6 text-left transition-colors first:border-t-0 hover:bg-blue-50/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500/60 dark:border-white/10 dark:hover:bg-white/[0.04] md:grid-cols-[72px_minmax(0,1fr)_150px] md:items-start md:px-6"
+    >
+      <DetailLogo item={item} />
+
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <h3 className="text-xl font-semibold tracking-[-0.02em] text-gray-950 dark:text-white">{item.title}</h3>
+          {item.isActive && (
+            <span className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] text-emerald-700 dark:text-emerald-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-current" /> active
+            </span>
+          )}
+        </div>
+        {item.subtitle && <p className="mt-1 text-sm font-medium text-blue-700 dark:text-blue-300">{item.subtitle}</p>}
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-gray-600 dark:text-slate-300">{item.summary}</p>
+        {item.chips && (
+          <p className="mt-4 font-mono text-[9px] uppercase leading-5 tracking-[0.12em] text-gray-500 dark:text-slate-500">
+            {item.chips.join("  /  ")}
+          </p>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between gap-4 md:flex-col md:items-end">
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-gray-500 dark:text-slate-400">{item.period}</p>
+        <span className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.14em] text-blue-700 opacity-70 transition-opacity group-hover:opacity-100 dark:text-blue-300">
+          details <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+        </span>
+      </div>
+    </button>
+  );
+}
+
+function PublicationCard({
+  item,
+  index,
+  onOpen,
+}: {
+  item: DetailItem;
+  index: number;
+  onOpen: (item: DetailItem) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(item)}
+      className="group grid w-full grid-cols-[40px_minmax(0,1fr)_32px] items-start gap-x-4 gap-y-4 border-t border-gray-200/80 px-5 py-6 text-left transition-colors first:border-t-0 hover:bg-cyan-50/45 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-500/60 dark:border-white/10 dark:hover:bg-cyan-300/[0.035] md:grid-cols-[64px_190px_minmax(0,1fr)_40px] md:items-center md:gap-6 md:px-7 md:py-7"
+    >
+      <span className="pt-0.5 font-mono text-sm tracking-[0.16em] text-gray-400 transition-colors group-hover:text-cyan-700 dark:text-slate-600 dark:group-hover:text-cyan-300 md:text-base">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+
+      <div className="min-w-0">
+        <p className="font-mono text-base font-bold uppercase tracking-[0.14em] text-cyan-800 dark:text-cyan-200 md:text-lg">
+          {item.badge?.label}
+        </p>
+        {item.badge?.note && (
+          <p className="mt-1.5 font-mono text-[9px] uppercase leading-4 tracking-[0.13em] text-gray-500 dark:text-slate-500">
+            {item.badge.note}
+          </p>
+        )}
+      </div>
+
+      <h4 className="col-span-2 col-start-2 text-lg font-semibold leading-snug tracking-[-0.02em] text-gray-950 transition-colors group-hover:text-cyan-950 dark:text-white dark:group-hover:text-cyan-50 md:col-span-1 md:col-start-auto md:text-xl">
+        {item.title}
+      </h4>
+
+      <span className="col-start-3 row-start-1 flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-all duration-200 group-hover:translate-x-1 group-hover:border-cyan-600/30 group-hover:bg-cyan-600/10 group-hover:text-cyan-700 dark:border-white/10 dark:text-slate-600 dark:group-hover:border-cyan-300/25 dark:group-hover:bg-cyan-300/10 dark:group-hover:text-cyan-200 md:col-start-4 md:row-start-auto md:h-9 md:w-9">
+        <ArrowRight className="h-4 w-4" />
+      </span>
     </button>
   );
 }
@@ -1153,15 +1373,46 @@ function DetailCard({ item, onOpen }: { item: DetailItem; onOpen: (item: DetailI
 function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () => void }) {
   useEffect(() => {
     if (!item) return;
-    const previousOverflow = document.body.style.overflow;
+
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const root = document.documentElement;
+    const previousBodyStyles = {
+      overflow: body.style.overflow,
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      paddingRight: body.style.paddingRight,
+    };
+    const previousRootOverflow = root.style.overflow;
+    const previousScrollBehavior = root.style.scrollBehavior;
+    const scrollbarWidth = window.innerWidth - root.clientWidth;
+
+    root.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKeyDown);
+
     return () => {
-      document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
+      root.style.overflow = previousRootOverflow;
+      body.style.overflow = previousBodyStyles.overflow;
+      body.style.position = previousBodyStyles.position;
+      body.style.top = previousBodyStyles.top;
+      body.style.width = previousBodyStyles.width;
+      body.style.paddingRight = previousBodyStyles.paddingRight;
+      // The site uses smooth scrolling for navigation. Disable it for this restoration
+      // so unlocking the fixed body never flashes at the top before returning here.
+      root.style.scrollBehavior = "auto";
+      window.scrollTo(0, scrollY);
+      root.style.scrollBehavior = previousScrollBehavior;
     };
   }, [item, onClose]);
 
@@ -1169,10 +1420,13 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
   const tone = toneStyles[item.tone ?? "blue"];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050710]/75 px-4 py-6 backdrop-blur-sm md:py-10" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden overscroll-none bg-[#050710]/75 px-4 py-6 backdrop-blur-sm md:py-10" onClick={onClose}>
       <article
-        className={`relative max-h-[calc(100vh-3rem)] w-full max-w-3xl overflow-y-auto rounded-md border bg-[#fbfaf7] p-7 shadow-2xl shadow-slate-950/25 dark:bg-[#0b0d12] md:max-h-[calc(100vh-5rem)] md:p-10 ${tone.border}`}
+        className={`relative max-h-[calc(100vh-3rem)] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-md border bg-[#fbfaf7] p-7 shadow-2xl shadow-slate-950/25 dark:bg-[#0b0d12] md:max-h-[calc(100vh-5rem)] md:p-10 ${tone.border}`}
         onClick={event => event.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${item.title} details`}
       >
         <button
           type="button"
@@ -1204,33 +1458,59 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
             <div className="min-w-0 flex-1">
               <h3 className="text-3xl font-semibold leading-tight text-gray-950 dark:text-white md:text-4xl">
                 {item.title}
-                {item.subtitle && (
-                  <span className="text-gray-500 dark:text-slate-400 md:text-2xl"> · {item.subtitle}</span>
-                )}
               </h3>
-              <p className="mt-4 whitespace-pre-line text-base leading-7 text-gray-700 dark:text-slate-300">
-                {item.summary}
-              </p>
+              {item.subtitle && (
+                <p className={`mt-2 text-lg font-medium ${tone.text}`}>{item.subtitle}</p>
+              )}
+              {item.summary && (
+                <p className="mt-5 whitespace-pre-line text-base leading-7 text-gray-700 dark:text-slate-300">
+                  {item.summary}
+                </p>
+              )}
             </div>
             <DetailLogo item={item} size="modal" />
           </div>
         </div>
 
-        {item.meta && item.meta.length > 0 && (
-          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.16em] text-gray-600 dark:text-slate-300">
-            {item.meta.map(meta => <span key={meta}>{meta}</span>)}
+        {((item.meta && item.meta.length > 0) || (item.badge && item.links && item.links.length > 0)) && (
+          <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-2">
+              {item.meta?.map(meta => (
+                <span key={meta} className="rounded-md bg-gray-100 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.13em] text-gray-600 dark:bg-white/[0.06] dark:text-slate-300">
+                  {meta}
+                </span>
+              ))}
+            </div>
+            {item.badge && item.links && item.links.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {item.links.map(link => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium text-white transition-colors ${tone.primary}`}
+                  >
+                    {link.label}
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
-        <div className="mt-8 border-t border-gray-200 pt-8 dark:border-slate-800">
-          <div className="space-y-5">
-            {item.paragraphs.map(paragraph => (
-              <p key={paragraph} className="text-base leading-8 text-gray-700 dark:text-slate-300">
-                {paragraph}
-              </p>
-            ))}
+        {item.paragraphs.length > 0 && (
+          <div className="mt-8 border-t border-gray-200 pt-8 dark:border-slate-800">
+            <div className="space-y-5">
+              {item.paragraphs.map(paragraph => (
+                <p key={paragraph} className="text-base leading-8 text-gray-700 dark:text-slate-300">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {item.highlights.length > 0 && (
           <div className="mt-9">
@@ -1259,7 +1539,7 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
           </div>
         )}
 
-        {item.links && item.links.length > 0 && (
+        {!item.badge && item.links && item.links.length > 0 && (
           <div className="mt-9 flex flex-wrap gap-3">
             {item.links.map((link, i) => (
               <a
@@ -1300,7 +1580,6 @@ function Navbar({
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200/80 bg-[#fbfaf7]/95 backdrop-blur dark:border-white/10 dark:bg-[#080a10]/95">
       <div className="h-16 w-full px-5 sm:px-8 lg:px-10 grid grid-cols-[auto_1fr_auto] items-center gap-4">
-        {/* Logo */}
         <a href="#top" className="flex items-center gap-2.5 group">
           <span className="h-2 w-2 rounded-full bg-cyan-700 dark:bg-cyan-300" />
           <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-gray-800 dark:text-slate-200">
@@ -1308,7 +1587,6 @@ function Navbar({
           </span>
         </a>
 
-        {/* Desktop nav */}
         <nav className="hidden lg:flex items-center justify-center gap-4 xl:gap-6">
           {navLinks.map(l => (
             <a
@@ -1322,7 +1600,6 @@ function Navbar({
         </nav>
 
         <div className="hidden lg:flex items-center justify-end gap-2">
-          {/* Dark/light toggle */}
           <button
             onClick={onToggleDark}
             className="p-2 rounded-lg text-gray-500 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all duration-150"
@@ -1330,7 +1607,6 @@ function Navbar({
           >
             {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
-          {/* Contact button */}
           <a
             href="#contact"
             className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-gray-800 transition-all duration-150 hover:border-gray-500 hover:bg-gray-50 dark:border-cyan-300/25 dark:bg-cyan-300/10 dark:text-cyan-200 dark:hover:border-cyan-300/55 dark:hover:bg-cyan-300/15"
@@ -1339,7 +1615,6 @@ function Navbar({
           </a>
         </div>
 
-        {/* Mobile hamburger */}
         <div className="lg:hidden col-start-3 flex items-center justify-end gap-2">
           <button
             onClick={onToggleDark}
@@ -1358,7 +1633,6 @@ function Navbar({
         </div>
       </div>
 
-      {/* Mobile dropdown */}
       {menuOpen && (
         <div className="lg:hidden border-t border-gray-100 dark:border-[#22263a] bg-white dark:bg-[#090a12]">
           <div className="max-w-[1220px] mx-auto px-6 py-4 space-y-1">
@@ -1397,13 +1671,12 @@ function Navbar({
 // Most of these name a specific thing on purpose. This field is the live-looking part of
 // the card, so generic phrasing here costs more than it does anywhere else on the page.
 const CURRENTLY_ITEMS = [
-  "Building AI R&D applications for researchers at Sandia National Labs",
+  "Building cloud data infrastructure and agentic benchmarks at Sandia",
   "Writing perception code for UCI's autonomous underwater robot",
   "Researching token-level confidence in multi-turn Text-to-SQL benchmarks",
   "Training physics-informed ML models to replace thermal simulations",
   "Building AI-powered smart contract security tooling with Foundry and Slither",
-  "Chasing performance from interface latency down to CUDA kernels",
-  "Building Lazarus, open-source recovery for abandoned cloud-dependent devices",
+  "Contributing compiler fixes and regression tests to PyTorch Dynamo",
   "Studying system design to understand the production systems around me",
 ];
 
@@ -1436,7 +1709,6 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
   return (
     <div className="relative min-w-0 w-full max-w-80 sm:max-w-xl md:max-w-[540px]">
       <div className="relative z-10 overflow-hidden rounded-xl border border-slate-700/60 shadow-2xl shadow-black/40">
-        {/* Browser chrome */}
         <div className="bg-slate-800 px-4 py-2.5 flex items-center gap-2 border-b border-slate-700/50">
           <div className="flex gap-1.5 shrink-0">
             <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
@@ -1447,10 +1719,8 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
             jacobhorne.dev
           </div>
         </div>
-        {/* Content */}
         <div className="bg-slate-900 p-4 sm:p-5">
           <div className="grid min-w-0 gap-4 sm:grid-cols-[minmax(0,1fr)_136px]">
-            {/* Code panel */}
             <div className="min-w-0 overflow-hidden break-words font-mono text-[11px] leading-[1.65] text-slate-300 sm:text-xs">
               <div><span className="text-purple-400">const</span> <span className="text-blue-300">jacob</span> = {"{"}</div>
               <div className="pl-4"><span className="text-slate-400">name:</span>{"      "}<span className="text-amber-300">"Jacob Horne"</span>,</div>
@@ -1467,12 +1737,10 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
               </div>
               <div>{"}"}</div>
             </div>
-            {/* Portrait panel */}
             <div className="h-44 overflow-hidden rounded-lg border border-slate-700/50 bg-slate-800/60 shadow-lg shadow-black/20 sm:h-auto">
               <img src={pfp} alt="Jacob Horne" decoding="async" className="h-full min-h-[178px] w-full object-cover object-top" />
             </div>
           </div>
-          {/* Terminal line */}
           <div className="mt-4 bg-slate-800/60 rounded-lg px-3 py-2 font-mono text-[10px] flex items-center gap-2 border border-slate-700/30 sm:text-[11px]">
             <span className="text-green-400">❯</span>
             <span className="text-slate-400">npm run build</span>
@@ -1493,30 +1761,22 @@ function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMo
       <MeshBackground dark={darkMode} />
       <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1220px] px-6 py-12 md:px-8 lg:py-16">
         <div className="grid min-w-0 w-full grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-12 xl:-translate-y-14">
-          {/* Left */}
           <div className="min-w-0 w-full max-w-80 space-y-7 pt-6 sm:max-w-xl lg:max-w-none lg:pt-0">
-            <div className="space-y-3">
-              <div className="hero-rise hero-rise-1 space-y-3">
-                {/* Below lg the code card drops beneath this column, so the role would
-                    otherwise not appear until after a scroll. Hidden once the card is
-                    alongside and carrying the same information. */}
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-700 dark:text-cyan-300/80 sm:text-xs lg:hidden">
-                  CS @ UCI · SWE Intern @ Sandia
-                </p>
-                <h1 className="text-4xl font-semibold tracking-tight leading-none text-gray-950 dark:text-white sm:text-6xl md:text-7xl">
-                  Jacob Horne.
-                </h1>
+            <div>
+              <div className="hero-rise hero-rise-1 space-y-4">
+                <div className="space-y-1.5">
+                  <h1 className="text-4xl font-semibold tracking-[-0.03em] text-gray-950 dark:text-white sm:text-5xl lg:text-[3.25rem]">
+                    Jacob Horne
+                  </h1>
+                  <p className="text-sm font-semibold tracking-[0.025em] text-cyan-700 dark:text-cyan-300 sm:text-base">
+                    Software Engineer &amp; Researcher
+                  </p>
+                </div>
+                <h2 className="max-w-3xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] text-gray-950 dark:text-white sm:text-5xl lg:text-[3.2rem] xl:text-[3.35rem]">
+                  Building intelligent systems for the real world.
+                </h2>
               </div>
-              <p className="hero-rise hero-rise-2 max-w-xl text-balance text-xl font-medium text-gray-700 dark:text-slate-300 sm:text-2xl">
-                I follow questions until they become buildable.
-              </p>
             </div>
-            <p className="hero-rise hero-rise-2 max-w-lg text-pretty text-sm leading-relaxed text-gray-600 dark:text-slate-400 sm:text-base">
-              Right now that means AI R&amp;D tooling at Sandia National Labs. Before that, recommender
-              infrastructure at Capital One — 25% lower latency for 60M+ customers. Alongside: LLM
-              evaluation research, CUDA experiments, and perception for an autonomous underwater robot.
-            </p>
-            {/* Buttons */}
             <div className="hero-rise hero-rise-3 grid w-full max-w-80 grid-cols-1 gap-3 pt-1 sm:max-w-xl sm:flex sm:flex-wrap lg:max-w-none">
               <a
                 href="/JacobHorneResume.pdf"
@@ -1549,7 +1809,6 @@ function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMo
                 <Mail className="h-4 w-4" /> Email
               </a>
             </div>
-            {/* Terminal button — prominent */}
             <div className="hero-rise hero-rise-3 flex items-center gap-3">
               <button
                 onClick={onOpenTerminal}
@@ -1561,7 +1820,6 @@ function Hero({ onOpenTerminal, darkMode }: { onOpenTerminal: () => void; darkMo
             </div>
           </div>
 
-          {/* Right: visual */}
           <div className="flex min-w-0 justify-start sm:justify-center lg:justify-end">
             <LaptopVisual idx={idx} visible={visible} />
           </div>
@@ -1579,7 +1837,6 @@ function AboutSection() {
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <SectionHeader number="01" title="About Me" tone="amber" />
         <div className="grid md:grid-cols-[340px_1fr] gap-12 lg:gap-16 items-start">
-          {/* Photo */}
           <div className="relative shrink-0">
             <div className="rounded-xl overflow-hidden bg-gray-100 dark:bg-[#15171c] aspect-[4/5] border border-black/10 dark:border-white/10 shadow-lg shadow-slate-950/10">
               <img src={pfp} alt="Jacob Horne" loading="lazy" decoding="async" className="w-full h-full object-cover" />
@@ -1591,20 +1848,20 @@ function AboutSection() {
             </div>
           </div>
 
-          {/* Text */}
           <div className="space-y-8">
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight max-w-3xl">
               Learning across AI,<br className="hidden sm:block" /> systems, and robotics.
             </h3>
             <div className="max-w-3xl space-y-4 text-sm md:text-base text-gray-600 dark:text-slate-300 leading-relaxed">
               <p>
-                I am a CS student at UCI and a Software Engineer Intern at Sandia National Labs.
-                Before that, I worked on recommender infrastructure at Capital One.
+                I am a CS student at UCI and a Software Engineer Intern at Sandia National Labs working on
+                data infrastructure and agentic benchmarking. Before that, I worked on recommender infrastructure
+                at Capital One.
               </p>
               <p>
-                The throughline is making complicated technical work easier to reason about: how models behave,
-                how systems hold up under load, how robots perceive, and what it takes to turn any of that into
-                something a person can actually use.
+                I&apos;m drawn to making complicated technical work easier to reason about: how models behave,
+                how systems hold up under load, how robots perceive, and how to turn those ideas into something
+                people can actually use.
               </p>
             </div>
             <div className="grid gap-3 max-w-3xl">
@@ -1634,14 +1891,44 @@ function AboutSection() {
 
 function ExperienceSection() {
   const [selected, setSelected] = useState<DetailItem | null>(null);
-  const items = experienceRoles.map(entry => roleToDetail(entry, "Experience", "emerald"));
+  const items = experienceRoles.map(entry => roleToDetail(entry, "Experience", "blue"));
+  const currentItems = items.filter(item => item.isActive);
+  const earlierItems = items.filter(item => !item.isActive);
 
   return (
     <section id="experience" className={`${SURFACE_BASE} ${SURFACE_EDGE} pt-10 pb-24 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        <SectionHeader number="02" title="Experience" tone="emerald" />
-        <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
-          {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
+        <SectionHeader
+          number="02"
+          title="Experience"
+          tone="blue"
+        />
+
+        <div className="relative">
+          <div className="absolute bottom-0 left-[6px] top-2 w-px bg-gradient-to-b from-blue-500/70 via-blue-400/25 to-transparent md:left-[119px] dark:from-blue-300/60 dark:via-blue-300/20" />
+
+          <div className="space-y-14">
+            <div className="relative pl-7 md:grid md:grid-cols-[96px_minmax(0,1fr)] md:gap-12 md:pl-0">
+              <span className="absolute left-0 top-1.5 h-[13px] w-[13px] rounded-full border-[3px] border-[#fbfaf7] bg-emerald-500 shadow-[0_0_0_1px_rgba(16,185,129,0.35)] dark:border-[#0a0c12] md:left-[113px]" />
+              <div className="mb-4 md:mb-0 md:text-right">
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-900 dark:text-white">Now</p>
+              </div>
+              <div className="border-y border-gray-200/80 dark:border-white/10">
+                {currentItems.map(item => <ExperienceRow key={item.id} item={item} onOpen={setSelected} />)}
+              </div>
+            </div>
+
+            <div className="relative pl-7 md:grid md:grid-cols-[96px_minmax(0,1fr)] md:gap-12 md:pl-0">
+              <span className="absolute left-[1px] top-1.5 h-[11px] w-[11px] rounded-full border-[3px] border-[#fbfaf7] bg-blue-500 shadow-[0_0_0_1px_rgba(59,130,246,0.35)] dark:border-[#0a0c12] md:left-[114px]" />
+              <div className="mb-4 md:mb-0 md:text-right">
+                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-900 dark:text-white">Earlier</p>
+                <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-gray-500 dark:text-slate-500">2025 — 2026</p>
+              </div>
+              <div className="border-y border-gray-200/80 dark:border-white/10">
+                {earlierItems.map(item => <ExperienceRow key={item.id} item={item} onOpen={setSelected} />)}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <DetailModal item={selected} onClose={() => setSelected(null)} />
@@ -1653,15 +1940,14 @@ function ExperienceSection() {
 
 function ProjectsSection() {
   const [selected, setSelected] = useState<DetailItem | null>(null);
-  const items = projects.map(projectToDetail);
+  const items = projects.filter(project => !project.isHidden).map(projectToDetail);
 
   return (
     <section id="projects" className={`${SURFACE_RAISED} ${SURFACE_EDGE} pt-10 pb-24 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        {/* Header row */}
         <div className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
           <div className="flex items-baseline gap-3">
-            <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">03</span>
+            <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">04</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Projects</h2>
           </div>
           <a
@@ -1675,7 +1961,7 @@ function ProjectsSection() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 md:gap-5">
-          {items.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
+          {items.map(item => <ProjectCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
 
       </div>
@@ -1694,17 +1980,30 @@ function ResearchSection() {
   return (
     <section id="research" className={`${SURFACE_BASE} ${SURFACE_EDGE} pt-10 pb-24 scroll-mt-16`}>
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
-        <SectionHeader number="04" title="Research" tone="cyan" />
+        <SectionHeader
+          number="03"
+          title="Research"
+          subtitle="Investigating how intelligent systems reason, fail, and earn trust."
+          tone="cyan"
+        />
         <div className="grid gap-4 sm:grid-cols-2 md:gap-5">
           {researchItems.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
         </div>
 
-        <div className="mt-12 border-t border-cyan-700/10 pt-8 dark:border-cyan-300/15">
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold text-gray-950 dark:text-white">Papers</h3>
+        <div className="mt-12 border-t border-gray-300/70 pt-9 dark:border-white/10">
+          <div className="mb-7 max-w-2xl">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-700 dark:text-cyan-300">
+              Selected publications
+            </p>
+            <h3 className="mt-2 text-2xl font-semibold text-gray-950 dark:text-white">Published research</h3>
+            <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-slate-400">
+              Peer-reviewed work on confidence signals, reasoning quality, and multi-agent evaluation.
+            </p>
           </div>
-          <div className="grid gap-4 md:grid-cols-3 md:gap-5">
-            {paperItems.map(item => <DetailCard key={item.id} item={item} onOpen={setSelected} />)}
+          <div className="overflow-hidden rounded-lg border border-gray-200/90 bg-white/55 shadow-[0_1px_0_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-white/[0.02] dark:shadow-none">
+            {paperItems.map((item, index) => (
+              <PublicationCard key={item.id} item={item} index={index} onOpen={setSelected} />
+            ))}
           </div>
         </div>
       </div>
@@ -1742,7 +2041,7 @@ function EducationSection() {
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="max-w-xl">
           <div className="flex items-baseline gap-3 mb-10">
-            <span className="text-xs font-bold tracking-[0.2em] text-rose-700 dark:text-rose-300 uppercase select-none">06</span>
+            <span className="text-xs font-bold tracking-[0.2em] text-rose-700 dark:text-rose-300 uppercase select-none">05</span>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Education</h2>
           </div>
           <DetailCard item={educationDetail} onOpen={setSelected} />
@@ -1761,9 +2060,9 @@ function NowSection() {
       label: "Building",
       tone: "emerald",
       entries: [
-        "AI R&D applications at Sandia",
+        "Data infrastructure and agentic benchmarks at Sandia",
         "Smart contract security tooling",
-        "Lazarus, recovery for abandoned devices",
+        "PyTorch Dynamo compiler fixes and regression tests",
         "A personal operating system",
       ],
     },
@@ -1782,7 +2081,7 @@ function NowSection() {
       tone: "amber",
       entries: [
         "System design in production systems",
-        "CUDA kernels and inference throughput",
+        "Compiler internals and graph capture",
         "Protocol reverse engineering",
         "Robotics software architecture",
       ],
@@ -1794,7 +2093,7 @@ function NowSection() {
       <div className="max-w-[1220px] mx-auto px-6 md:px-8">
         <div className="mb-10">
           <div className="flex items-baseline gap-3">
-            <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">07</span>
+            <span className="text-xs font-bold tracking-[0.2em] text-violet-700 dark:text-violet-300 uppercase select-none">06</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-950 dark:text-white">What I'm up to</h2>
           </div>
         </div>
@@ -1830,7 +2129,7 @@ function ContactSection() {
         <div className="grid gap-10 md:grid-cols-[minmax(0,0.9fr)_minmax(360px,1fr)] md:items-start">
           <div>
             <div className="flex items-baseline gap-3">
-              <span className="text-xs font-bold tracking-[0.2em] text-amber-700 dark:text-amber-300 uppercase select-none">08</span>
+              <span className="text-xs font-bold tracking-[0.2em] text-amber-700 dark:text-amber-300 uppercase select-none">07</span>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Let's Connect</h2>
             </div>
             <p className="mt-5 max-w-xl text-base leading-7 text-gray-600 dark:text-slate-300">
@@ -1847,18 +2146,9 @@ function ContactSection() {
 
           <div className="grid gap-3">
             {[
-              {
-                Icon: Mail, label: "jacobhorne.jth@gmail.com",
-                href: "mailto:jacobhorne.jth@gmail.com",
-              },
-              {
-                Icon: LinkedinIcon, label: "linkedin.com/in/jacobhornejth",
-                href: "https://linkedin.com/in/jacobhornejth",
-              },
-              {
-                Icon: GithubIcon, label: "github.com/jacobhorne-jth",
-                href: "https://github.com/jacobhorne-jth",
-              },
+              { Icon: Mail, label: "jacobhorne.jth@gmail.com", href: "mailto:jacobhorne.jth@gmail.com" },
+              { Icon: LinkedinIcon, label: "linkedin.com/in/jacobhornejth", href: "https://linkedin.com/in/jacobhornejth" },
+              { Icon: GithubIcon, label: "github.com/jacobhorne-jth", href: "https://github.com/jacobhorne-jth" },
             ].map(link => (
               <a
                 key={link.label}
@@ -1898,9 +2188,9 @@ export default function App() {
       <Hero onOpenTerminal={openTerminal} darkMode={darkMode} />
       <AboutSection />
       <ExperienceSection />
-      <ProjectsSection />
       <ResearchSection />
-      <TeachingSection />
+      <ProjectsSection />
+      {SHOW_TEACHING && <TeachingSection />}
       <EducationSection />
       <NowSection />
       <ContactSection />

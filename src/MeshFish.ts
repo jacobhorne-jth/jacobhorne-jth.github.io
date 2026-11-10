@@ -20,8 +20,10 @@ import {
 export const FISH_ENABLED = true;
 
 /** Seconds between leaps, and before the first one. */
-const FIRST_DELAY: [number, number] = [13, 21];
-const GAP: [number, number] = [18, 35];
+const FIRST_DELAY: [number, number] = [8, 13];
+const GAP: [number, number] = [11, 22];
+/** Two independent schedules make fish easier to encounter without synchronized jumps. */
+const MAX_FISH = 2;
 
 const AIRTIME: [number, number] = [1.0, 1.45];
 const LAUNCH_Z: [number, number] = [1.9, 3.4];
@@ -121,8 +123,8 @@ export type FishInk = {
 };
 
 export function createFishSystem() {
-  let fish: Fish | null = null;
-  let nextAt = rand(FIRST_DELAY);
+  const fish: Fish[] = [];
+  const nextAt = [rand(FIRST_DELAY), rand(FIRST_DELAY)];
   const ripples: Ripple[] = [];
   const droplets: Droplet[] = [];
 
@@ -132,10 +134,11 @@ export function createFishSystem() {
   const submerged = new Uint8Array(VERT_COUNT);
 
   function reset() {
-    fish = null;
+    fish.length = 0;
     ripples.length = 0;
     droplets.length = 0;
-    nextAt = rand(FIRST_DELAY);
+    nextAt[0] = rand(FIRST_DELAY);
+    nextAt[1] = rand(FIRST_DELAY);
   }
 
   function addRipple(x: number, z: number, strength: number) {
@@ -162,6 +165,7 @@ export function createFishSystem() {
   }
 
   function launch(view: MeshView, t: number) {
+    if (fish.length >= MAX_FISH) return false;
     const bandTop = view.height * LAUNCH_BAND[0];
     const bandBottom = view.height * LAUNCH_BAND[1];
 
@@ -173,6 +177,8 @@ export function createFishSystem() {
       const surface = surfaceAt(view, x, z, t);
       const surfaceY = projectY(view, surface, z);
       if (surfaceY < bandTop || surfaceY > bandBottom) continue;
+      // Keep paired fish visually distinct instead of letting their wireframes merge.
+      if (fish.some(other => Math.abs(projectX(view, x, z) - projectX(view, other.x, other.z)) < view.width * 0.18)) continue;
 
       // Rise is chosen on screen and converted back, so the hop looks the same size
       // whatever depth it happens at.
@@ -187,7 +193,7 @@ export function createFishSystem() {
       const gravity = (2 * apex) / (half * half);
       const dir = Math.random() < 0.5 ? -1 : 1;
 
-      fish = {
+      fish.push({
         x,
         y: surface,
         z,
@@ -198,33 +204,40 @@ export function createFishSystem() {
         gravity,
         roll: (Math.random() - 0.5) * 0.7,
         age: 0,
-      };
+      });
       addRipple(x, z, 0.85);
       addDroplets(view, x, surface, z, 7, 0.7);
-      return;
+      return true;
     }
+    return false;
   }
 
   /** Advances every moving part. `dt` is clamped by the caller. */
   function update(view: MeshView, t: number, dt: number) {
-    if (fish) {
-      fish.age += dt;
-      fish.x += fish.vx * dt;
-      fish.y += fish.vy * dt;
-      fish.z += fish.vz * dt;
-      fish.vy -= fish.gravity * dt;
+    for (let i = fish.length - 1; i >= 0; i--) {
+      const current = fish[i];
+      current.age += dt;
+      current.x += current.vx * dt;
+      current.y += current.vy * dt;
+      current.z += current.vz * dt;
+      current.vy -= current.gravity * dt;
 
-      const surface = surfaceAt(view, fish.x, fish.z, t);
-      if (fish.vy < 0 && fish.y <= surface) {
-        addRipple(fish.x, fish.z, 1);
-        addDroplets(view, fish.x, surface, fish.z, 11, 1);
-        fish = null;
-      } else if (fish.age > 4) {
-        fish = null; // safety net; should never fire
+      const surface = surfaceAt(view, current.x, current.z, t);
+      if (current.vy < 0 && current.y <= surface) {
+        addRipple(current.x, current.z, 1);
+        addDroplets(view, current.x, surface, current.z, 11, 1);
+        fish.splice(i, 1);
+      } else if (current.age > 4) {
+        fish.splice(i, 1); // safety net; should never fire
       }
-    } else if (t >= nextAt) {
+    }
+
+    // Each scheduler keeps the original random cadence. Their timings are unrelated, so
+    // the page sees roughly twice as many leaps and only occasional natural overlap.
+    for (let i = 0; i < nextAt.length; i++) {
+      if (t < nextAt[i]) continue;
       launch(view, t);
-      nextAt = t + rand(GAP);
+      nextAt[i] = t + rand(GAP);
     }
 
     for (let i = ripples.length - 1; i >= 0; i--) {
@@ -245,15 +258,13 @@ export function createFishSystem() {
     }
   }
 
-  function drawFish(ctx: CanvasRenderingContext2D, view: MeshView, t: number, ink: FishInk) {
-    if (!fish) return;
-
+  function drawOneFish(ctx: CanvasRenderingContext2D, view: MeshView, t: number, ink: FishInk, current: Fish) {
     // Orthonormal basis from the velocity: forward, right, up. Pitch is what sells the
     // leap — nose up on the way out, nose down on the way in.
-    const speed = Math.hypot(fish.vx, fish.vy, fish.vz) || 1;
-    const fx = fish.vx / speed;
-    const fy = fish.vy / speed;
-    const fz = fish.vz / speed;
+    const speed = Math.hypot(current.vx, current.vy, current.vz) || 1;
+    const fx = current.vx / speed;
+    const fy = current.vy / speed;
+    const fz = current.vz / speed;
     // right = normalize(forward x worldUp)
     let rx = fz;
     let rz = -fx;
@@ -269,8 +280,8 @@ export function createFishSystem() {
     uy /= ul;
     uz /= ul;
     // Roll tilts up/right about the travel axis.
-    const cr = Math.cos(fish.roll);
-    const sr = Math.sin(fish.roll);
+    const cr = Math.cos(current.roll);
+    const sr = Math.sin(current.roll);
     const uxr = ux * cr + rx * sr;
     const uyr = uy * cr;
     const uzr = uz * cr + rz * sr;
@@ -284,9 +295,9 @@ export function createFishSystem() {
       const a = VERTS[i * 3] * s;
       const b = VERTS[i * 3 + 1] * s;
       const c = VERTS[i * 3 + 2] * s;
-      const wx = fish.x + a * fx + b * uxr + c * rxr;
-      const wy = fish.y + a * fy + b * uyr + c * ryr;
-      const wz = fish.z + a * fz + b * uzr + c * rzr;
+      const wx = current.x + a * fx + b * uxr + c * rxr;
+      const wy = current.y + a * fy + b * uyr + c * ryr;
+      const wz = current.z + a * fz + b * uzr + c * rzr;
       sx[i] = projectX(view, wx + driftAt(wz, t), wz);
       sy[i] = projectY(view, wy, wz);
       // Cut the body at the waterline so entry and exit read correctly.
@@ -296,8 +307,8 @@ export function createFishSystem() {
     if (!anyVisible) return;
 
     // Fade in and out at the waterline rather than popping.
-    const surface = surfaceAt(view, fish.x, fish.z, t);
-    const clearance = (fish.y - surface) / (BODY_LEN * 0.9);
+    const surface = surfaceAt(view, current.x, current.z, t);
+    const clearance = (current.y - surface) / (BODY_LEN * 0.9);
     const alpha = ink.body * Math.max(0, Math.min(1, clearance));
     if (alpha < 0.01) return;
 
@@ -317,6 +328,10 @@ export function createFishSystem() {
     ctx.stroke();
     ctx.shadowBlur = 0;
     ctx.lineWidth = 1;
+  }
+
+  function drawFish(ctx: CanvasRenderingContext2D, view: MeshView, t: number, ink: FishInk) {
+    for (const current of fish) drawOneFish(ctx, view, t, ink, current);
   }
 
   function drawRipples(ctx: CanvasRenderingContext2D, view: MeshView, t: number, ink: FishInk) {
