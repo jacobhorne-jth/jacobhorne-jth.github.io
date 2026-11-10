@@ -1606,11 +1606,9 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 
 function Navbar({
-  onOpenTerminal,
   darkMode,
   onToggleDark,
 }: {
-  onOpenTerminal: () => void;
   darkMode: boolean;
   onToggleDark: () => void;
 }) {
@@ -1691,12 +1689,6 @@ function Navbar({
             >
               Contact
             </a>
-            <button
-              onClick={() => { setMenuOpen(false); onOpenTerminal(); }}
-              className="flex items-center gap-2 px-3 py-2 text-sm font-mono text-gray-800 dark:text-green-400 hover:text-blue-600 dark:hover:text-green-300"
-            >
-              &gt;_ Terminal
-            </button>
           </div>
         </div>
       )}
@@ -1791,7 +1783,7 @@ function LaptopVisual({ idx, visible }: { idx: number; visible: boolean }) {
   );
 }
 
-function Hero({ onOpenTerminal, darkMode, animationActive }: { onOpenTerminal: () => void; darkMode: boolean; animationActive: boolean }) {
+function Hero({ darkMode, animationActive }: { darkMode: boolean; animationActive: boolean }) {
   const { idx, visible } = useCurrentlyRotation();
 
   return (
@@ -1828,33 +1820,24 @@ function Hero({ onOpenTerminal, darkMode, animationActive }: { onOpenTerminal: (
                 href="https://github.com/jacobhorne-jth"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:border-violet-500/70 hover:bg-violet-500/10 dark:border-white/15 dark:hover:border-violet-300/55 dark:hover:bg-violet-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
+                className="group flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:border-violet-500/70 hover:bg-violet-500/10 dark:border-white/15 dark:hover:border-violet-300/55 dark:hover:bg-violet-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
               >
-                <GithubIcon className="h-4 w-4" /> GitHub
+                <GithubIcon className="h-4 w-4 transition-colors duration-150 group-hover:text-gray-950 dark:group-hover:text-white" /> GitHub
               </a>
               <a
                 href="https://linkedin.com/in/jacobhornejth"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:border-amber-500/75 hover:bg-amber-500/10 dark:border-white/15 dark:hover:border-amber-300/55 dark:hover:bg-amber-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
+                className="group flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:border-[#0a66c2]/70 hover:bg-[#0a66c2]/10 dark:border-white/15 dark:hover:border-[#5da9e9]/60 dark:hover:bg-[#0a66c2]/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
               >
-                <LinkedinIcon className="h-4 w-4" /> LinkedIn
+                <LinkedinIcon className="h-4 w-4 transition-colors duration-150 group-hover:text-[#0a66c2] dark:group-hover:text-[#70b5f9]" /> LinkedIn
               </a>
               <a
                 href="mailto:jacobhorne.jth@gmail.com"
-                className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:border-emerald-500/75 hover:bg-emerald-500/10 dark:border-white/15 dark:hover:border-emerald-300/55 dark:hover:bg-emerald-400/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
+                className="group flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:border-[#ea4335]/70 hover:bg-[#ea4335]/10 dark:border-white/15 dark:hover:border-[#f28b82]/60 dark:hover:bg-[#ea4335]/10 px-5 py-2.5 text-sm dark:text-slate-200 transition-all duration-150"
               >
-                <Mail className="h-4 w-4" /> Email
+                <Mail className="h-4 w-4 transition-colors duration-150 group-hover:text-[#ea4335] dark:group-hover:text-[#f28b82]" /> Email
               </a>
-            </div>
-            <div className="hero-rise hero-rise-3 flex items-center gap-3">
-              <button
-                onClick={onOpenTerminal}
-                className="inline-flex items-center gap-2 rounded-lg border border-green-600/45 bg-green-500/10 px-4 py-2 font-mono text-sm text-green-700 hover:border-green-600/75 hover:bg-green-500/15 dark:border-green-500/30 dark:bg-green-500/[0.08] dark:text-green-400 dark:hover:border-green-500/60 dark:hover:bg-green-500/15 transition-all duration-150"
-              >
-                &gt;_ open terminal
-              </button>
-              <span className="hidden text-xs text-gray-500 dark:text-slate-500 font-mono sm:inline">← try terminal mode</span>
             </div>
           </div>
 
@@ -2086,7 +2069,7 @@ function EducationSection() {
 
 // ─── Now ──────────────────────────────────────────────────────────────────────
 
-function NowSection() {
+function NowSection({ onOpenTerminal }: { onOpenTerminal: () => void }) {
   const items: Array<{ label: string; tone: Tone; entries: string[] }> = [
     {
       label: "Building",
@@ -2146,6 +2129,15 @@ function NowSection() {
             );
           })}
         </div>
+        <div className="mt-8 flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3">
+          <button
+            onClick={onOpenTerminal}
+            className="inline-flex items-center gap-2 rounded-md border border-green-600/35 bg-green-500/[0.06] px-4 py-2 font-mono text-xs text-green-700 transition-colors duration-150 hover:border-green-600/65 hover:bg-green-500/10 dark:border-green-500/25 dark:text-green-400 dark:hover:border-green-500/50 dark:hover:bg-green-500/10"
+          >
+            &gt;_ open terminal
+          </button>
+          <span className="font-mono text-xs text-gray-500 dark:text-slate-500">← try terminal mode</span>
+        </div>
       </div>
     </section>
   );
@@ -2177,20 +2169,41 @@ function ContactSection() {
 
           <div className="grid gap-3">
             {[
-              { Icon: Mail, label: "jacobhorne.jth@gmail.com", href: "mailto:jacobhorne.jth@gmail.com" },
-              { Icon: LinkedinIcon, label: "linkedin.com/in/jacobhornejth", href: "https://linkedin.com/in/jacobhornejth" },
-              { Icon: GithubIcon, label: "github.com/jacobhorne-jth", href: "https://github.com/jacobhorne-jth" },
+              {
+                Icon: Mail,
+                label: "jacobhorne.jth@gmail.com",
+                href: "mailto:jacobhorne.jth@gmail.com",
+                hover: "hover:border-[#ea4335]/60 hover:bg-[#ea4335]/[0.05] dark:hover:border-[#f28b82]/45 dark:hover:bg-[#ea4335]/[0.07]",
+                icon: "group-hover:text-[#ea4335] dark:group-hover:text-[#f28b82]",
+                iconBorder: "group-hover:border-[#ea4335]/35 dark:group-hover:border-[#f28b82]/35",
+              },
+              {
+                Icon: LinkedinIcon,
+                label: "linkedin.com/in/jacobhornejth",
+                href: "https://linkedin.com/in/jacobhornejth",
+                hover: "hover:border-[#0a66c2]/55 hover:bg-[#0a66c2]/[0.05] dark:hover:border-[#5da9e9]/45 dark:hover:bg-[#0a66c2]/[0.07]",
+                icon: "group-hover:text-[#0a66c2] dark:group-hover:text-[#70b5f9]",
+                iconBorder: "group-hover:border-[#0a66c2]/35 dark:group-hover:border-[#70b5f9]/35",
+              },
+              {
+                Icon: GithubIcon,
+                label: "github.com/jacobhorne-jth",
+                href: "https://github.com/jacobhorne-jth",
+                hover: "hover:border-violet-500/50 hover:bg-violet-500/[0.05] dark:hover:border-violet-300/40 dark:hover:bg-violet-400/[0.07]",
+                icon: "group-hover:text-gray-950 dark:group-hover:text-white",
+                iconBorder: "group-hover:border-violet-500/30 dark:group-hover:border-violet-300/30",
+              },
             ].map(link => (
               <a
                 key={link.label}
                 href={link.href}
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between gap-4 rounded-md border border-amber-200/80 bg-white/70 px-4 py-4 text-sm text-gray-700 transition-all duration-150 hover:border-amber-500/60 hover:bg-white dark:border-amber-300/15 dark:bg-white/[0.035] dark:text-slate-200 dark:hover:border-amber-300/45 dark:hover:bg-white/[0.06]"
+                className={`group flex items-center justify-between gap-4 rounded-md border border-gray-200/90 bg-white/70 px-4 py-4 text-sm text-gray-700 transition-all duration-150 dark:border-white/10 dark:bg-white/[0.035] dark:text-slate-200 ${link.hover}`}
               >
                 <span className="flex min-w-0 items-center gap-3">
-                  <span className="h-9 w-9 rounded-lg border border-gray-200 dark:border-slate-700 flex items-center justify-center shrink-0">
-                    <link.Icon className="h-4 w-4" strokeWidth={1.75} />
+                  <span className={`h-9 w-9 rounded-lg border border-gray-200 dark:border-slate-700 flex items-center justify-center shrink-0 transition-colors duration-150 ${link.iconBorder}`}>
+                    <link.Icon className={`h-4 w-4 transition-colors duration-150 ${link.icon}`} strokeWidth={1.75} />
                   </span>
                   <span className="truncate">{link.label}</span>
                 </span>
@@ -2230,15 +2243,15 @@ export default function App() {
   return (
     <div className={`min-h-screen${darkMode ? " dark" : ""}`}>
       {terminalOpen && <Terminal onClose={closeTerminal} />}
-      <MemoNavbar onOpenTerminal={openTerminal} darkMode={darkMode} onToggleDark={toggleDark} />
-      <MemoHero onOpenTerminal={openTerminal} darkMode={darkMode} animationActive={!terminalOpen} />
+      <MemoNavbar darkMode={darkMode} onToggleDark={toggleDark} />
+      <MemoHero darkMode={darkMode} animationActive={!terminalOpen} />
       <MemoAboutSection />
       <MemoExperienceSection />
       <MemoResearchSection />
       <MemoProjectsSection />
       {SHOW_TEACHING && <MemoTeachingSection />}
       <MemoEducationSection />
-      <MemoNowSection />
+      <MemoNowSection onOpenTerminal={openTerminal} />
       <MemoContactSection />
     </div>
   );
