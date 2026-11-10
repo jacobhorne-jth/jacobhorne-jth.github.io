@@ -36,6 +36,7 @@ import projOnboarding from "./assets/projects/onbaoardingreal.png";
 import projSMS from "./assets/projects/realsms.png";
 import projWebsite from "./assets/projects/port.png";
 import projChromeOrg from "./assets/projects/chrome-org.png";
+import projPyTorch from "./assets/projects/pytorch.png";
 import logoC1 from "./assets/logos/c1-logo.png";
 import logoSandia from "./assets/logos/sandia.jpg";
 import logoURP from "./assets/logos/urp.jpeg";
@@ -413,6 +414,8 @@ type Project = {
   accentLine: string; repoUrl: string; demoUrl?: string; imgUrl?: string;
   /** Resume-style evidence shown as scannable highlights inside the detail modal. */
   highlights?: string[];
+  /** Specific external proof such as merged upstream pull requests. */
+  evidenceLinks?: Array<{ href: string; label: string }>;
   /** "contain" for entries whose artwork is a logo rather than a wide screenshot — the
    *  default crop would cut a square logo off inside the landscape frame. */
   imageFit?: "cover" | "contain";
@@ -459,6 +462,7 @@ type DetailItem = {
   /** Outbound links for the modal. First one is filled, the rest are outlined, so a project
    *  can offer a demo and its source without either hiding the other. */
   links?: Array<{ href: string; label: string }>;
+  evidenceLinks?: Array<{ href: string; label: string }>;
   accentLine?: string;
   isActive?: boolean;
   tone?: Tone;
@@ -642,7 +646,7 @@ const experienceRoles: RoleEntry[] = [
     logo: "Block",
     logoImg: logoBlockchain,
     company: "Blockchain @ UCI",
-    role: "Software Developer",
+    role: "Software Engineer",
     period: "Oct 2025 — Present",
     isActive: true,
     summary: "Contributing to Blockchain @ UCI projects spanning multi-agent systems and smart-contract security tooling.",
@@ -778,7 +782,7 @@ const teachingRoles: RoleEntry[] = [
 
 const projects: Project[] = [
   {
-    name: "PyTorch — Dynamo Contributions",
+    name: "PyTorch",
     monogram: "PT",
     desc: "Open-source compiler fixes and regression tests for PyTorch's Dynamo graph-capture stack.",
     detail: "Ongoing contributions to PyTorch Dynamo, the compiler infrastructure that captures Python programs as optimized computation graphs.",
@@ -786,9 +790,25 @@ const projects: Project[] = [
       "Merged 3+ fixes addressing compiler correctness, graph-capture behavior, and exception handling in PyTorch Dynamo.",
       "Added targeted regression tests that reproduce failures and protect the affected compiler paths from future regressions.",
     ],
+    evidenceLinks: [
+      {
+        href: "https://github.com/pytorch/pytorch/pull/197798",
+        label: "#197798 — Support constant non-string assert messages",
+      },
+      {
+        href: "https://github.com/pytorch/pytorch/pull/196103",
+        label: "#196103 — Support zero-argument bytes()",
+      },
+      {
+        href: "https://github.com/pytorch/pytorch/pull/196722",
+        label: "#196722 — Support delattr on exception attributes",
+      },
+    ],
     tech: ["Python", "PyTorch", "Dynamo", "Compilers", "Testing"],
     accentLine: "bg-orange-500",
     repoUrl: "https://github.com/pytorch/pytorch",
+    imgUrl: projPyTorch,
+    imageFit: "contain",
     group: "Open Source",
     isActive: true,
   },
@@ -805,7 +825,7 @@ const projects: Project[] = [
     tech: ["CUDA", "C++", "PyTorch", "Python"],
     accentLine: "bg-fuchsia-500",
     repoUrl: "https://github.com/jacobhorne-jth/context-cuda",
-    isActive: true,
+    isHidden: true,
   },
   {
     name: "Lazarus",
@@ -820,7 +840,7 @@ const projects: Project[] = [
     tech: ["Protocol Analysis", "Reverse Engineering", "MQTT", "Embedded"],
     accentLine: "bg-cyan-500",
     repoUrl: "https://github.com/jacobhorne-jth/lazarus",
-    isActive: true,
+    isHidden: true,
   },
   {
     name: "Agonus",
@@ -1104,6 +1124,7 @@ const projectToDetail = (project: Project): DetailItem => ({
     ...(project.demoUrl ? [{ href: project.demoUrl, label: "Open demo" }] : []),
     ...(project.repoUrl !== "#" ? [{ href: project.repoUrl, label: "Open code" }] : []),
   ],
+  evidenceLinks: project.evidenceLinks,
   accentLine: project.accentLine,
   isActive: project.isActive,
   tone: "violet",
@@ -1523,6 +1544,26 @@ function DetailModal({ item, onClose }: { item: DetailItem | null; onClose: () =
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {item.evidenceLinks && item.evidenceLinks.length > 0 && (
+          <div className="mt-9">
+            <p className={`font-mono text-xs uppercase tracking-[0.2em] ${tone.text}`}>Merged pull requests</p>
+            <div className="mt-4 overflow-hidden rounded-md border border-gray-200 dark:border-white/10">
+              {item.evidenceLinks.map(link => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-center justify-between gap-4 border-t border-gray-200 px-4 py-3.5 text-sm text-gray-700 transition-colors first:border-t-0 hover:bg-violet-50 hover:text-gray-950 dark:border-white/10 dark:text-slate-300 dark:hover:bg-violet-300/[0.05] dark:hover:text-white"
+                >
+                  <span className="min-w-0">{link.label}</span>
+                  <ExternalLink className="h-4 w-4 shrink-0 text-gray-400 transition-colors group-hover:text-violet-600 dark:text-slate-600 dark:group-hover:text-violet-300" />
+                </a>
+              ))}
+            </div>
           </div>
         )}
 
@@ -1991,14 +2032,8 @@ function ResearchSection() {
         </div>
 
         <div className="mt-12 border-t border-gray-300/70 pt-9 dark:border-white/10">
-          <div className="mb-7 max-w-2xl">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-700 dark:text-cyan-300">
-              Selected publications
-            </p>
-            <h3 className="mt-2 text-2xl font-semibold text-gray-950 dark:text-white">Published research</h3>
-            <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-slate-400">
-              Peer-reviewed work on confidence signals, reasoning quality, and multi-agent evaluation.
-            </p>
+          <div className="mb-7">
+            <h3 className="text-2xl font-semibold text-gray-950 dark:text-white">Publications</h3>
           </div>
           <div className="overflow-hidden rounded-lg border border-gray-200/90 bg-white/55 shadow-[0_1px_0_rgba(15,23,42,0.04)] dark:border-white/10 dark:bg-white/[0.02] dark:shadow-none">
             {paperItems.map((item, index) => (
@@ -2063,7 +2098,7 @@ function NowSection() {
         "Data infrastructure and agentic benchmarks at Sandia",
         "Smart contract security tooling",
         "PyTorch Dynamo compiler fixes and regression tests",
-        "A personal operating system",
+        "Underwater robotics perception",
       ],
     },
     {
@@ -2073,7 +2108,6 @@ function NowSection() {
         "Token-level confidence in Text-to-SQL",
         "Physics-informed thermal models",
         "Multi-agent LLM evaluation",
-        "Underwater robotics perception",
       ],
     },
     {
