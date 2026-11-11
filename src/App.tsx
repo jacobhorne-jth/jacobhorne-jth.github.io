@@ -602,11 +602,11 @@ const experienceRoles: RoleEntry[] = [
     role: "Software Engineer Intern",
     period: "Sep 2026 — Present",
     isActive: true,
-    summary: "Building cloud-data infrastructure and agentic benchmarks for security-focused AI evaluation.",
+    summary: "Working on security-focused AI agent evaluation and cloud telemetry data infrastructure.",
     bullets: [
-      "Developing Google Cloud Vertex AI benchmarks that probe hidden software triggers, exploitable vulnerabilities, and unsafe tool execution through reproducible adversarial scenarios.",
-      "Building Databricks ingestion and transformation workflows for heterogeneous CISA cloud telemetry, with custom parsers, schema normalization, and input validation for reliable downstream analysis.",
-      "Automating benchmark execution and failure analysis in isolated Docker and Linux environments so agent behavior can be reproduced and debugged consistently.",
+      "Developing Google Cloud Vertex AI benchmark scenarios for evaluating hidden software triggers, unsafe tool execution, and software vulnerabilities in agentic systems.",
+      "Contributing to Databricks ingestion workflows for heterogeneous CISA cloud telemetry, including custom parsers, schema normalization, and input validation.",
+      "Using Docker and Linux in remote, isolated agent test environments for reproducible benchmark execution and failure investigation.",
     ],
     tags: ["Databricks", "Vertex AI", "Agentic Benchmarking", "Cloud Telemetry", "Docker", "Linux"],
   },
@@ -618,9 +618,9 @@ const experienceRoles: RoleEntry[] = [
     period: "Jun 2026 — Aug 2026",
     summary: "Improved the data and serving infrastructure behind promotional-deal recommendations across Capital One products.",
     bullets: [
-      "Built Databricks and PySpark sampled offline replay over 800M+ daily outcomes, accelerating recommender and campaign testing 28× through intent-aware sampling and Airflow orchestration.",
+      "Built Databricks and PySpark sampled offline replay over 800M+ daily historical outcomes, using intent and inverse-probability weighting to enable 28× faster broader-range recommender and campaign experiments.",
       "Implemented 18 automated PySpark checks for sampling parity, rare-event coverage, schema quality, and replay stability; optimized jobs with partitioning, broadcast joins, and caching.",
-      "Moved 95/5 ML/control routing from a network API into an in-process SDK, preventing timeout-driven cohort misclassification and reducing serving latency 25% for 60M+ monthly users.",
+      "Moved 95/5 ML/control routing from a network API into an in-process SDK, preventing timeout-driven cohort misclassification and reducing serving latency about 25%, from roughly 200 ms to 150 ms, in infrastructure reaching 60M+ monthly users.",
       "Added unit and end-to-end coverage for routing and ranking behavior, validating production results with Postman and AWS CloudWatch.",
     ],
     tags: ["Python", "PySpark", "Databricks", "Airflow", "Recommender Systems", "AWS CloudWatch"],
@@ -632,13 +632,13 @@ const experienceRoles: RoleEntry[] = [
     role: "Perception Engineer",
     period: "Sep 2026 — Present",
     isActive: true,
-    summary: "Developing perception and navigation software for UCI's autonomous underwater robot.",
+    summary: "Developing and testing ROS 2 perception and navigation software for UCI's autonomous underwater robot.",
     bullets: [
-      "Developing pathfinding logic for an autonomous underwater robot, using perception outputs to plan routes and navigate competition tasks under RoboSub constraints.",
-      "Building a sensor-fusion node that combines sonar and camera data, giving downstream navigation software a more complete view of the underwater environment.",
-      "Implementing object-detection pipelines with OpenCV, PyTorch, and CNN-based models to recognize competition targets and pass detections into the robot's autonomy stack.",
+      "Developing ROS 2 perception and pathfinding software with the Controls team, using camera, IMU, and marker inputs to navigate RoboSub competition tasks.",
+      "Implemented camera and sonar fusion plus CNN-based competition-target detection, integrating OpenCV and PyTorch outputs into the robot's autonomy stack.",
+      "Tested perception and navigation behavior in ROS 2 and Gazebo simulation; physical hardware testing is ongoing as the team refines detection and fusion behavior.",
     ],
-    tags: ["OpenCV", "CNNs", "PyTorch", "C++", "Python"],
+    tags: ["ROS 2", "Gazebo", "OpenCV", "CNNs", "PyTorch", "C++", "Python"],
   },
   {
     logo: "Block",
@@ -649,10 +649,10 @@ const experienceRoles: RoleEntry[] = [
     isActive: true,
     summary: "Contributing to Blockchain @ UCI projects spanning multi-agent systems and smart-contract security tooling.",
     bullets: [
-      "Built Agonus, an on-chain trading tournament platform with LangChain agents, live competitions, betting, token rewards, rankings, and real-time monitoring.",
+      "Completed the Agonus phase in April 2026: an on-chain trading tournament platform with LangChain agents, live competitions, betting, token rewards, rankings, and real-time monitoring.",
       "Architected 10+ concurrent ReAct agents with tools for market research, trade planning, memory, and Uniswap V3 execution, using Celery and Redis for scheduling, locking, and crash recovery.",
       "Developed FastAPI and PostgreSQL services, Solidity betting contracts on OP Sepolia, and Next.js wallet flows with Wagmi and Viem.",
-      "Now developing an AI smart-contract security copilot with Foundry, Slither, automated tests, and contract-analysis workflows for surfacing vulnerabilities.",
+      "Now contributing to an early-stage smart-contract security copilot using Foundry, Slither, automated Solidity tests, and contract-analysis workflows for surfacing vulnerabilities.",
     ],
     tags: ["LangChain", "FastAPI", "Solidity", "Celery", "Redis", "Foundry", "Slither"],
   },
@@ -662,13 +662,14 @@ const experienceRoles: RoleEntry[] = [
     company: "CareTech @ UCI",
     role: "Software Developer",
     period: "Oct 2025 — Jun 2026",
-    summary: "Built Vitamind, a computer-vision food scanner for real-time recognition and nutrient tracking.",
+    summary: "Helped develop VitaMind, a full-stack food-scanning and nutrition-tracking app, focusing on model inference alongside analytics and user flows.",
     bullets: [
-      "Built a Next.js and FastAPI food-scanning application that connected real-time PyTorch inference with nutrition APIs and live vitamin-intake totals.",
-      "Processed and augmented 28K+ images across 270+ food categories using Python, OpenCV, Roboflow, and PyTorch.",
-      "Trained vision models to 81% test accuracy through augmentation and data ablation, then integrated inference into the user-facing tracking workflow.",
+      "Focused on integrating food-model inference and serving into VitaMind's Next.js and FastAPI scan, confirmation, and meal-logging workflow.",
+      "Individually trained the selected food-vision model to 81% test accuracy using preprocessing, brightness and gamma adjustments, augmentation, and ablations across 28K+ images and 270+ categories.",
+      "Contributed to daily and weekly nutrient analytics, including time-zone-aware aggregation, personalized intake progress, and dashboard visualizations.",
+      "Contributed to responsive React scanning and onboarding flows with validation, inference-result confirmation, and stateful multi-step interactions.",
     ],
-    tags: ["Python", "PyTorch", "OpenCV", "Roboflow", "Next.js", "FastAPI", "Supabase"],
+    tags: ["PyTorch", "YOLO", "OpenCV", "Next.js", "TypeScript", "FastAPI", "Supabase"],
   },
   {
     logo: "Comm",
@@ -678,10 +679,10 @@ const experienceRoles: RoleEntry[] = [
     period: "Oct 2025 — Jun 2026",
     summary: "Built scheduling and operations software for a community health center serving thousands of patients.",
     bullets: [
-      "Developed a React and TypeScript scheduling and quota platform supporting 6,000–8,000 patients annually.",
+      "Developed a React and TypeScript scheduling and quota platform supporting approximately 8,000 patients annually.",
       "Built Node.js, Express, and PostgreSQL tools for 24+ providers, saving 10–12 staff hours per week through centralized coordination.",
       "Designed Chakra UI and Zustand workflows for provider management, quota tracking, and staff access controls.",
-      "Reduced scheduling conflicts 40% and patient calls 30% by consolidating provider and quota operations into one system.",
+      "The project reduced scheduling conflicts about 40% and patient calls about 30% by consolidating provider and quota operations into one system.",
     ],
     tags: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Chakra UI"],
   },
@@ -694,7 +695,7 @@ const experienceRoles: RoleEntry[] = [
     summary: "Replaced manual intake and staff coordination with an internal workflow and automation platform.",
     bullets: [
       "Built a Next.js and TypeScript intake platform supporting 30+ staff and more than 1,200 monthly patient interactions.",
-      "Reduced intake time 50% and manual email work 60% with Node.js, PostgreSQL, Azure notifications, and workflow automation.",
+      "Reduced intake time about 50% and manual email work about 75% with Node.js, PostgreSQL, Azure notifications, and workflow automation.",
       "Implemented intake, ticketing, call-routing, and task workflows to replace fragmented staff operations.",
       "Modeled messaging and task lifecycles with Prisma and ZenStack for maintainable, scalable automation.",
     ],
@@ -726,11 +727,10 @@ const researchRoles: RoleEntry[] = [
     isActive: true,
     summary: "Studying how language models reason, express confidence, and recover from failure in complex agentic systems.",
     bullets: [
-      "Designed Advocate/Skeptic/Judge multi-agent LLM pipelines with role-specific system prompts, prompt engineering, and LLM-as-judge rubrics to score evidence grounding, reasoning quality, critical failures, and four ASAP essay traits.",
-      "Analyzed token-level confidence across multi-agent responses with log-probabilities, AUROC, and Spearman correlations; found early-token signals more predictive than sequence-level confidence, informing three peer-reviewed publications in 2026.",
-      "Replicated BIRD-Interact multi-turn Text-to-SQL and built prompt-engineered agents for database and schema exploration, ambiguity resolution, query planning and generation, SQL execution, error feedback, and iterative schema and query repair.",
-      "Evaluated multi-step SQL agent traces with token-confidence failure localization and LLM-as-judge, analyzing schema and identifier errors, execution feedback, and recovery through iterative SQL repair.",
-      "Investigating student-simulator agents and ParaStudent-style evaluation, including fine-tuning language models to reproduce student revisions, feedback uptake, and engagement for scalable AI-tutor benchmarking.",
+      "Designed Advocate/Skeptic/Judge multi-agent pipelines and LLM-as-judge rubrics for evidence grounding, reasoning quality, and critical-failure analysis across essay-scoring tasks.",
+      "Analyzed token-level log-probabilities with AUROC and correlation methods, finding early-token confidence more predictive than sequence-level statistics and contributing to three peer-reviewed publications in 2026.",
+      "Now evaluating BIRD-Interact multi-turn Text-to-SQL agents across schema exploration, ambiguity resolution, query planning and execution, feedback-driven repair, and token-confidence failure localization.",
+      "Exploring student-simulation research around personas, goals, revision history, action selection, and feedback uptake for future AI-tutor evaluation work.",
     ],
     featured: [
       {
@@ -782,11 +782,11 @@ const projects: Project[] = [
   {
     name: "PyTorch",
     monogram: "PT",
-    desc: "Open-source compiler fixes and regression tests for PyTorch's Dynamo graph-capture stack.",
+    desc: "Merged three TorchDynamo fixes improving Python behavior compatibility and compiler correctness, backed by regression tests.",
     detail: "Ongoing contributions to PyTorch Dynamo, the compiler infrastructure that captures Python programs as optimized computation graphs.",
     highlights: [
-      "Merged 3+ fixes addressing compiler correctness, graph-capture behavior, and exception handling in PyTorch Dynamo.",
-      "Added targeted regression tests that reproduce failures and protect the affected compiler paths from future regressions.",
+      "Merged three upstream TorchDynamo fixes covering zero-argument bytes(), exception-attribute delattr, and constant non-string assertion messages.",
+      "Added focused regression tests that reproduce each failure and protect the affected Python-semantics and graph-capture paths from future regressions.",
     ],
     evidenceLinks: [
       {
@@ -861,9 +861,9 @@ const projects: Project[] = [
     name: "EthicChat",
     monogram: "ETH",
     desc: "An ethics-gated banking assistant grounded in trusted internal documents and policy controls.",
-    detail: "A React and FastAPI financial assistant that combines retrieval-augmented generation with explicit ethics checks and human escalation for safer customer guidance.",
+    detail: "A university capstone financial assistant that combines document-grounded retrieval with explicit ethics checks and human escalation for safer customer guidance.",
     highlights: [
-      "Owned the RAG pipeline from PDF and OCR ingestion through document classification, OpenAI embeddings, and PostgreSQL/pgvector retrieval.",
+      "Built the RAG pipeline from PDF and OCR ingestion through document classification, Gemini embeddings, and PostgreSQL/pgvector retrieval.",
       "Integrated DeBERTa ethics checks, policy guardrails, and human escalation to intercept unsafe or unsupported model responses.",
       "Delivered grounded financial Q&A from customer documents, retrieved evidence, and banking metrics through a React interface and FastAPI backend.",
     ],
@@ -872,7 +872,7 @@ const projects: Project[] = [
     repoUrl: "https://github.com/TCS-COMPSCI-180A/chatbot",
     imgUrl: logoTCS,
     imageFit: "contain",
-    group: "Tata Consultancy Services",
+    group: "TCS University Capstone",
   },
   {
     name: "Prop.Intel",
@@ -926,11 +926,11 @@ const projects: Project[] = [
     desc: "A guide that helps someone understand an unfamiliar code project faster.",
     detail: "An AI onboarding assistant that ingests a GitHub repository and turns an unfamiliar codebase into structured explanations, searchable context, and guided exploration.",
     highlights: [
-      "Generated project overviews, component summaries, and file-level explanations to help new contributors understand unfamiliar repositories.",
-      "Built a RAG pipeline with LangChain, Hugging Face embeddings, and Pinecone for code-aware Q&A, dependency insights, and “where-am-I?” tracing.",
-      "Developed a FastAPI backend and Streamlit interface powered by LangGraph multi-step reasoning and tool calling for interactive repository exploration.",
+      "Ingested GitHub repositories with GitPython and generated structured project overviews, component summaries, and file-level explanations for new contributors.",
+      "Built semantic retrieval with Hugging Face embeddings and Pinecone, scoping indexed code by repository and version for grounded, code-aware Q&A.",
+      "Developed FastAPI services and LangGraph workflows for dependency-aware exploration, guided repository tracing, and tool-assisted explanations.",
     ],
-    tech: ["Python", "FastAPI", "LangChain", "LangGraph", "Pinecone"],
+    tech: ["Python", "GitPython", "FastAPI", "LangGraph", "Pinecone"],
     accentLine: "bg-purple-500",
     repoUrl: "https://github.com/jacobhorne-jth/github-onboarding-agent",
     imgUrl: projOnboarding,
@@ -941,7 +941,7 @@ const projects: Project[] = [
     desc: "An interactive map for exploring where neighborhood safety risks may be changing.",
     detail: "A full-stack forecasting dashboard that maps changing incident risk across San Francisco neighborhoods and exposes model results through an interactive choropleth.",
     highlights: [
-      "Built an interactive React dashboard with Mapbox to visualize neighborhood-level crime predictions in real time.",
+      "Built an interactive React and Mapbox dashboard for exploring neighborhood incident patterns and modeled risk through a choropleth map.",
       "Designed frontend components and API integrations around a FastAPI backend with dynamically updated map data.",
       "Connected the interface to Python, scikit-learn, XGBoost, and Prophet models for neighborhood risk forecasting.",
       "Engineered reusable JavaScript hooks and state logic to keep data flow between the interface and backend maintainable.",
@@ -1618,7 +1618,7 @@ function Navbar({
     <header className="sticky top-0 z-40 border-b border-gray-200/80 bg-[#fbfaf7]/95 backdrop-blur dark:border-white/10 dark:bg-[#080a10]/95">
       <div className="h-16 w-full px-5 sm:px-8 lg:px-10 grid grid-cols-[auto_1fr_auto] items-center gap-4">
         <a href="#top" className="flex items-center gap-2.5 group">
-          <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-gray-800 dark:text-slate-200">
+          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gray-900 dark:text-white">
             Jacob Horne
           </span>
         </a>
@@ -1628,7 +1628,7 @@ function Navbar({
             <a
               key={l.label}
               href={l.href}
-              className="font-mono text-[10px] uppercase tracking-[0.14em] text-gray-500 transition-colors duration-150 hover:text-gray-950 dark:text-slate-400 dark:hover:text-white xl:text-[11px] xl:tracking-[0.18em]"
+              className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-gray-600 transition-colors duration-150 hover:text-gray-950 dark:text-slate-300 dark:hover:text-white xl:text-xs xl:tracking-[0.12em]"
             >
               {l.label}
             </a>
@@ -1645,7 +1645,7 @@ function Navbar({
           </button>
           <a
             href="#contact"
-            className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-gray-800 transition-all duration-150 hover:border-gray-500 hover:bg-gray-50 dark:border-cyan-300/25 dark:bg-cyan-300/10 dark:text-cyan-200 dark:hover:border-cyan-300/55 dark:hover:bg-cyan-300/15"
+            className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-900 transition-all duration-150 hover:border-gray-500 hover:bg-gray-50 dark:border-cyan-300/25 dark:bg-cyan-300/10 dark:text-cyan-100 dark:hover:border-cyan-300/55 dark:hover:bg-cyan-300/15"
           >
             Contact
           </a>
@@ -1677,7 +1677,7 @@ function Navbar({
                 key={l.label}
                 href={l.href}
                 onClick={() => setMenuOpen(false)}
-                className="block px-3 py-2 text-sm text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-cyan-400/10 rounded-md"
+                className="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-950 dark:text-slate-200 dark:hover:bg-cyan-400/10 dark:hover:text-white"
               >
                 {l.label}
               </a>
@@ -1685,7 +1685,7 @@ function Navbar({
             <a
               href="#contact"
               onClick={() => setMenuOpen(false)}
-              className="block px-3 py-2 text-sm text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-cyan-400/10 rounded-md"
+              className="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-950 dark:text-slate-200 dark:hover:bg-cyan-400/10 dark:hover:text-white"
             >
               Contact
             </a>
@@ -1701,7 +1701,7 @@ function Navbar({
 // Most of these name a specific thing on purpose. This field is the live-looking part of
 // the card, so generic phrasing here costs more than it does anywhere else on the page.
 const CURRENTLY_ITEMS = [
-  "Building cloud data infrastructure and agentic benchmarks at Sandia",
+  "Working on cloud data infrastructure and agentic benchmarking at Sandia",
   "Writing perception code for UCI's autonomous underwater robot",
   "Researching token-level confidence in multi-turn Text-to-SQL benchmarks",
   "Training physics-informed ML models to replace thermal simulations",
@@ -1790,7 +1790,7 @@ function Hero({ darkMode, animationActive }: { darkMode: boolean; animationActiv
     <section id="top" className="relative overflow-hidden bg-[#fbfaf7] text-gray-950 dark:bg-[#070914] dark:text-white">
       <MeshBackground dark={darkMode} active={animationActive} />
       <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-[1220px] px-6 py-12 md:px-8 lg:py-16">
-        <div className="grid min-w-0 w-full grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-12 xl:-translate-y-14">
+        <div className="grid min-w-0 w-full grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-16 lg:-translate-y-20 xl:-translate-y-24">
           <div className="min-w-0 w-full max-w-80 space-y-7 pt-6 sm:max-w-xl lg:max-w-none lg:pt-0">
             <div>
               <div className="hero-rise hero-rise-1 space-y-4">
